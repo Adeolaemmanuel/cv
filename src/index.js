@@ -1,12 +1,48 @@
-import React from 'react';
+import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Home from './Home/home';
+import Cart from './Cart/cart';
+import Admin from './Admin/admin';
+import { Add, Settings, Mail } from './Dasboard/dashboard';
+
+
+
+export default class Index extends Component {
+  render() {
+    return (
+      <div>
+        <Router>
+          <Route path='/' exact>
+            <Home />
+          </Route>
+          <Route path='/Cart' exact>
+            <Cart />
+          </Route>
+          <Route path='/Admin' exact>
+            <Admin />
+          </Route>
+          <Route path='/Add' exact>
+            <Add />
+          </Route>
+          <Route path='/Mail' exact>
+            <Mail />
+          </Route>
+          <Route path='/Settings' exact>
+            <Settings />
+          </Route>
+        </Router>
+      </div>
+    )
+  }
+}
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Index />
   </React.StrictMode>,
   document.getElementById('root')
 );
