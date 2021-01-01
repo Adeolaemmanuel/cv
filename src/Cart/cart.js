@@ -66,15 +66,15 @@ export default class Cart extends Component {
                         <div className='w3-container cart w3-border w3-padding w3-card' style={{borderRadius: '5px 5px 0px 0px'}}>
                             <div className='w3-row'>
                                 <div className='w3-col s6 m6 l6 w3-bold w3-padding'><h4>Name</h4></div>
-                                <div className='w3-col s6 m6 l6 w3-bold w3-padding'><h4>Name</h4></div>
+                                <div className='w3-col s6 m6 l6 w3-bold w3-padding' style={{overflowWrap:'break-word'}}><h6>{this.state.formData[1].value}</h6></div>
                             </div>
                             <div className='w3-row w3-border-top'>
                                 <div className='w3-col s6 m6 l6 w3-bold w3-padding'><h4>Email</h4></div>
-                                <div className='w3-col s6 m6 l6 w3-bold w3-padding'><h4>Email</h4></div>
+                                <div className='w3-col s6 m6 l6 w3-bold w3-padding' style={{overflowWrap:'break-word'}}><h6>{this.state.formData[2].value}</h6></div>
                             </div>
                             <div className='w3-row w3-border-top'>
                                 <div className='w3-col s6 m6 l6 w3-bold w3-padding'><h4>Product</h4></div>
-                                <div className='w3-col s6 m6 l6 w3-bold w3-padding'><h4>Product</h4></div>
+                                <div className='w3-col s6 m6 l6 w3-bold w3-padding' style={{overflowWrap:'break-word'}}><h6>{this.state.formData[0].value}</h6></div>
                             </div>
                             <div className='w3-row w3-border-top'>
                                 <div className='w3-col s6 m6 l6 w3-bold w3-padding'><h4>Amount</h4></div>

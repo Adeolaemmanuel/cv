@@ -20,17 +20,18 @@ export default class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            route: '/'
+            route: '/',
+            formData: []
         }
-        this.setsCart = this.setsCart.bind(this)
+        this.route = this.route.bind(this)
     }
     
     componentDidMount(){
         
     }
     
-    setsCart(){
-        this.setState({route: 'cart'})
+    route(pram){
+        this.setState({route: 'cart', formData: pram})
     }
 
     render() {
@@ -38,14 +39,14 @@ export default class Home extends Component {
             return(
                 <div>
                     <Nav />
-                    <Kigenni />
+                    <Kigenni rout={this.route} />
                 </div>
             )
         }else if(this.state.route === 'cart'){
             return(
                 <div>
                     <Nav />
-                    <Cart rout={this.setsCart} />
+                    <Cart formData={this.state.formData} />
                 </div>
             )
         }
@@ -75,6 +76,8 @@ class Kigenni extends Component{
         
     }
 
+    formData 
+
 
     formSelect = (e,pram)=>{
         e.preventDefault()
@@ -87,7 +90,10 @@ class Kigenni extends Component{
         let SubmitBtn = document.getElementById('SubmitBtn')
         let not = document.getElementById('nott')
         let slide = document.getElementById('me')
-        let formData = [
+        //let cvC = document.getElementById('cvC')
+        //let cvlC = document.getElementById('cvlC')
+        
+        this.formData = [
             {value: document.getElementById('type').value, name: 'Type'},
             {value: document.getElementById('name').value, name: 'Name'},
             {value: document.getElementById('email').value, name: 'Email'},
@@ -100,7 +106,7 @@ class Kigenni extends Component{
             {value: document.getElementById('cv').value, name: 'CV'},
             {value: document.getElementById('cvl').value, name: 'Cover Letter'},
         ]
-        
+
         if(pram === 'new'){
             btnSec1[1].style.display = 'none'
             btnSec1[0].style.display = 'none'
@@ -110,58 +116,58 @@ class Kigenni extends Component{
             slide.style.display = 'none';
             btnCon.classList.add('w3-animate-fade')
         }if(pram === 'next'){
-            if(formData[0].value === "default" || formData[0].value === ""){
+            if(this.formData[0].value === "default" || this.formData[0].value === ""){
                 not.classList.remove('w3-hide')
-                this.setState({not: `Missing Details ${formData[0].name}`})
+                this.setState({not: `Missing Details ${this.formData[0].name}`})
                 setTimeout(()=>{
                     not.classList.add('w3-hide') 
                 },8000)
                 
-            }else if(formData[1].value === "" || formData[1].value === "default"){
+            }else if(this.formData[1].value === "" || this.formData[1].value === "default"){
                 not.classList.remove('w3-hide')
-                this.setState({not: `Missing Details ${formData[1].name}`})
+                this.setState({not: `Missing Details ${this.formData[1].name}`})
                 setTimeout(()=>{
                     not.classList.add('w3-hide') 
                 },8000)
-            }else if(formData[2].value === "" || formData[2].value === "default"){
+            }else if(this.formData[2].value === "" || this.formData[2].value === "default"){
                 not.classList.remove('w3-hide')
-                this.setState({not: `Missing Details ${formData[2].name}`})
+                this.setState({not: `Missing Details ${this.formData[2].name}`})
                 setTimeout(()=>{
                     not.classList.add('w3-hide') 
                 },8000)
-            }else if(formData[3].value === "" || formData[3].value === "default"){
+            }else if(this.formData[3].value === "" || this.formData[3].value === "default"){
                 not.classList.remove('w3-hide')
-                this.setState({not: `Missing Details ${formData[3].name}`})
+                this.setState({not: `Missing Details ${this.formData[3].name}`})
                 setTimeout(()=>{
                     not.classList.add('w3-hide') 
                 },8000)
-            }else if(formData[4].value === "" || formData[4].value === "default"){
+            }else if(this.formData[4].value === "" || this.formData[4].value === "default"){
                 not.classList.remove('w3-hide')
-                this.setState({not: `Missing Details ${formData[1].name}`})
+                this.setState({not: `Missing Details ${this.formData[1].name}`})
                 setTimeout(()=>{
                     not.classList.add('w3-hide') 
                 },8000)
-            }else if(formData[5].value === "" || formData[5].value === "default"){
+            }else if(this.formData[5].value === "" || this.formData[5].value === "default"){
                 not.classList.remove('w3-hide')
-                this.setState({not: `Missing Details ${formData[5].name}`})
+                this.setState({not: `Missing Details ${this.formData[5].name}`})
                 setTimeout(()=>{
                     not.classList.add('w3-hide') 
                 },8000)
-            }else if(formData[6].value === "" || formData[6].value === "default"){
+            }else if(this.formData[6].value === "" || this.formData[6].value === "default"){
                 not.classList.remove('w3-hide')
-                this.setState({not: `Missing Details ${formData[6].name}`})
+                this.setState({not: `Missing Details ${this.formData[6].name}`})
                 setTimeout(()=>{
                     not.classList.add('w3-hide') 
                 },8000)
-            }else if(formData[7].value === "" || formData[7].value === "default"){
+            }else if(this.formData[7].value === "" || this.formData[7].value === "default"){
                 not.classList.remove('w3-hide')
-                this.setState({not: `Missing Details ${formData[7].name}`})
+                this.setState({not: `Missing Details ${this.formData[7].name}`})
                 setTimeout(()=>{
                     not.classList.add('w3-hide') 
                 },8000)
-            }else if(formData[8].value === "" || formData[8].value === "default"){
+            }else if(this.formData[8].value === "" || this.formData[8].value === "default"){
                 not.classList.remove('w3-hide')
-                this.setState({not: `Missing Details ${formData[8].name}`})
+                this.setState({not: `Missing Details ${this.formData[8].name}`})
                 setTimeout(()=>{
                     not.classList.add('w3-hide') 
                 },8000)
@@ -172,10 +178,21 @@ class Kigenni extends Component{
             }
             
         }if(pram === 'submit'){
-            this.props.rout()
-            axios.post('/', formData).then(res => {
-                console.log(res.data);
-            })
+            let modal = document.getElementById('id01')
+            if(this.formData[0].value === 'CV'){
+                if(this.formData[9].value === ""){
+                    modal.style.display = 'block'
+                }else{
+                    this.props.rout(this.formData)
+                }
+            }else if(this.formData[0].value === 'Cover Letter'){
+                this.props.rout(this.formData)
+            }else if(this.formData[0].value === 'CV + Cover Letter'){
+                this.props.rout(this.formData)
+                axios.post('/', this.formData).then(res => {
+                    console.log(res.data);
+                })
+            }
         }
     }
 
@@ -235,7 +252,7 @@ class Kigenni extends Component{
                                 <h5 className=''>WE ARE EXCITED TO HELP YOU BEGIN YOUR JOURNEY TO CAREER FULFILLMENT!</h5>
                             </div>
                         </div>
-                        <div className="bg">
+                        <div className="bgm">
                                 <div className="mountain">
                                     <div className="mountain-top">
                                     <div className="mountain-cap-1"></div>
@@ -381,6 +398,30 @@ class Kigenni extends Component{
                                                         <label htmlFor ='cvl'><img src={cvl} alt='' style={{width: '150px', height: '150px'}} /></label>
                                                         <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvlName}</p>
                                                         <input id='cvl' name='cover letter' onChange={()=>{this.name('cvl')}} type='file' className='w3-hide' />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="id01" className="w3-modal">
+                                            <div className="w3-modal-content">
+                                                <div className="w3-container">
+                                                    <span onClick={()=>{document.getElementById('id01').style.display='none'}}
+                                                    className="w3-button w3-display-topright">&times;</span>
+                                                    <div className='w3-center'>
+                                                        <h5 className='w3-text-red'>We strongly advise that you add your CV above as it will help us work faster to develop one for you.</h5>
+                                                        <div className='w3-center'>
+                                                            <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
+                                                                <label htmlFor ='cv'><img src={cv} alt='' style={{width: '150px', height: '150px'}} /></label>
+                                                                <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvName}</p>
+                                                                <input id='cv' onChange={()=>{this.name('cv')}} name='cv' type='file' className='w3-hide' />
+                                                            </div>
+                                                            <div className='w3-center w3-margin-bottom w3-round'>
+                                                                <button className='w3-btn w3-blue w3-round' onClick={e=>{this.props.rout(this.formData)}}>I don't have</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className='w3-center w3-margin-bottom w3-round'>
+                                                        <button className='w3-btn w3-blue w3-round w3-hide' id='SubmitBtn' onClick={e=>{this.props.rout(this.formData)}}>Submit</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -644,14 +685,14 @@ class Kigenni extends Component{
                                         </div>
                                         <div id='section2' className='w3-hide w3-animate-right'>
                                             <div className='w3-row'>
-                                                <div className='w3-half w3-center'>
+                                                <div className='w3-half w3-center' id='cvC'>
                                                     <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
                                                         <label htmlFor ='cv'><img src={cv} alt='' style={{width: '150px', height: '150px'}} /></label>
                                                         <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvName}</p>
                                                         <input id='cv' onChange={()=>{this.name('cv')}} name='cv' type='file' className='w3-hide' />
                                                     </div>
                                                 </div>
-                                                <div className='w3-half w3-center'>
+                                                <div className='w3-half w3-center' id='cvlC'>
                                                     <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
                                                         <label htmlFor ='cvl'><img src={cvl} alt='' style={{width: '150px', height: '150px'}} /></label>
                                                         <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvlName}</p>
@@ -659,9 +700,33 @@ class Kigenni extends Component{
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div className='w3-center w3-margin-bottom w3-round'>
+                                                <button className='w3-btn w3-blue w3-round w3-hide' id='SubmitBtn' onClick={e=>{this.formSelect(e, 'submit')}}>Submit</button>
+                                            </div>
                                         </div>
-                                        <div className='w3-center w3-margin-bottom w3-round'>
-                                            <button className='w3-btn w3-blue w3-round w3-hide' id='SubmitBtn' onClick={e=>{this.formSelect(e, 'submit')}}>Submit</button>
+                                        <div id="id01" className="w3-modal">
+                                            <div className="w3-modal-content">
+                                                <div className="w3-container">
+                                                    <span onClick={()=>{document.getElementById('id01').style.display='none'}}
+                                                    className="w3-button w3-display-topright">&times;</span>
+                                                    <div className='w3-center'>
+                                                        <h5 className='w3-text-red'>We strongly advise that you add your CV above as it will help us work faster to develop one for you.</h5>
+                                                        <div className='w3-center'>
+                                                            <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
+                                                                <label htmlFor ='cv'><img src={cv} alt='' style={{width: '150px', height: '150px'}} /></label>
+                                                                <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvName}</p>
+                                                                <input id='cv' onChange={()=>{this.name('cv')}} name='cv' type='file' className='w3-hide' />
+                                                            </div>
+                                                            <div className='w3-center w3-margin-bottom w3-round'>
+                                                                <button className='w3-btn w3-blue w3-round' onClick={e=>{this.props.rout(this.formData)}}>I don't have</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className='w3-center w3-margin-bottom w3-round'>
+                                                        <button className='w3-btn w3-blue w3-round w3-hide' id='SubmitBtn' onClick={e=>{this.props.rout(this.formData)}}>Submit</button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -777,7 +842,3 @@ class Kigenni extends Component{
         }
     }
 }
-
-const _setCartState = new Home().setsCart
-
-export { _setCartState }

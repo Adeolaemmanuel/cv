@@ -39,8 +39,8 @@ MongoClient.connect(url, function(err, client) {
 });
 
 app.post('/', (req, res) => {
-  
   console.log(req.body);
+  res.json({data: true})
 })
 
 
