@@ -148,7 +148,7 @@ class Add extends Component{
                 <>
                     <Nav />
                     <Sidebar />
-                    <div className='w3-row' style={{marginTop: '90px'}}>
+                    <div className='w3-row' style={{marginTop: '50px'}}>
                         <div className='w3-col m4 l4 w3-center'>
                             <div className='w3-container w3-card w3-padding'>
                                 <h3 className='w3-text-blue'>Add User</h3>
