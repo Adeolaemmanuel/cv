@@ -32,6 +32,7 @@ export default class Admin extends Component {
         if(this.state.email === 'Login'){
             return (
                 <div>
+                    <Nav />
                     <Login log={this.log} />
                 </div>
             )

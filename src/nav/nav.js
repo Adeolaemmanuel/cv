@@ -37,7 +37,6 @@ export default class Nav extends Component {
                         <p className='w3-bar-item w3-text-blue w3-bold'>KIGENNI</p>
                         <div className='w3-right w3-hide-large w3-hide-medium w3-padding w3-margin-top' id='menu' onClick={this.nav}>
                             <img onClick={this.nav} src={menu} alt={menu} style={{width:'30px', height:'30px'}} />
-                            <Sidebar state={this.state.nav} />
                         </div>
                     </nav>
                 </div>
@@ -60,7 +59,7 @@ class Sidebar extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            nav: this.props.state
+            nav: 'block'
         }
         console.log(this.props);
     }
@@ -69,11 +68,11 @@ class Sidebar extends Component{
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <div>
-                    <div className='w3-sidebar w3-margin-right w3-marin-top w3-padding' style={{width: '100px', right:'0', display: this.state.nav}}>
-                        <Link to='Admin'><img src={dash} alt={dash} className='svg w3-bar-item' /></Link>
-                        <Link to='Add'><img src={add} alt={add} className='svg w3-bar-item add' /></Link>
-                        <Link to='Mail'><img src={mail} alt={mail} className='svg w3-bar-item mail' /></Link>
-                        <Link to='Settings'><img src={settings} alt={settings} className='svg w3-bar-item settings' /></Link>
+                    <div className='w3-bar w3-bottom w3-margin-right w3-padding'>
+                        <Link to='Admin'><img src={dash} alt={dash} className='svg w3-padding w3-bar-item' /></Link>
+                        <Link to='Add'><img src={add} alt={add} className='svg w3-padding w3-bar-item' /></Link>
+                        <Link to='Mail'><img src={mail} alt={mail} className='svg w3-padding w3-bar-item ' /></Link>
+                        <Link to='Settings'><img src={settings} alt={settings} className='svg w3-padding w3-bar-item' /></Link>
                         <img src={exit} alt={exit} className='svg w3-bar-item exit' />
                     </div>
                 </div>

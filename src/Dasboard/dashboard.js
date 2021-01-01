@@ -21,6 +21,7 @@ export default class Dashboard extends Component{
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <div>
+                    <Sidebar />
                     <div className='w3-row w3-center'>
                         <div className='w3-card w3-container w3-padding w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
                             <div className='w3-padding'><h6 className='w3-bold'>Registered Users</h6></div>
@@ -138,42 +139,81 @@ class Add extends Component{
     }
 
     render() {
-        return (
-            <>
-                <Nav />
-                <Sidebar />
-                <div className='w3-row section'>
-                    <div className='w3-col m4 l4 w3-center'>
-                        <div className='w3-container w3-card w3-padding'>
-                            <h3 className='w3-text-blue'>Add User</h3>
-                            <form onSubmit={this.add}>
-                                <input type='email' className='w3-input w3-round w3-border' name='email' placeholder="Email" id='email' required />
-                                <input type='text' className='w3-input w3-round w3-border w3-margin-top' name='name' placeholder="Fullname" id='name' required />
-                                <input type='password' className='w3-input w3-round w3-border w3-margin-top' name='password' required placeholder="Password" id='password' />
-                                <h5>Set Permission</h5>
-                                <Select
-                                    required
-                                    className='w3-margin-top'
-                                    closeMenuOnSelect={false}
-                                    value={this.state.selectedOption}
-                                    onChange={this.handlePermision}
-                                    components={this.animatedComponents}
-                                    defaultValue={[this.state.option[0].value]}
-                                    isMulti
-                                    options={this.state.option}
-                                    />
-                                <div className='w3-center'>
-                                    <button className='w3-btn w3-blue w3-padding w3-round w3-margin-top'>Add</button>
-                                </div>
-                            </form>
+        if(window.matchMedia("(max-width: 767px)").matches){
+            return (
+                <>
+                    <Nav />
+                    <Sidebar />
+                    <div className='w3-row w3-margin-top'>
+                        <div className='w3-col m4 l4 w3-center'>
+                            <div className='w3-container w3-card w3-padding'>
+                                <h3 className='w3-text-blue'>Add User</h3>
+                                <form onSubmit={this.add}>
+                                    <input type='email' className='w3-input w3-round w3-border' name='email' placeholder="Email" id='email' required />
+                                    <input type='text' className='w3-input w3-round w3-border w3-margin-top' name='name' placeholder="Fullname" id='name' required />
+                                    <input type='password' className='w3-input w3-round w3-border w3-margin-top' name='password' required placeholder="Password" id='password' />
+                                    <h5>Set Permission</h5>
+                                    <Select
+                                        required
+                                        className='w3-margin-top'
+                                        closeMenuOnSelect={false}
+                                        value={this.state.selectedOption}
+                                        onChange={this.handlePermision}
+                                        components={this.animatedComponents}
+                                        defaultValue={[this.state.option[0].value]}
+                                        isMulti
+                                        options={this.state.option}
+                                        />
+                                    <div className='w3-center'>
+                                        <button className='w3-btn w3-blue w3-padding w3-round w3-margin-top'>Add</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div className='w3-rest w3-padding'>
+    
                         </div>
                     </div>
-                    <div className='w3-rest w3-padding'>
-
+                </>
+            )
+        }else{
+            return (
+                <>
+                    <Nav />
+                    <Sidebar />
+                    <div className='w3-row section'>
+                        <div className='w3-col m4 l4 w3-center'>
+                            <div className='w3-container w3-card w3-padding'>
+                                <h3 className='w3-text-blue'>Add User</h3>
+                                <form onSubmit={this.add}>
+                                    <input type='email' className='w3-input w3-round w3-border' name='email' placeholder="Email" id='email' required />
+                                    <input type='text' className='w3-input w3-round w3-border w3-margin-top' name='name' placeholder="Fullname" id='name' required />
+                                    <input type='password' className='w3-input w3-round w3-border w3-margin-top' name='password' required placeholder="Password" id='password' />
+                                    <h5>Set Permission</h5>
+                                    <Select
+                                        required
+                                        className='w3-margin-top'
+                                        closeMenuOnSelect={false}
+                                        value={this.state.selectedOption}
+                                        onChange={this.handlePermision}
+                                        components={this.animatedComponents}
+                                        defaultValue={[this.state.option[0].value]}
+                                        isMulti
+                                        options={this.state.option}
+                                        />
+                                    <div className='w3-center'>
+                                        <button className='w3-btn w3-blue w3-padding w3-round w3-margin-top'>Add</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div className='w3-rest w3-padding'>
+    
+                        </div>
                     </div>
-                </div>
-            </>
-        )
+                </>
+            )
+        }
     }
     
 }
