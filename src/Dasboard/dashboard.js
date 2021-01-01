@@ -4,8 +4,8 @@ import '../Dasboard/dashboard.css';
 import Nav, { Sidebar } from '../nav/nav';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import { db } from '../database'
-
+import { db, firebase } from '../database'
+import delet from '../assets/img/delete.svg';
 
 export default class Dashboard extends Component{
     constructor(props) {
@@ -13,9 +13,49 @@ export default class Dashboard extends Component{
         super(props);
         this.state = {
             email: cookies.get('email'),
-            filter: ['Paid','Pending','CV','Cover Letter']
+            filter: ['Name','Email','Pending','Paid'],
+            details: [],
+            pending: 0,
+            paid: 0,
+            users: 0,
+            filterM: ''
         }
     }
+
+    componentDidMount(){
+        this.getCustomers()
+    }
+
+    custormers = []
+
+    getCustomers = () => {
+        db.collection('Admin').doc('Emails').onSnapshot(e=>{
+            if(e.exists){
+                let emails = [...e.data()['emails']]
+                for(let x =0; x<emails.length; x++){
+                    db.collection('Custormers').doc(emails[x]).get()
+                    .then(c=>{
+                        this.custormers.push(c.data().details)
+                        for(let p=0; p< this.custormers[0].length; p++){
+                            if(this.custormers[0][p].paid === 'Pending'){
+                                this.setState({pending: this.state.pending + 1})
+                            }else if(this.custormers[0][p].paid === 'Paid'){
+                                this.setState({pending: this.state.paid + 1})
+                            }
+                        }
+                        return this.custormers
+                    }).then(()=>{this.setState({details: this.custormers[0]})})
+                }
+            }
+        })
+       
+    }
+
+    search = () => {
+
+    }
+
+
     
     render() {
         if(window.matchMedia("(max-width: 767px)").matches){
@@ -25,18 +65,18 @@ export default class Dashboard extends Component{
                         <div className='w3-col s6'>
                             <div className='w3-card w3-container w3-padding w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
                                 <div className='w3-padding'><h6 className='w3-bold'>Registered Users</h6></div>
-                                <div className='w3-padding w3-blue'><h6>3</h6></div>
+                                <div className='w3-padding w3-blue'><h6>{this.state.users}</h6></div>
                             </div>
                         </div>
                         <div className='w3-col s6'>
                             <div className='w3-container w3-padding w3-card w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
                                 <div className='w3-padding'><h6 className='w3-bold'>Paid Custormers</h6></div>
-                                <div className='w3-padding w3-green'><h6>4</h6></div>
+                                <div className='w3-padding w3-green'><h6>{this.state.paid}</h6></div>
                             </div>
                         </div>
                         <div className='w3-container w3-padding w3-card w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
                         <div className='w3-padding'><h6 className='w3-bold'>Pending Custormers</h6></div>
-                            <div className='w3-padding w3-red'><h6>5</h6></div>
+                            <div className='w3-padding w3-red'><h6>{this.state.pending}</h6></div>
                         </div>
                     </div>
                     <div className='w3-row' style={{marginTop: '50px'}}>
@@ -58,7 +98,26 @@ export default class Dashboard extends Component{
                     </div>
     
                     <div className='w3-paddng'>
-    
+                        <div className='w3-container'>
+                            <div className='w3-row'>
+                                <div className='w3-col s4 w3-padding'><h4 className='w3-bold'>Name</h4></div>
+                                <div className='w3-col s4 w3-padding'><h4 className='w3-bold'>Product</h4></div>
+                                <div className='w3-col s4 w3-padding'><h4 className='w3-bold'>Email</h4></div>
+                            </div>
+                            <div className='w3-paddng details'>
+                                {
+                                this.state.details.map((arr,ind)=>{
+                                        return(
+                                            <div className='w3-row w3-card'>
+                                                <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
+                                                <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
+                                                <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
+                                            </div>
+                                        )
+                                }) 
+                                }
+                            </div>
+                        </div>
                     </div>
                     <Sidebar />
                 </div>
@@ -70,21 +129,43 @@ export default class Dashboard extends Component{
                     <div className='w3-row section'>
                         <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
                             <div className='w3-col m7 l7 w3-padding'><h6>Registered Users</h6></div>
-                            <div className='w3-rest w3-padding w3-right w3-blue'><h6>3</h6></div>
+                            <div className='w3-rest w3-padding w3-right w3-blue'><h6>{this.state.users}</h6></div>
                         </div>
                         <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
                         <div className='w3-col m7 l7 w3-padding'><h6>Paid Custormers</h6></div>
-                            <div className='w3-rest w3-padding w3-right w3-green'><h6>4</h6></div>
+                            <div className='w3-rest w3-padding w3-right w3-green'><h6>{this.state.paid}</h6></div>
                         </div>
                         <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
                         <div className='w3-col m7 l7 w3-padding'><h6>Pending Custormers</h6></div>
-                            <div className='w3-rest w3-padding w3-right w3-red'><h6>5</h6></div>
+                            <div className='w3-rest w3-padding w3-right w3-red'><h6>{this.state.pending}</h6></div>
                         </div>
                     </div>
                     <div className='w3-row section' style={{marginTop: '50px'}}>
                         <form>
                             <div className='w3-col m8 l8 w3-padding'>
                                 <input type='text'className='w3-input w3-border' placeholder='Search' />
+                                <div className='w3-container'>
+                                    <div className='w3-row'>
+                                        <div className='w3-col m3 l3 w3-padding'><h4 className='w3-bold'>Name</h4></div>
+                                        <div className='w3-col m3 l3 w3-padding'><h4 className='w3-bold'>Product</h4></div>
+                                        <div className='w3-col m3 l3 w3-padding'><h4 className='w3-bold'>Email</h4></div>
+                                        <div className='w3-col m3 l3 w3-padding'><h4 className='w3-bold'>Paid</h4></div>
+                                    </div>
+                                    <div className='w3-paddng details'>
+                                        {
+                                        this.state.details.map((arr,ind)=>{
+                                                return(
+                                                    <div className='w3-row w3-card'>
+                                                        <div className='w3-col m5 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
+                                                        <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
+                                                        <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
+                                                        <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.paid}</h6></div>
+                                                    </div>
+                                                )
+                                        }) 
+                                        }
+                                    </div>
+                                </div>
                             </div>
                             <div className='w3-rest w3-padding'>
                                 <select className='w3-input w3-border w3-round' defaultValue='Filter' style={{width: '200px'}}>
@@ -97,10 +178,6 @@ export default class Dashboard extends Component{
                                 </select>
                             </div>
                         </form>
-                    </div>
-    
-                    <div className='w3-paddng'>
-    
                     </div>
                 </div>
             )
@@ -250,8 +327,63 @@ class Settings extends Component{
     constructor(props) {
         super(props);
         this.state = {
-
+            not: '',
+            type: []
         }
+    }
+
+    componentDidMount(){
+        this.getProducts()
+    }
+
+    getProducts = () => {
+        db.collection('Admin').doc('Settings').collection('Products').doc('Type').onSnapshot(doc=>{
+            if(doc.exists){
+                let products = doc.data()['products']
+                let type = []
+                for(let x=0; x<products.length; x++){
+                    type.push(products[x])
+                }
+                this.setState({type: type})
+            }
+        })
+    }
+
+    delProduct = (id) => {
+        db.collection('Admin').doc('Settings').collection('Products').doc('Type').get()
+        .then(p=>{
+            let prod = [...p.data()['products']]
+            prod.splice(id)
+            db.collection('Admin').doc('Settings').collection('Products').doc('Type').set({products: prod})
+        })
+    }
+
+    productsUpdate = (e) => {
+        e.preventDefault()
+        let formData = {type: document.getElementById('type').value, price: document.getElementById('price').value}
+        let not = document.getElementById('nott')
+        db.collection('Admin').doc('Settings').collection('Products').doc('Type').get()
+        .then(p=>{
+            if(p.exists){
+                db.collection('Admin').doc('Settings').collection('Products').doc('Type')
+                .update({products: firebase.firestore.FieldValue.arrayUnion(formData)}).then(()=>{
+                    not.classList.remove('w3-hide')
+                    this.setState({not: `${formData.type} added to database`})
+                    setTimeout(()=>{
+                        not.classList.add('w3-hide') 
+                    },8000)
+                })
+
+            }else{
+                db.collection('Admin').doc('Settings').collection('Products').doc('Type')
+                .set({products: firebase.firestore.FieldValue.arrayUnion(formData)})
+                not.classList.remove('w3-hide')
+                this.setState({not: `${formData.type} added to database`})
+                setTimeout(()=>{
+                    not.classList.add('w3-hide') 
+                },8000)
+            }
+        })
     }
 
     render() {
@@ -259,6 +391,40 @@ class Settings extends Component{
             <div>
                 <Nav />
                 <Sidebar />
+                <div className='w3-row section'>
+                <div className='w3-center'>
+                    <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
+                </div>
+                    <div className='w3-col 12 m4 l4 w3-border w3-round'>
+                        <form className='w3-padding'>
+                            <input className='w3-input w3-border' type='text' placeholder='Input product name' id='type' required />
+                            <input className='w3-input w3-border w3-margin-top' type='number' placeholder='Input Price' id='price' required />
+                            <div className='w3-center'>
+                                <button className='w3-blue w3-btn w3-round w3-margin-top' onClick={this.productsUpdate} >Update</button>
+                            </div>
+                        </form>
+                        <div className = 'w3-border-top' >
+                            <div className='w3-row'>
+                                <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Products</div>
+                                <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Price</div>
+                                <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Delete</div>
+                            </div>
+                            <div>
+                                {
+                                    this.state.type.map((arr,ind)=>{
+                                        return(
+                                            <div className='w3-row w3-card w3-margin-top w3-round'>
+                                                <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'>{arr.type}</div>
+                                                <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'>₦{arr.price}</div>
+                                                <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'><img src={delet} alt={delet} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={()=>{this.delProduct(ind)}} /></div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }

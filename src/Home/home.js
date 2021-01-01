@@ -14,7 +14,7 @@ import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/splide/dist/css/themes/splide-default.min.css';
 import Cart from '../Cart/cart'
 import axios from 'axios'
-
+import { db } from '../database'
 
 export default class Home extends Component {
     constructor(props) {
@@ -58,7 +58,7 @@ class Kigenni extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            type: ["CV", "Cover Letter", "CV + Cover Letter", "LinkedIn Optimization", "Triple Combo: CV + Cover Letter + LinkedIn"],
+            type: [],
             commun: ['Email', 'Phone', 'Skype (Text)', 'Skype (Call)'],
             gender: ['Male', 'Female'],
             state: ['Abuja'],
@@ -73,10 +73,26 @@ class Kigenni extends Component{
     }
     
     componentDidMount(){
-        
+        this.getProducts()
     }
 
-    formData 
+    formData = []
+    products = []
+    
+    getProducts = () => {
+        db.collection('Admin').doc('Settings').collection('Products').doc('Type').onSnapshot(doc=>{
+            if(doc.exists){
+                let products = doc.data()['products']
+                let type = []
+                for(let x=0; x<products.length; x++){
+                    type.push(products[x].type)
+                    this.products.push(products[x])
+                }
+                this.setState({type: type})
+                console.log(this.products);
+            }
+        })
+    }
 
 
     formSelect = (e,pram)=>{
@@ -175,10 +191,10 @@ class Kigenni extends Component{
                 if(this.formData[0].value === 'CV'){
                     cvC.classList.remove('w3-hide')
                     cvC.classList.remove('w3-half')
-                }else if(this.formData[0].value === 'Cover Letter'){
-                    cvlC.classList.remove('w3-hide')
+                }if(this.formData[0].value === 'Cover Letter'){
+                    cvC.classList.remove('w3-hide')
                     cvlC.classList.remove('w3-half')
-                }else if(this.formData[0].value === 'CV + Cover Letter'){
+                }if(this.formData[0].value === 'CV + Cover Letter'){
                     cvC.classList.remove('w3-hide')
                     cvlC.classList.remove('w3-hide')
                 }
@@ -190,22 +206,23 @@ class Kigenni extends Component{
             
         }if(pram === 'submit'){
             let modal = document.getElementById('id01')
-            
-            if(this.formData[0].value === 'CV'){
-                cvC.classList.remove('w3-hide')
-                cvC.classList.remove('w3-half')
-                if(this.formData[9].value === ""){
-                    modal.style.display = 'block'
-                }else{
+            for(let x in this.products){
+                if(this.products[x].type === this.formData[0].value){
+                    if(this.formData[9].value === ""){
+                        this.formData[0].price = this.products[x].price
+                        modal.style.display = 'block'
+                    }else{
+                        this.formData[0].price = this.products[x].price
+                        this.props.rout(this.formData)
+                    }
+                }else if(this.products[x].type === this.formData[0].value){
                     this.props.rout(this.formData)
+                }else if(this.products[x].type === this.formData[0].value){
+                    this.props.rout(this.formData)
+                    axios.post('/', this.formData).then(res => {
+                        console.log(res.data);
+                    })
                 }
-            }else if(this.formData[0].value === 'Cover Letter'){
-                this.props.rout(this.formData)
-            }else if(this.formData[0].value === 'CV + Cover Letter'){
-                this.props.rout(this.formData)
-                axios.post('/', this.formData).then(res => {
-                    console.log(res.data);
-                })
             }
         }
     }
@@ -324,7 +341,7 @@ class Kigenni extends Component{
                                                         <option value='default' disabled>What would you like to write today?</option>
                                                         {
                                                             this.state.type.map(arr=>{
-                                                                return( <option key={arr}>{arr}</option> )
+                                                                return( <option key={arr.type}>{arr.type}</option> )
                                                             })
                                                         }
                                                     </select>
@@ -400,20 +417,23 @@ class Kigenni extends Component{
                                         </div>
                                         <div id='section2' className='w3-hide w3-animate-right'>
                                             <div className='w3-row'>
-                                                <div className='w3-half w3-center'>
+                                                <div className='w3-half w3-center w3-hide' id='cC'>
                                                     <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
                                                         <label htmlFor ='cv'><img src={cv} alt='' style={{width: '150px', height: '150px'}} /></label>
                                                         <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvName}</p>
                                                         <input id='cv' onChange={()=>{this.name('cv')}} name='cv' type='file' className='w3-hide' />
                                                     </div>
                                                 </div>
-                                                <div className='w3-half w3-center'>
+                                                <div className='w3-half w3-center w3-hide' id='clC'>
                                                     <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
                                                         <label htmlFor ='cvl'><img src={cvl} alt='' style={{width: '150px', height: '150px'}} /></label>
                                                         <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvlName}</p>
                                                         <input id='cvl' name='cover letter' onChange={()=>{this.name('cvl')}} type='file' className='w3-hide' />
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div className='w3-center w3-margin-bottom w3-round'>
+                                                <button className='w3-btn w3-blue w3-round w3-hide' id='SubmitBtn' onClick={e=>{this.formSelect(e, 'submit')}}>Submit</button>
                                             </div>
                                         </div>
                                         <div id="id01" className="w3-modal">

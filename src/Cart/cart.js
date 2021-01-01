@@ -14,40 +14,56 @@ export default class Cart extends Component {
     
 
 
-    continue(e){
+    continue =(e) => {
         e.preventDefault()
         let info = document.getElementById('info')
         info.classList.remove('w3-hide')
-        let data = this.state.formData
-        db.collection('Admin').doc('Settings').collection('Products').doc('Price').get().then(p=>{
-            if(p.exists){
-                let price = p.data().price
-                for(let x of price){
-                     if(price[x].type === data[0].name){
-                         data[0].price = price[x].price
-                         this.setState({formData: data})
-                     }
-                }
-
-                db.collection('Admin').doc('Emails').get().then(e=>{
-                    if(e.exists){
-                        db.collection('Admin').doc('Emails').update({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2])})
-                        .then(()=>{
-                            db.collection('Custormers').doc(this.state.formData[2].value).update({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2])})
-                        }).then(()=>{
-                            axios.post('/', this.state.formData).then(res => {
-                                console.log(res.data);
-                                this.props.setsCart()
-                            })
-                        })
-                    }else{
-                        db.collection('Admin').doc('Emails').set({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2])})
-                        .then(()=>{
-                            db.collection('Custormers').doc(this.state.formData[2].value).set({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2])})
-                        })
-                    }
+        let result = {
+            type: this.state.formData[0].value,
+            name: this.state.formData[1].value,
+            email: this.state.formData[2].value,
+            com: this.state.formData[3].value,
+            gender: this.state.formData[4].value,
+            dob: this.state.formData[5].value,
+            state: this.state.formData[6].value,
+            industry: this.state.formData[7].value,
+            exp: this.state.formData[8].value,
+            cv: this.state.formData[9].value,
+            cvl: this.state.formData[10].value,
+            price: this.state.formData[0].price,
+            paid: 'Pending'
+        };
+        console.log(result);
+        db.collection('Admin').doc('Emails').get().then(e=>{
+            if(e.exists){               
+                db.collection('Admin').doc('Emails').update({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2].value)})
+                .then(()=>{
+                    db.collection('Custormers').doc(this.state.formData[2].value).get()
+                    .then(d=>{
+                        if(d.exists){
+                            db.collection('Custormers').doc(this.state.formData[2].value).update({details: firebase.firestore.FieldValue.arrayUnion(result)})
+                        }else{
+                            db.collection('Custormers').doc(this.state.formData[2].value).set({details: firebase.firestore.FieldValue.arrayUnion(result)})
+                        }
+                    })
+                }).then(()=>{
+                    axios.post('/', this.state.formData).then(res => {
+                        console.log(res.data);
+                        
+                    })
                 })
-                
+            }else{
+                db.collection('Admin').doc('Emails').set({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2].value)})
+                .then(()=>{
+                    db.collection('Custormers').doc(this.state.formData[2].value).get()
+                    .then(d=>{
+                        if(d.exists){
+                            db.collection('Custormers').doc(this.state.formData[2].value).update({details: firebase.firestore.FieldValue.arrayUnion(result)})
+                        }else{
+                            db.collection('Custormers').doc(this.state.formData[2].value).set({details: firebase.firestore.FieldValue.arrayUnion(result)})
+                        }
+                    })
+                })
             }
         })
         setTimeout(()=>{info.classList.add('w3-hide')}, 9000)
@@ -78,7 +94,7 @@ export default class Cart extends Component {
                             </div>
                             <div className='w3-row w3-border-top'>
                                 <div className='w3-col s6 m6 l6 w3-bold w3-padding'><h4>Amount</h4></div>
-                                <div className='w3-col s6 m6 l6 w3-bold w3-padding'><h4>Amount</h4></div>
+                                <div className='w3-col s6 m6 l6 w3-bold w3-padding'><h4>₦{this.state.formData[0].price}</h4></div>
                             </div>
                         </div>
                         <button className='w3-block w3-card w3-blue w3-button w3-hover-blue btn' onClick={this.continue}><h3>Contuine</h3></button>

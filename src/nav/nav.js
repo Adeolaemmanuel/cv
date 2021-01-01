@@ -58,7 +58,6 @@ class Sidebar extends Component{
         this.state = {
             nav: 'block'
         }
-        console.log(this.props);
     }
     
     render() {

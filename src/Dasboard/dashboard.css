@@ -2,3 +2,19 @@
     position: relative;
     left: 10%;
 }
+
+.not{
+    position: absolute;
+    width: 300px;
+    padding: 16px;
+    color: white;
+}
+
+.details{
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.details::-webkit-scrollbar {
+    display: none;
+}
