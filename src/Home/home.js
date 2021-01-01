@@ -191,10 +191,13 @@ class Kigenni extends Component{
                 if(this.formData[0].value === 'CV'){
                     cvC.classList.remove('w3-hide')
                     cvC.classList.remove('w3-half')
-                }if(this.formData[0].value === 'Cover Letter'){
+                }else if(this.formData[0].value === 'Cover Letter'){
                     cvC.classList.remove('w3-hide')
                     cvlC.classList.remove('w3-half')
-                }if(this.formData[0].value === 'CV + Cover Letter'){
+                }else if(this.formData[0].value === 'CV + Cover Letter'){
+                    cvC.classList.remove('w3-hide')
+                    cvlC.classList.remove('w3-hide')
+                }else{
                     cvC.classList.remove('w3-hide')
                     cvlC.classList.remove('w3-hide')
                 }
@@ -341,7 +344,7 @@ class Kigenni extends Component{
                                                         <option value='default' disabled>What would you like to write today?</option>
                                                         {
                                                             this.state.type.map(arr=>{
-                                                                return( <option key={arr.type}>{arr.type}</option> )
+                                                                return( <option key={arr}>{arr}</option> )
                                                             })
                                                         }
                                                     </select>
