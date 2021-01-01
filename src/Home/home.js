@@ -90,8 +90,8 @@ class Kigenni extends Component{
         let SubmitBtn = document.getElementById('SubmitBtn')
         let not = document.getElementById('nott')
         let slide = document.getElementById('me')
-        //let cvC = document.getElementById('cvC')
-        //let cvlC = document.getElementById('cvlC')
+        let cvC = document.getElementById('cC')
+        let cvlC = document.getElementById('clC')
         
         this.formData = [
             {value: document.getElementById('type').value, name: 'Type'},
@@ -172,14 +172,28 @@ class Kigenni extends Component{
                     not.classList.add('w3-hide') 
                 },8000)
             }else{
+                if(this.formData[0].value === 'CV'){
+                    cvC.classList.remove('w3-hide')
+                    cvC.classList.remove('w3-half')
+                }else if(this.formData[0].value === 'Cover Letter'){
+                    cvlC.classList.remove('w3-hide')
+                    cvlC.classList.remove('w3-half')
+                }else if(this.formData[0].value === 'CV + Cover Letter'){
+                    cvC.classList.remove('w3-hide')
+                    cvlC.classList.remove('w3-hide')
+                }
                 section1.classList.add('w3-hide')
                 section2.classList.remove('w3-hide')
                 SubmitBtn.classList.remove('w3-hide')
+                
             }
             
         }if(pram === 'submit'){
             let modal = document.getElementById('id01')
+            
             if(this.formData[0].value === 'CV'){
+                cvC.classList.remove('w3-hide')
+                cvC.classList.remove('w3-half')
                 if(this.formData[9].value === ""){
                     modal.style.display = 'block'
                 }else{
@@ -408,7 +422,7 @@ class Kigenni extends Component{
                                                     <span onClick={()=>{document.getElementById('id01').style.display='none'}}
                                                     className="w3-button w3-display-topright">&times;</span>
                                                     <div className='w3-center'>
-                                                        <h5 className='w3-text-red'>We strongly advise that you add your CV above as it will help us work faster to develop one for you.</h5>
+                                                        <h5 className='w3-red w3-padding w3-round'>We strongly advise that you add your CV above as it will help us work faster to develop one for you.</h5>
                                                         <div className='w3-center'>
                                                             <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
                                                                 <label htmlFor ='cv'><img src={cv} alt='' style={{width: '150px', height: '150px'}} /></label>
@@ -437,6 +451,9 @@ class Kigenni extends Component{
     
                     <div id='Steps' className='w3-row' style={{marginTop: '150px'}}>
                         <div className='w3-center'>
+                            <div className='w3-display-container'>
+                                <div className='w3-display middle w3-bold'><h1>How it works</h1></div>
+                            </div>
                             <div className='w3-container' >
                                 <div className='w3-padding steps'>
                                     <img src={reg} className='w3-image' alt={reg} style={{width: '70px', height: '70px'}} />
@@ -685,14 +702,14 @@ class Kigenni extends Component{
                                         </div>
                                         <div id='section2' className='w3-hide w3-animate-right'>
                                             <div className='w3-row'>
-                                                <div className='w3-half w3-center' id='cvC'>
+                                                <div className='w3-half w3-center w3-hide' id='cC'>
                                                     <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
                                                         <label htmlFor ='cv'><img src={cv} alt='' style={{width: '150px', height: '150px'}} /></label>
                                                         <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvName}</p>
                                                         <input id='cv' onChange={()=>{this.name('cv')}} name='cv' type='file' className='w3-hide' />
                                                     </div>
                                                 </div>
-                                                <div className='w3-half w3-center' id='cvlC'>
+                                                <div className='w3-half w3-center w3-hide' id='clC'>
                                                     <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
                                                         <label htmlFor ='cvl'><img src={cvl} alt='' style={{width: '150px', height: '150px'}} /></label>
                                                         <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvlName}</p>
@@ -710,7 +727,7 @@ class Kigenni extends Component{
                                                     <span onClick={()=>{document.getElementById('id01').style.display='none'}}
                                                     className="w3-button w3-display-topright">&times;</span>
                                                     <div className='w3-center'>
-                                                        <h5 className='w3-text-red'>We strongly advise that you add your CV above as it will help us work faster to develop one for you.</h5>
+                                                        <h5 className='w3-red w3-padding w3-round'>We strongly advise that you add your CV above as it will help us work faster to develop one for you.</h5>
                                                         <div className='w3-center'>
                                                             <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
                                                                 <label htmlFor ='cv'><img src={cv} alt='' style={{width: '150px', height: '150px'}} /></label>
@@ -736,6 +753,9 @@ class Kigenni extends Component{
     
                     <div className='w3-row' id='Steps' style={{marginTop: '150px'}}>
                         <div className='w3-center'>
+                            <div className='w3-display-container'>
+                                <div className='w3-display middle w3-bold'><h1>How it works</h1></div>
+                            </div>
                             <div className='w3-container' style={{display: 'inline-block', marginTop: '120px'}}>
                                 <div className='w3-padding steps'>
                                     <img src={reg} className='w3-image' alt={reg} style={{width: '70px', height: '70px'}} />

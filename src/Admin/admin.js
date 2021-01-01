@@ -62,18 +62,33 @@ class Login extends Component{
     }
     
     render() {
-        return (
-            <div className='w3-center top'>
-                <div className='w3-container w3-card w3-padding' style={{display: 'inline-block', width: '400px'}}>
-                    <h3 className='w3-text-blue'>Admin Login</h3>
-                    <form>
-                        <input type='email' className='w3-input w3-round w3-border' name='email' placeholder="Email" id='email' />
-                        <input type='password' className='w3-input w3-round w3-border w3-margin-top' name='password' placeholder="Password" id='password' />
-                        <button className='w3-btn w3-blue w3-padding w3-round w3-margin-top' onClick={this.login}>Login</button>
-                    </form>
+        if(window.matchMedia("(max-width: 767px)").matches){
+            return(
+                <div className='w3-center top'>
+                    <div className='w3-container w3-card w3-padding'>
+                        <h3 className='w3-text-blue'>Admin Login</h3>
+                        <form>
+                            <input type='email' className='w3-input w3-round w3-border' name='email' placeholder="Email" id='email' />
+                            <input type='password' className='w3-input w3-round w3-border w3-margin-top' name='password' placeholder="Password" id='password' />
+                            <button className='w3-btn w3-blue w3-padding w3-round w3-margin-top' onClick={this.login}>Login</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }else{
+            return (
+                <div className='w3-center top'>
+                    <div className='w3-container w3-card w3-padding' style={{display: 'inline-block', width: '400px'}}>
+                        <h3 className='w3-text-blue'>Admin Login</h3>
+                        <form>
+                            <input type='email' className='w3-input w3-round w3-border' name='email' placeholder="Email" id='email' />
+                            <input type='password' className='w3-input w3-round w3-border w3-margin-top' name='password' placeholder="Password" id='password' />
+                            <button className='w3-btn w3-blue w3-padding w3-round w3-margin-top' onClick={this.login}>Login</button>
+                        </form>
+                    </div>
+                </div>
+            )
+        }
     }
     
 }
