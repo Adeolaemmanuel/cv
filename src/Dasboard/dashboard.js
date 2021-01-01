@@ -89,7 +89,7 @@ export default class Dashboard extends Component{
                                     <option value='Filter' disabled>Filter</option>
                                     {
                                         this.state.filter.map(arr=>{
-                                            return( <option value={arr}>{arr}</option> )
+                                            return( <option value={arr} key={arr}>{arr}</option> )
                                         })
                                     }
                                 </select>
@@ -108,7 +108,7 @@ export default class Dashboard extends Component{
                                 {
                                 this.state.details.map((arr,ind)=>{
                                         return(
-                                            <div className='w3-row w3-card'>
+                                            <div className='w3-row w3-card' key={ind}>
                                                 <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
                                                 <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
                                                 <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
@@ -155,7 +155,7 @@ export default class Dashboard extends Component{
                                         {
                                         this.state.details.map((arr,ind)=>{
                                                 return(
-                                                    <div className='w3-row w3-card'>
+                                                    <div className='w3-row w3-card' key={ind}>
                                                         <div className='w3-col m5 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
                                                         <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
                                                         <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
@@ -172,7 +172,7 @@ export default class Dashboard extends Component{
                                     <option value='Filter' disabled>Filter</option>
                                     {
                                         this.state.filter.map(arr=>{
-                                            return( <option value={arr}>{arr}</option> )
+                                            return( <option value={arr} key={arr}>{arr}</option> )
                                         })
                                     }
                                 </select>
@@ -313,8 +313,10 @@ class Mail extends Component{
                 <Nav />
                 <Sidebar />
                 <div className='w3-row section'>
-                    <div className='w3-col s6 m6 l6'>
-                        
+                    <div className='w3-col m6 l6'>
+                        <div className='w3-padding'>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -387,46 +389,89 @@ class Settings extends Component{
     }
 
     render() {
-        return (
-            <div>
-                <Nav />
-                <Sidebar />
-                <div className='w3-row section'>
-                <div className='w3-center'>
-                    <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
-                </div>
-                    <div className='w3-col 12 m4 l4 w3-border w3-round'>
-                        <form className='w3-padding'>
-                            <input className='w3-input w3-border' type='text' placeholder='Input product name' id='type' required />
-                            <input className='w3-input w3-border w3-margin-top' type='number' placeholder='Input Price' id='price' required />
-                            <div className='w3-center'>
-                                <button className='w3-blue w3-btn w3-round w3-margin-top' onClick={this.productsUpdate} >Update</button>
-                            </div>
-                        </form>
-                        <div className = 'w3-border-top' >
-                            <div className='w3-row'>
-                                <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Products</div>
-                                <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Price</div>
-                                <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Delete</div>
-                            </div>
-                            <div>
-                                {
-                                    this.state.type.map((arr,ind)=>{
-                                        return(
-                                            <div className='w3-row w3-card w3-margin-top w3-round'>
-                                                <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'>{arr.type}</div>
-                                                <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'>₦{arr.price}</div>
-                                                <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'><img src={delet} alt={delet} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={()=>{this.delProduct(ind)}} /></div>
-                                            </div>
-                                        )
-                                    })
-                                }
+        if(window.matchMedia("(max-width: 767px)").matches){
+            return (
+                <div>
+                    <Nav />
+                    <Sidebar />
+                    <div className='w3-row'>
+                    <div className='w3-center'>
+                        <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
+                    </div>
+                        <div className='w3-col 12 m4 l4 w3-border w3-round'>
+                            <form className='w3-padding'>
+                                <input className='w3-input w3-border' type='text' placeholder='Input product name' id='type' required />
+                                <input className='w3-input w3-border w3-margin-top' type='number' placeholder='Input Price' id='price' required />
+                                <div className='w3-center'>
+                                    <button className='w3-blue w3-btn w3-round w3-margin-top' onClick={this.productsUpdate} >Update</button>
+                                </div>
+                            </form>
+                            <div className = 'w3-border-top' >
+                                <div className='w3-row'>
+                                    <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Products</div>
+                                    <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Price</div>
+                                    <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Delete</div>
+                                </div>
+                                <div>
+                                    {
+                                        this.state.type.map((arr,ind)=>{
+                                            return(
+                                                <div className='w3-row w3-card w3-margin-top w3-round'>
+                                                    <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'>{arr.type}</div>
+                                                    <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'>₦{arr.price}</div>
+                                                    <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'><img src={delet} alt={delet} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={()=>{this.delProduct(ind)}} /></div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        )
+            )
+        }else{
+            return (
+                <div>
+                    <Nav />
+                    <Sidebar />
+                    <div className='w3-row section'>
+                    <div className='w3-center'>
+                        <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
+                    </div>
+                        <div className='w3-col 12 m4 l4 w3-border w3-round'>
+                            <form className='w3-padding'>
+                                <input className='w3-input w3-border' type='text' placeholder='Input product name' id='type' required />
+                                <input className='w3-input w3-border w3-margin-top' type='number' placeholder='Input Price' id='price' required />
+                                <div className='w3-center'>
+                                    <button className='w3-blue w3-btn w3-round w3-margin-top' onClick={this.productsUpdate} >Update</button>
+                                </div>
+                            </form>
+                            <div className = 'w3-border-top' >
+                                <div className='w3-row'>
+                                    <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Products</div>
+                                    <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Price</div>
+                                    <div className='w3-col s4 m4 l4 w3-center w3-bold w3-padding'>Delete</div>
+                                </div>
+                                <div>
+                                    {
+                                        this.state.type.map((arr,ind)=>{
+                                            return(
+                                                <div className='w3-row w3-card w3-margin-top w3-round'>
+                                                    <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'>{arr.type}</div>
+                                                    <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'>₦{arr.price}</div>
+                                                    <div className='w3-col s4 m4 l4 w3-center m6 w3-padding'><img src={delet} alt={delet} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={()=>{this.delProduct(ind)}} /></div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
     }
     
 }
