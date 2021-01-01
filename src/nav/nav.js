@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import dash from '../assets/img/dash.svg'
 import mail from '../assets/img/email.svg'
 import add from '../assets/img/add.svg';
-import menu from '../assets/img/menu.svg';
+//import menu from '../assets/img/menu.svg';
 import settings from '../assets/img/settings.svg';
 import exit from '../assets/img/exit.svg';
 import './nav.css'
@@ -35,9 +35,6 @@ export default class Nav extends Component {
                 <div>
                     <nav className='w3-bar'>
                         <p className='w3-bar-item w3-text-blue w3-bold'>KIGENNI</p>
-                        <div className='w3-right w3-hide-large w3-hide-medium w3-padding w3-margin-top' id='menu' onClick={this.nav}>
-                            <img onClick={this.nav} src={menu} alt={menu} style={{width:'30px', height:'30px'}} />
-                        </div>
                     </nav>
                 </div>
                 
@@ -68,7 +65,7 @@ class Sidebar extends Component{
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <div>
-                    <div className='w3-bar w3-bottom w3-margin-right w3-padding'>
+                    <div className='w3-bar w3-card w3-white w3-bottom w3-margin-right w3-padding'>
                         <Link to='Admin'><img src={dash} alt={dash} className='svg w3-padding w3-bar-item' /></Link>
                         <Link to='Add'><img src={add} alt={add} className='svg w3-padding w3-bar-item' /></Link>
                         <Link to='Mail'><img src={mail} alt={mail} className='svg w3-padding w3-bar-item ' /></Link>

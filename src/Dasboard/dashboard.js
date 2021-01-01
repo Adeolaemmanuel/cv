@@ -23,13 +23,17 @@ export default class Dashboard extends Component{
                 <div>
                     <Sidebar />
                     <div className='w3-row w3-center'>
-                        <div className='w3-card w3-container w3-padding w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
-                            <div className='w3-padding'><h6 className='w3-bold'>Registered Users</h6></div>
-                            <div className='w3-padding w3-blue'><h6>3</h6></div>
+                        <div className='w3-col s6'>
+                            <div className='w3-card w3-container w3-padding w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
+                                <div className='w3-padding'><h6 className='w3-bold'>Registered Users</h6></div>
+                                <div className='w3-padding w3-blue'><h6>3</h6></div>
+                            </div>
                         </div>
-                        <div className='w3-container w3-padding w3-card w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
-                        <div className='w3-padding'><h6 className='w3-bold'>Paid Custormers</h6></div>
-                            <div className='w3-padding w3-green'><h6>4</h6></div>
+                        <div className='w3-col s6'>
+                            <div className='w3-container w3-padding w3-card w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
+                                <div className='w3-padding'><h6 className='w3-bold'>Paid Custormers</h6></div>
+                                <div className='w3-padding w3-green'><h6>4</h6></div>
+                            </div>
                         </div>
                         <div className='w3-container w3-padding w3-card w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
                         <div className='w3-padding'><h6 className='w3-bold'>Pending Custormers</h6></div>
@@ -144,7 +148,7 @@ class Add extends Component{
                 <>
                     <Nav />
                     <Sidebar />
-                    <div className='w3-row w3-margin-top'>
+                    <div className='w3-row' style={{marginTop: '50px'}}>
                         <div className='w3-col m4 l4 w3-center'>
                             <div className='w3-container w3-card w3-padding'>
                                 <h3 className='w3-text-blue'>Add User</h3>
