@@ -65,7 +65,7 @@ class Sidebar extends Component{
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <div>
-                    <div className='w3-bar w3-card w3-white w3-bottom w3-margin-right w3-padding'>
+                    <div className='w3-bar w3-card w3-white w3-bottom w3-margin-right w3-margin-top w3-padding'>
                         <Link to='Admin'><img src={dash} alt={dash} className='svg w3-padding w3-bar-item' /></Link>
                         <Link to='Add'><img src={add} alt={add} className='svg w3-padding w3-bar-item' /></Link>
                         <Link to='Mail'><img src={mail} alt={mail} className='svg w3-padding w3-bar-item ' /></Link>
