@@ -21,7 +21,7 @@ export default class Dashboard extends Component{
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <div>
-                    <div className='w3-row w3-center' style={{marginBottom: '50px'}}>
+                    <div className='w3-row w3-center'>
                         <div className='w3-col s6'>
                             <div className='w3-card w3-container w3-padding w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
                                 <div className='w3-padding'><h6 className='w3-bold'>Registered Users</h6></div>
