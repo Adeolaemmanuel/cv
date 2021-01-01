@@ -14,7 +14,6 @@ import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/splide/dist/css/themes/splide-default.min.css';
 import Cart from '../Cart/cart'
 import axios from 'axios'
-import { db, firebase } from '../database'
 
 
 export default class Home extends Component {
@@ -23,6 +22,7 @@ export default class Home extends Component {
         this.state = {
             route: '/'
         }
+        this.setsCart = this.setsCart.bind(this)
     }
     
     componentDidMount(){
@@ -45,7 +45,7 @@ export default class Home extends Component {
             return(
                 <div>
                     <Nav />
-                    <Cart route={this.setsCart} />
+                    <Cart rout={this.setsCart} />
                 </div>
             )
         }
@@ -172,47 +172,10 @@ class Kigenni extends Component{
             }
             
         }if(pram === 'submit'){
-            if(formData[0]){
-                
-                /**
-                 * If you want to migrate to mongo db with axios:-
-                 * 
-                 */
-                
-                db.collection('Admin').doc('Settings').collection('Products').doc('Price').get().then(p=>{
-                    if(p.exists){
-                        let price = p.data().price
-                        for(let x of price){
-                             if(price[x].type === formData[0].name){
-                                 formData[0].price = price[x].price
-                             }
-                        }
-
-                        db.collection('Admin').doc('Emails').get().then(e=>{
-                            if(e.exists){
-                                db.collection('Admin').doc('Emails').update({emails: firebase.firestore.FieldValue.arrayUnion(formData[2])})
-                                .then(()=>{
-                                    db.collection('Custormers').doc(formData[2].value).update({emails: firebase.firestore.FieldValue.arrayUnion(formData[2])})
-                                }).then(()=>{
-                                    axios.post('/', formData).then(res => {
-                                        console.log(res.data);
-                                        this.props.setsCart()
-                                    })
-                                })
-                            }else{
-                                db.collection('Admin').doc('Emails').set({emails: firebase.firestore.FieldValue.arrayUnion(formData[2])})
-                                .then(()=>{
-                                    db.collection('Custormers').doc(formData[2].value).set({emails: firebase.firestore.FieldValue.arrayUnion(formData[2])})
-                                })
-                            }
-                        })
-                        
-                    }
-                })
-
-
-
-            }
+            this.props.rout()
+            axios.post('/', formData).then(res => {
+                console.log(res.data);
+            })
         }
     }
 
@@ -272,6 +235,30 @@ class Kigenni extends Component{
                                 <h5 className=''>WE ARE EXCITED TO HELP YOU BEGIN YOUR JOURNEY TO CAREER FULFILLMENT!</h5>
                             </div>
                         </div>
+                        <div className="bg">
+                                <div className="mountain">
+                                    <div className="mountain-top">
+                                    <div className="mountain-cap-1"></div>
+                                    <div className="mountain-cap-2"></div>
+                                    <div className="mountain-cap-3"></div>
+                                    </div>
+                                </div>
+                                <div className="mountain-two">
+                                    <div className="mountain-top">
+                                    <div className="mountain-cap-1"></div>
+                                    <div className="mountain-cap-2"></div>
+                                    <div className="mountain-cap-3"></div>
+                                    </div>
+                                </div>
+                                <div className="mountain-three">
+                                    <div className="mountain-top">
+                                    <div className="mountain-cap-1"></div>
+                                    <div className="mountain-cap-2"></div>
+                                    <div className="mountain-cap-3"></div>
+                                    </div>
+                                </div>
+                                <div className="cloud"></div>
+                            </div>
                         <div className='w3-rest w3-padding'>
                             <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
                             <div className='w3-container w3-center'>

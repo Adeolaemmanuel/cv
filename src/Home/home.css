@@ -7,9 +7,7 @@
     position: absolute;
     width: 300px;
     padding: 16px;
-    
     color: white;
-    
 }
 
 .test{
@@ -20,6 +18,16 @@
 }
 
 @keyframes form {
+    0%{
+        top: 300px;
+    }
+
+    100%{
+        top: 0px;
+    }
+}
+
+@keyframes not {
     0%{
         top: 300px;
     }

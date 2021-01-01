@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
 import './cart.css'
-
+import axios from 'axios'
+import { db, firebase } from '../database'
 export default class Cart extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            formData: this.props.formData
+        }
         this.continue = this.continue.bind(this)
+        console.log(this.state);
     }
     
 
@@ -14,6 +18,38 @@ export default class Cart extends Component {
         e.preventDefault()
         let info = document.getElementById('info')
         info.classList.remove('w3-hide')
+        let data = this.state.formData
+        db.collection('Admin').doc('Settings').collection('Products').doc('Price').get().then(p=>{
+            if(p.exists){
+                let price = p.data().price
+                for(let x of price){
+                     if(price[x].type === data[0].name){
+                         data[0].price = price[x].price
+                         this.setState({formData: data})
+                     }
+                }
+
+                db.collection('Admin').doc('Emails').get().then(e=>{
+                    if(e.exists){
+                        db.collection('Admin').doc('Emails').update({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2])})
+                        .then(()=>{
+                            db.collection('Custormers').doc(this.state.formData[2].value).update({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2])})
+                        }).then(()=>{
+                            axios.post('/', this.state.formData).then(res => {
+                                console.log(res.data);
+                                this.props.setsCart()
+                            })
+                        })
+                    }else{
+                        db.collection('Admin').doc('Emails').set({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2])})
+                        .then(()=>{
+                            db.collection('Custormers').doc(this.state.formData[2].value).set({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2])})
+                        })
+                    }
+                })
+                
+            }
+        })
         setTimeout(()=>{info.classList.add('w3-hide')}, 9000)
     }
 

@@ -3,13 +3,13 @@ import 'firebase/firestore'
 import 'firebase/storage'
 
 firebase.initializeApp({
-    apiKey: "AIzaSyBN6AeXW2MNMXkCrW7MMzUFAOoif4hjoFs",
-    authDomain: "portal-9825f.firebaseapp.com",
-    projectId: "portal-9825f",
-    storageBucket: "portal-9825f.appspot.com",
-    messagingSenderId: "305165741796",
-    appId: "1:305165741796:web:fb74ca50805af88ea586f1",
-    measurementId: "G-0QBDKE2R71"
+    apiKey: "AIzaSyBVRjp-rSXg8oZF-6dv61_xkSlJY0arQMg",
+    authDomain: "cv-cms-39619.firebaseapp.com",
+    projectId: "cv-cms-39619",
+    storageBucket: "cv-cms-39619.appspot.com",
+    messagingSenderId: "628822117289",
+    appId: "1:628822117289:web:de7614d4ebefa6dfe3d2b8",
+    measurementId: "G-PKCP28FXQD"
 })
 
 const db = firebase.firestore()
