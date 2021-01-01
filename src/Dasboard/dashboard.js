@@ -18,46 +18,88 @@ export default class Dashboard extends Component{
     }
     
     render() {
-        return (
-            <div>
-                <Sidebar />
-                <div className='w3-row section'>
-                    <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
-                        <div className='w3-col m7 l7 w3-padding'><h6>Registered Users</h6></div>
-                        <div className='w3-rest w3-padding'><h6>3</h6></div>
-                    </div>
-                    <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
-                    <div className='w3-col m7 l7 w3-padding'><h6>Paid Custormers</h6></div>
-                        <div className='w3-rest w3-padding'><h6>4</h6></div>
-                    </div>
-                    <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
-                    <div className='w3-col m7 l7 w3-padding'><h6>Pending Custormers</h6></div>
-                        <div className='w3-rest w3-padding'><h6>5</h6></div>
-                    </div>
-                </div>
-                <div className='w3-row section' style={{marginTop: '50px'}}>
-                    <form>
-                        <div className='w3-col m8 l8 w3-padding'>
-                            <input type='text'className='w3-input w3-border' placeholder='Search' />
+        if(window.matchMedia("(max-width: 767px)").matches){
+            return (
+                <div>
+                    <div className='w3-row w3-center'>
+                        <div className='w3-card w3-container w3-padding w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
+                            <div className='w3-padding'><h6 className='w3-bold'>Registered Users</h6></div>
+                            <div className='w3-padding w3-blue'><h6>3</h6></div>
                         </div>
-                        <div className='w3-rest w3-padding'>
-                            <select className='w3-input w3-border w3-round' defaultValue='Filter' style={{width: '200px'}}>
-                                <option value='Filter' disabled>Filter</option>
-                                {
-                                    this.state.filter.map(arr=>{
-                                        return( <option value={arr}>{arr}</option> )
-                                    })
-                                }
-                            </select>
+                        <div className='w3-container w3-padding w3-card w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
+                        <div className='w3-padding'><h6 className='w3-bold'>Paid Custormers</h6></div>
+                            <div className='w3-padding w3-green'><h6>4</h6></div>
                         </div>
-                    </form>
+                        <div className='w3-container w3-padding w3-card w3-round w3-margin-top' style={{width:'200px', display:'inline-block'}}>
+                        <div className='w3-padding'><h6 className='w3-bold'>Pending Custormers</h6></div>
+                            <div className='w3-padding w3-red'><h6>5</h6></div>
+                        </div>
+                    </div>
+                    <div className='w3-row' style={{marginTop: '50px'}}>
+                        <form>
+                            <div className='w3-col s12 m8 l8 w3-padding'>
+                                <input type='text'className='w3-input w3-border' placeholder='Search' />
+                            </div>
+                            <div className='w3-rest w3-padding'>
+                                <select className='w3-input w3-border w3-round' defaultValue='Filter' style={{width: '200px'}}>
+                                    <option value='Filter' disabled>Filter</option>
+                                    {
+                                        this.state.filter.map(arr=>{
+                                            return( <option value={arr}>{arr}</option> )
+                                        })
+                                    }
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+    
+                    <div className='w3-paddng'>
+    
+                    </div>
                 </div>
-
-                <div className='w3-paddng'>
-
+            )
+        }else{
+            return (
+                <div>
+                    <Sidebar />
+                    <div className='w3-row section'>
+                        <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
+                            <div className='w3-col m7 l7 w3-padding'><h6>Registered Users</h6></div>
+                            <div className='w3-rest w3-padding w3-right w3-blue'><h6>3</h6></div>
+                        </div>
+                        <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
+                        <div className='w3-col m7 l7 w3-padding'><h6>Paid Custormers</h6></div>
+                            <div className='w3-rest w3-padding w3-right w3-green'><h6>4</h6></div>
+                        </div>
+                        <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
+                        <div className='w3-col m7 l7 w3-padding'><h6>Pending Custormers</h6></div>
+                            <div className='w3-rest w3-padding w3-right w3-red'><h6>5</h6></div>
+                        </div>
+                    </div>
+                    <div className='w3-row section' style={{marginTop: '50px'}}>
+                        <form>
+                            <div className='w3-col m8 l8 w3-padding'>
+                                <input type='text'className='w3-input w3-border' placeholder='Search' />
+                            </div>
+                            <div className='w3-rest w3-padding'>
+                                <select className='w3-input w3-border w3-round' defaultValue='Filter' style={{width: '200px'}}>
+                                    <option value='Filter' disabled>Filter</option>
+                                    {
+                                        this.state.filter.map(arr=>{
+                                            return( <option value={arr}>{arr}</option> )
+                                        })
+                                    }
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+    
+                    <div className='w3-paddng'>
+    
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        }
     }
     
 }
