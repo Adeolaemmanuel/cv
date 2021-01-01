@@ -18,7 +18,7 @@ export default class Dashboard extends Component{
             pending: 0,
             paid: 0,
             users: 0,
-            filterM: ''
+            filterM: []
         }
     }
 
@@ -52,8 +52,13 @@ export default class Dashboard extends Component{
        
     }
 
-    search = () => {
-
+    search = (e) => {
+        e.preventDefault()
+        this.state.details.filter(arr=>{
+            if(arr[this.state.filterM] === e.target.value){
+                
+            }
+        })
     }
 
 
