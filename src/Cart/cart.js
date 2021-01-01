@@ -6,17 +6,19 @@ export default class Cart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            formData: this.props.formData
+            formData: this.props.formData,
+            pend: []
         }
         this.continue = this.continue.bind(this)
         console.log(this.state);
     }
     
 
-
+    date =  new Date()
     continue =(e) => {
         e.preventDefault()
         let info = document.getElementById('info')
+        let modal = document.getElementById('id01')
         info.classList.remove('w3-hide')
         let result = {
             type: this.state.formData[0].value,
@@ -31,7 +33,8 @@ export default class Cart extends Component {
             cv: this.state.formData[9].value,
             cvl: this.state.formData[10].value,
             price: this.state.formData[0].price,
-            paid: 'Pending'
+            paid: 'Pending',
+            date: `${this.date.getMonth()}-${this.date.getDate()}-${this.date.getFullYear()}`
         };
         console.log(result);
         db.collection('Admin').doc('Emails').get().then(e=>{
@@ -41,7 +44,21 @@ export default class Cart extends Component {
                     db.collection('Custormers').doc(this.state.formData[2].value).get()
                     .then(d=>{
                         if(d.exists){
-                            db.collection('Custormers').doc(this.state.formData[2].value).update({details: firebase.firestore.FieldValue.arrayUnion(result)})
+                            db.collection('Custormers').doc(this.state.formData[2].value).get()
+                            .then(pend=>{
+                                const P = pend.data().details
+                                let pen = []
+                                console.log(P);
+                                for(let y=0; y<P.length; y++){
+                                    if(P[y].paid === 'Pending'){
+                                        pen.push(P[y])
+                                        this.setState({pend: pen[0]})
+                                        modal.style.display = 'block'
+                                    }else{
+                                        db.collection('Custormers').doc(this.state.formData[2].value).update({details: firebase.firestore.FieldValue.arrayUnion(result)})
+                                    }
+                                }
+                            })
                         }else{
                             db.collection('Custormers').doc(this.state.formData[2].value).set({details: firebase.firestore.FieldValue.arrayUnion(result)})
                         }
@@ -72,6 +89,38 @@ export default class Cart extends Component {
     render() {
         return (
             <div> 
+                <div id="id01" className="w3-modal">
+                    <div className="w3-modal-content">
+                        <div className="w3-container">
+                            <span onClick={()=>{document.getElementById('id01').style.display='none'}}
+                            className="w3-button w3-display-topright">&times;</span>
+                            <div className='w3-center'>
+                                <h5 className='w3-red w3-padding w3-round'>You have a product pending in your cart will you like to continue ?</h5>
+                                <div className='w3-container'>
+                                    {
+                                        this.state.pend.map(arr=>{
+                                            return(
+                                                <div className='w3-row'>
+                                                    <div className='w3-padding'>{arr.type}</div>
+                                                    <div className='w3-padding'>{arr.price}</div>
+                                                    <div className='w3-padding'>{arr.email}</div>
+                                                    <div className='w3-padding'>{arr.date}</div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                                <div className='w3-row'>
+                                    <button className='w3-btn w3-blue w3-col s6 m6 l6 w3-padding'>Continue</button>
+                                    <button className='w3-btn w3-blue w3-col s6 m6 l6 w3-padding'>Delete</button>
+                                </div>
+                            </div>
+                            <div className='w3-center w3-margin-bottom w3-round'>
+                                <button className='w3-btn w3-blue w3-round w3-hide' id='SubmitBtn' onClick={e=>{this.props.rout(this.formData)}}>Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className='w3-bar w3-blue w3-padding w3-hide w3-animate-top' style={{position: 'absolute'}} id='info'>
                     <div className='w3-bar-item w3-center w3-bold'><h6>You will recieve a Mail in you Please check your inbox to proceed</h6></div>
                     <div className='w3-bar-item w3-right' style={{cursor: 'pointer'}} onClick={()=>{document.getElementById('info').classList.add('w3-hide')}}>X</div>

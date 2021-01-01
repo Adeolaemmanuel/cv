@@ -32,19 +32,20 @@ export default class Dashboard extends Component{
         db.collection('Admin').doc('Emails').onSnapshot(e=>{
             if(e.exists){
                 let emails = [...e.data()['emails']]
-                for(let x =0; x<emails.length; x++){
+                console.log(emails);
+                for(let x=0; x<emails.length; x++){
                     db.collection('Custormers').doc(emails[x]).get()
                     .then(c=>{
-                        this.custormers.push(c.data().details)
-                        for(let p=0; p< this.custormers[0].length; p++){
-                            if(this.custormers[0][p].paid === 'Pending'){
+                        for(let p=0; p< c.data().details.length; p++){
+                            this.custormers.push(c.data().details[p])  
+                            if(c.data().details[p].paid === 'Pending'){
                                 this.setState({pending: this.state.pending + 1})
-                            }else if(this.custormers[0][p].paid === 'Paid'){
+                            }else if(c.data().details[p].paid === 'Paid'){
                                 this.setState({pending: this.state.paid + 1})
-                            }
+                            }                          
                         }
-                        return this.custormers
-                    }).then(()=>{this.setState({details: this.custormers[0]})})
+                        console.log(this.custormers);
+                    }).then(()=>{this.setState({details: this.custormers})})
                 }
             }
         })
@@ -108,7 +109,7 @@ export default class Dashboard extends Component{
                                 {
                                 this.state.details.map((arr,ind)=>{
                                         return(
-                                            <div className='w3-row w3-card' key={ind}>
+                                            <div className='w3-row w3-card sw-margin-top' key={ind}>
                                                 <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
                                                 <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
                                                 <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
@@ -155,7 +156,7 @@ export default class Dashboard extends Component{
                                         {
                                         this.state.details.map((arr,ind)=>{
                                                 return(
-                                                    <div className='w3-row w3-card' key={ind}>
+                                                    <div className='w3-row w3-card w3-margin-top' key={ind}>
                                                         <div className='w3-col m5 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
                                                         <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
                                                         <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
