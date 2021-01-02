@@ -259,7 +259,12 @@ class Add extends Component{
         this.state = {
             option: [{value: 'Mail', label: 'Mail'}, {value: 'Dashboard', label: 'Dashboard'}, {value: 'Settings', label: 'Settings'}],
             selectedOption: null,
+            users: []
         }
+    }
+
+    componentDidMount(){
+        this.getUsers()
     }
 
     animatedComponents = makeAnimated();
@@ -268,6 +273,24 @@ class Add extends Component{
             { selectedOption }
         );
     };
+
+    users = []
+
+    getUsers = () => {
+        db.collection('Admin').doc('Users').get()
+        .then(e=>{
+            if(e.exists){
+                let emails = [...e.data().email]
+                for(let x=0; x<emails.length; x++){
+                    db.collection('Users').doc(emails[x]).get()
+                    .then(u=>{
+                        this.users.push(u.data())
+                        this.setState({users: this.users})
+                    })
+                }
+            }
+        })
+    }
 
     add = e => {
         e.preventDefault()
@@ -279,13 +302,53 @@ class Add extends Component{
         ]
         console.log(formData);
         if(formData[0].value !== "" && formData[1].value !== "" && formData[2].value !== "" && formData[3].value !== ""){
-            db.collection('Admin').doc('Emails').get()
-            .then(email=>{})
-            db.collection('Admin').doc('Users').collection(formData[1].value).doc('Details').set('')
+            db.collection('Users').doc(formData[1].value).get()
+            .then(u=>{
+                if(u.exists){
+                    db.collection('Users').doc(formData[1].value).update({
+                        Name: formData[0].value,
+                        Email: formData[1].value,
+                        Password:  formData[2].value,
+                        Permission:  formData[3].value,
+                    }).then(()=>{db.collection('Admin').doc('Users').update({emails: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
+                }else{
+                    db.collection('Admin').doc('Users').get()
+                    .then(email=>{
+                        if(email.exists){
+                            let emails = email.data().email
+                            if(emails.indexOf(formData[1].value) === -1){
+                                db.collection('Users').doc(formData[1].value).set({
+                                    Name: formData[0].value,
+                                    Email: formData[1].value,
+                                    Password:  formData[2].value,
+                                    Permission:  formData[3].value,
+                                }).then(()=>{db.collection('Admin').doc('Users').set({emails: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
+                            }
+                        }else{
+                            db.collection('Users').doc(formData[1].value).set({
+                                Name: formData[0].value,
+                                Email: formData[1].value,
+                                Password:  formData[2].value,
+                                Permission:  formData[3].value,
+                            }).then(()=>{db.collection('Admin').doc('Users').set({emails: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
+                        }
+                    })
+                }
+            })
+        }
+    }
+
+    accorodion = (id) => {
+        let x = document.getElementById(id);
+        if (x.className.indexOf("w3-show") === -1) {
+            x.className += " w3-show";
+        } else {
+            x.className = x.className.replace(" w3-show", "");
         }
     }
 
     render() {
+        console.log(this.state.users);
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <>
@@ -355,7 +418,26 @@ class Add extends Component{
                             </div>
                         </div>
                         <div className='w3-rest w3-padding'>
-    
+                            {
+                                this.state.users.map((arr,ind)=>{
+                                    return(
+                                        <div>
+                                            <div className='w3-row w3-card w3-padding'>
+                                                <div className='w3-col s4 m4 l4 w3-padding'>{arr.Name}</div>
+                                                <div className='w3-col s4 m4 l4 w3-padding'>{arr.Email}</div>
+                                                <div className='w3-col s1 m1 l1 w3-margin-left w3-center w3-padding'><img src={delet} alt={delet} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={()=>{this.delProduct(ind)}} /></div>
+                                            </div>
+                                            <div className='w3-container w3-padding w3-hide' id={ind}>
+                                                <div className='w3-row w3-padding'>
+                                                    <div className='w3-col s6 m6 l6 w3-padding'><b>: </b>{arr.gender}</div>
+                                                    
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
                     </div>
                 </>

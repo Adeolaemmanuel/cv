@@ -19,7 +19,6 @@ export default class Cart extends Component {
         e.preventDefault()
         let info = document.getElementById('info')
         let modal = document.getElementById('id01')
-        info.classList.remove('w3-hide')
         let result = {
             type: this.state.formData[0].value,
             name: this.state.formData[1].value,
@@ -34,7 +33,7 @@ export default class Cart extends Component {
             cvl: this.state.formData[10].value,
             price: this.state.formData[0].price,
             paid: 'Pending',
-            date: `${this.date.getMonth()}-${this.date.getDate()}-${this.date.getFullYear()}`
+            date: `${this.date.getMonth()}/${this.date.getDate()}/${this.date.getFullYear()}`
         };
         console.log(result);
         db.collection('Admin').doc('Emails').get().then(e=>{
@@ -44,22 +43,22 @@ export default class Cart extends Component {
                     db.collection('Custormers').doc(this.state.formData[2].value).get()
                     .then(d=>{
                         if(d.exists){
-                            db.collection('Custormers').doc(this.state.formData[2].value).get()
-                            .then(pend=>{
-                                const P = pend.data().details
-                                let pen = []
-                                console.log(P);
-                                for(let y=0; y<P.length; y++){
-                                    if(P[y].paid === 'Pending'){
-                                        pen.push(P[y])
-                                        this.setState({pend: pen[0]})
-                                        modal.style.display = 'block'
-                                    }else{
-                                        db.collection('Custormers').doc(this.state.formData[2].value).update({details: firebase.firestore.FieldValue.arrayUnion(result)})
-                                    }
+                            const P = d.data().details
+                            let pen = []
+                            //console.log(P);
+                            for(let y=0; y<P.length; y++){
+                                if(P[y].paid === 'Pending'){
+                                    pen.push(P)
+                                    this.setState({pend: pen[0]})
+                                    modal.style.display = 'block'
                                 }
-                            })
+                            }
+                            if(pen.length <= 0){
+                                info.classList.remove('w3-hide')
+                                db.collection('Custormers').doc(this.state.formData[2].value).update({details: firebase.firestore.FieldValue.arrayUnion(result)})
+                            }
                         }else{
+                            info.classList.remove('w3-hide')
                             db.collection('Custormers').doc(this.state.formData[2].value).set({details: firebase.firestore.FieldValue.arrayUnion(result)})
                         }
                     })
@@ -86,6 +85,47 @@ export default class Cart extends Component {
         setTimeout(()=>{info.classList.add('w3-hide')}, 9000)
     }
 
+    cartPend = (pram) => {
+        let modal = document.getElementById('id01')
+        if(pram === 'con'){
+            db.collection('Custormers').doc(this.state.formData[2].value).get()
+            .then(pend=>{
+                const P = pend.data().details
+                let pen = []
+                console.log(P);
+                for(let y=0; y<P.length; y++){
+                    if(P[y].paid === 'Pending'){
+                        pen.push(P)
+                        let data = [
+                            {value: P[y].type, price: P[y].price},
+                            {value: P[y].name},
+                            {value: P[y].email},
+                        ]
+                        console.log(data);
+                        this.setState({formData: data})
+                        modal.style.display = 'none'
+                    }
+                }
+            })
+        }else if(pram === 'del'){
+            db.collection('Custormers').doc(this.state.formData[2].value).get()
+            .then(pend=>{
+                const P = pend.data().details
+                let pen = []
+                console.log(P);
+                for(let y=0; y<P.length; y++){
+                    if(P[y].paid === 'Pending'){
+                        pen.push(P)
+                        pen.splice(P[y])
+                        db.collection('Custormers').doc(this.state.formData[2].value)
+                        .update({details: pen})
+                        modal.style.display = 'none'
+                    }
+                }
+            })
+        }
+    }
+
     render() {
         return (
             <div> 
@@ -95,24 +135,24 @@ export default class Cart extends Component {
                             <span onClick={()=>{document.getElementById('id01').style.display='none'}}
                             className="w3-button w3-display-topright">&times;</span>
                             <div className='w3-center'>
-                                <h5 className='w3-red w3-padding w3-round'>You have a product pending in your cart will you like to continue ?</h5>
+                                <h5 className='w3-blue w3-padding w3-round'>You have a product pending in your cart will you like to continue ?</h5>
                                 <div className='w3-container'>
                                     {
                                         this.state.pend.map(arr=>{
                                             return(
                                                 <div className='w3-row'>
-                                                    <div className='w3-padding'>{arr.type}</div>
-                                                    <div className='w3-padding'>{arr.price}</div>
-                                                    <div className='w3-padding'>{arr.email}</div>
-                                                    <div className='w3-padding'>{arr.date}</div>
+                                                    <div className='w3-col s6 m6 l6 w3-padding'>{arr.type}</div>
+                                                    <div className='w3-col s6 m6 l6 w3-padding'>₦{arr.price}</div>
+                                                    <div className='w3-col s6 m6 l6 w3-padding'>{arr.email}</div>
+                                                    <div className='w3-col s6 m6 l6 w3-padding'>{arr.date}</div>
                                                 </div>
                                             )
                                         })
                                     }
                                 </div>
                                 <div className='w3-row'>
-                                    <button className='w3-btn w3-blue w3-col s6 m6 l6 w3-padding'>Continue</button>
-                                    <button className='w3-btn w3-blue w3-col s6 m6 l6 w3-padding'>Delete</button>
+                                    <button className='w3-btn w3-blue w3-round w3-col s6 m6 l6 w3-padding' onClick={()=>{this.cartPend('con')}}>Continue</button>
+                                    <button className='w3-btn w3-red w3-round w3-col s6 m6 l6 w3-padding' onClick={()=>{this.cartPend('del')}}>Delete</button>
                                 </div>
                             </div>
                             <div className='w3-center w3-margin-bottom w3-round'>
