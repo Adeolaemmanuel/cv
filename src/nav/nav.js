@@ -131,7 +131,7 @@ class Sidebar extends Component{
                             )
                         })
                     }
-                    <img src={exit} alt={exit} onClick={this.logout} className='svgm w3-bar-item w3-padding' />
+                    <img src={exit} alt={exit} onClick={this.logout} className='svg w3-bar-item w3-padding' />
                 </div>
             )
         }
