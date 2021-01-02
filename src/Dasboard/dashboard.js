@@ -18,7 +18,8 @@ export default class Dashboard extends Component{
             pending: 0,
             paid: 0,
             users: 0,
-            filterM: 'name'
+            filterM: 'name',
+            reminders: []
         }
     }
 
@@ -82,6 +83,33 @@ export default class Dashboard extends Component{
             }
             return arr
         })
+    }
+
+    custormersOption = (e,pram) => {
+        e.preventDefault()
+        console.log(e.target.id);
+        if(pram === 'delete'){
+            db.collection('Custormers').doc(e.target.id).get()
+            .then(pend=>{
+                const P = pend.data().details
+                let pen = []
+                //console.log(P);
+                for(let y=0; y<P.length; y++){
+                    if(P[y].paid === 'Pending'){
+                        pen.push(P)
+                        pen.splice(P[y])
+                        db.collection('Custormers').doc(e.target.id)
+                        .update({details: pen})
+                    }
+                }
+            })
+        }else if(pram === 'send'){
+
+        }else if(pram === 'add'){
+            let reminders = [...this.state.reminders];
+            reminders.push(e.target.id)
+            this.setState({reminders: reminders})
+        }
     }
 
 
@@ -162,6 +190,10 @@ export default class Dashboard extends Component{
                                                         <div className='w3-col s6 m6 l6 w3-padding'><b>Communication: </b>{arr.com}</div>
                                                         <div className='w3-col s6 m6 l6 w3-padding'><b>Price: </b>{arr.price}</div>
                                                     </div>
+                                                    <div className='w3-row'>
+                                                        <button className='w3-col s6 w3-btn w3-red w3-padding' id={arr.email} onClick={(e)=>{this.custormersOption(e, 'delete')}} >Delete</button>
+                                                        <button className='w3-col s6 w3-btn w3-green w3-padding' id={arr.email} onClick={(e)=>{this.custormersOption(e, 'send')}}>Send Reminder</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         )
@@ -224,7 +256,11 @@ export default class Dashboard extends Component{
                                                                 <div className='w3-col s6 m6 l6 w3-padding'><b>Experience: </b>{arr.exp}</div>
                                                                 <div className='w3-col s6 m6 l6 w3-padding'><b>Communication: </b>{arr.com}</div>
                                                                 <div className='w3-col s6 m6 l6 w3-padding'><b>Price: </b>{arr.price}</div>
-                                                                
+                                                            </div>
+                                                            <div className='w3-row'>
+                                                                <button className='w3-col m4 l4 w3-btn w3-red w3-padding' id={arr.email} onClick={(e)=>{this.custormersOption(e, 'delete')}} >Delete</button>
+                                                                <button className='w3-col m4 l4 w3-btn w3-green w3-padding' id={arr.email} onClick={(e)=>{this.custormersOption(e, 'send')}}>Send Reminder</button>
+                                                                <button className='w3-col m4 l4 w3-btn w3-blue w3-padding' id={arr.email} onClick={(e)=>{this.custormersOption(e, 'add')}}>Add Reminder</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -243,6 +279,19 @@ export default class Dashboard extends Component{
                                         })
                                     }
                                 </select>
+                                <div className='w3-padding'>
+                                    <h4 className='w3-padding w3-blue w3-bold'>Set Reminder</h4>
+                                    <div className='w3-padding'>
+                                        {
+                                            this.state.reminders.map(arr=>{
+                                                return(
+                                                    <div className='w3-round w3-card w3-padding w3-margin-top' id={arr}>{arr}</div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                    <button className='w3-green w3-btn w3-round w3-margin-top'>Send</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -453,24 +502,73 @@ class Mail extends Component{
     constructor(props) {
         super(props);
         this.state = {
-
+            delievryEmails: []
         }
     }
 
-    render() {
-        return (
-            <div>
-                <Nav />
-                <Sidebar />
-                <div className='w3-row section'>
-                    <div className='w3-col m6 l6'>
-                        <div className='w3-padding'>
+    componentDidMount(){
+        this.getDelievryEmails()
+    }
 
+    getDelievryEmails = () =>{
+        db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').onSnapshot(d=>{
+            if(d.exists){
+                let emails = d.data().emails
+                this.setState({delievryEmails: emails})
+            }
+        })
+    }
+
+    render() {
+        if(window.matchMedia("(max-width: 767px)").matches){
+            return (
+                <div>
+                    <Nav />
+                    <Sidebar />
+                    <div className='w3-row'>
+                        <div className='w3-col s6'>
+                            <div className='w3-padding'>
+                               <input className='w3-border w3-input w3-round' placeholder='To'  />
+                               <select className='w3-border w3-input w3-round w3-margin-top' defaultValue='Email'>
+                                   <option value='Email' disabled>Select Email</option>
+                                   {
+                                       this.state.delievryEmails.map(arr=>{
+                                           return(
+                                            <option value={arr.email} key={arr.email}>{arr.email}</option>
+                                           )
+                                       })
+                                   }
+                               </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        )
+            )
+        }else{
+            return (
+                <div>
+                    <Nav />
+                    <Sidebar />
+                    <div className='w3-row section'>
+                        <div className='w3-col s6 m5 l5'>
+                            <div className='w3-padding'>
+                               <input className='w3-border w3-input w3-round' placeholder='To'  />
+                               <select className='w3-border w3-input w3-round w3-margin-top' defaultValue='Email'>
+                                   <option value='Email' disabled>Select Email</option>
+                                   {
+                                       this.state.delievryEmails.map(arr=>{
+                                           return(
+                                            <option value={arr.email} key={arr.email}>{arr.email}</option>
+                                           )
+                                       })
+                                   }
+                               </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
     }
     
 }
@@ -480,12 +578,24 @@ class Settings extends Component{
         super(props);
         this.state = {
             not: '',
-            type: []
+            type: [],
+            delievryEmails: [],
+            searchCustumers: []
         }
     }
 
     componentDidMount(){
         this.getProducts()
+        this.getDelievryEmails()
+    }
+
+    getDelievryEmails = () =>{
+        db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').onSnapshot(d=>{
+            if(d.exists){
+                let emails = d.data().emails
+                this.setState({delievryEmails: emails})
+            }
+        })
     }
 
     getProducts = () => {
@@ -538,6 +648,46 @@ class Settings extends Component{
         })
     }
 
+    deliveryEmails = (e,pram) =>{
+        e.preventDefault()
+        if(pram === 'submit'){
+            let data = {email: e.target.elements.email.value, password: e.target.elements.password.value}
+            db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').get()
+            .then(d=>{
+                if(d.exists){
+                    let emails = d.data().emails
+                    let update = [...emails]
+                    if(emails.indexOf(data.email) === -1){
+                        update.push(data)
+                        db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').update({emails: update})
+                    }
+                }else{
+                    db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').set({emails: [data]}) 
+                }
+            })
+        }else if(pram === 'delete'){
+            db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').get()
+            .then(d=>{
+                    if(d.exists){
+                        let emails = d.data().emails
+                        let update = [...emails]
+                        update.splice(e.target.id)
+                        db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').update({emails: update})
+                    }
+            })
+        }
+    }
+
+    searchCustumers(e){
+        db.collection('Custormers').doc(e.target.search.value).get()
+        .then(c=>{
+            if(c.exists){
+                let customers = [...c.data().details]
+                console.log(customers);
+            }
+        })
+    }
+
     render() {
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
@@ -586,10 +736,11 @@ class Settings extends Component{
                     <Nav />
                     <Sidebar />
                     <div className='w3-row section'>
-                    <div className='w3-center'>
-                        <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
-                    </div>
-                        <div className='w3-col 12 m4 l4 w3-border w3-round'>
+                        <div className='w3-center'>
+                            <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
+                        </div>
+                        <div className='w3-col m3 l3 w3-border w3-round'>
+                            <h5 className='w3-center w3-text-blue'>Add Products</h5>
                             <form className='w3-padding'>
                                 <input className='w3-input w3-border' type='text' placeholder='Input product name' id='type' required />
                                 <input className='w3-input w3-border w3-margin-top' type='number' placeholder='Input Price' id='price' required />
@@ -615,6 +766,44 @@ class Settings extends Component{
                                             )
                                         })
                                     }
+                                </div>
+                            </div>
+                        </div>
+                        <div className='w3-col m3 l3 w3-border w3-round'>
+                            <h5 className='w3-center w3-text-blue'>Add Emails For Delievry</h5>
+                            <div className='w3-padding'>
+                                <form onSubmit={e=>{this.deliveryEmails(e, 'submit')}}>
+                                    <input className='w3-input w3-border w3-round' ty='email' placeholder='Email' id='email' />
+                                    <input className='w3-input w3-border w3-round w3-margin-top' type='password' placeholder='Password' id='password' />
+                                    <div className='w3-center w3-margin-top'>
+                                        <button className='w3-btn w3-blue w3-round'>Submit</button>
+                                    </div>
+                                </form>
+                                <div >
+                                    {
+                                        this.state.delievryEmails.map((arr, ind)=>{
+                                            return(
+                                                <div className='w3-row w3-card w3-margin-top w3-round'>
+                                                    <div className='w3-padding w3-col s4 m4 l4'>{arr.email} <img src={delet} alt={delet} key={arr.email} id={ind} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={e=>{this.deliveryEmails(e,'delete')}} /></div>
+                                                    
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div className='w3-col m3 l3 w3-border w3-round w3-margin-left'>
+                            <div className='w3-padding w3-container' id='customerSettings'>
+                                <button className='w3-button w3-padding w3-block w3-padding w3-margin-top' onClick={()=>{document.getElementById('1').style.display='block'}}>Customers Settings</button>
+                                <div className='w3-modal' id='1'>
+                                    <div className='w3-modal-content'>
+                                    <span onClick={()=>{document.getElementById('1').style.display='none'}}
+                                        className="w3-button w3-display-topright">&times;</span>
+                                    </div>
+                                    <div className='w3-container w3-padding' style={{marginTop: '40px'}}>
+                                        <input className='w3-input w3-border w3-round' placeholder='Custormers Record' id='search' />
+                                    </div>
                                 </div>
                             </div>
                         </div>

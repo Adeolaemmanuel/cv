@@ -61,7 +61,7 @@ class Sidebar extends Component{
     }
 
     logout = () =>{
-        this.cookies.remove('User')
+        this.cookies.remove('user')
         window.location = '/'
     }
 
