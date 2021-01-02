@@ -9,12 +9,3 @@
     padding: 16px;
     color: white;
 }
-
-.details{
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-}
-
-.details::-webkit-scrollbar {
-    display: none;
-}

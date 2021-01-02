@@ -13,12 +13,12 @@ export default class Dashboard extends Component{
         super(props);
         this.state = {
             email: cookies.get('email'),
-            filter: ['Name','Email','Pending','Paid'],
+            filter: ['Name','Email','Paid','Type'],
             details: [],
             pending: 0,
             paid: 0,
             users: 0,
-            filterM: []
+            filterM: 'name'
         }
     }
 
@@ -32,7 +32,7 @@ export default class Dashboard extends Component{
         db.collection('Admin').doc('Emails').onSnapshot(e=>{
             if(e.exists){
                 let emails = [...e.data()['emails']]
-                console.log(emails);
+                //console.log(emails);
                 for(let x=0; x<emails.length; x++){
                     db.collection('Custormers').doc(emails[x]).get()
                     .then(c=>{
@@ -52,16 +52,47 @@ export default class Dashboard extends Component{
        
     }
 
+    filter = (e) => {
+        e.preventDefault()
+        this.setState({filterM: e.target.value.toLowerCase()})
+    }
+
     search = (e) => {
         e.preventDefault()
         this.state.details.filter(arr=>{
-            if(arr[this.state.filterM] === e.target.value){
-                
+            if(arr[this.state.filterM] === e.target.value || arr[this.state.filterM].toLowerCase() === e.target.value.toLowerCase()){
+                this.setState(state=>({details: [arr]}))
+            }else if(e.target.value === ''){
+                this.custormers = []
+                this.setState({details: []})
+                db.collection('Admin').doc('Emails').onSnapshot(e=>{
+                    if(e.exists){
+                        let emails = [...e.data()['emails']]
+                        //console.log(emails);
+                        for(let x=0; x<emails.length; x++){
+                            db.collection('Custormers').doc(emails[x]).get()
+                            .then(c=>{
+                                for(let p=0; p< c.data().details.length; p++){
+                                    this.custormers.push(c.data().details[p])                          
+                                }
+                            }).then(()=>{this.setState({details: this.custormers})})
+                        }
+                    }
+                })
             }
+            return arr
         })
     }
 
 
+    accorodion = (id) => {
+        let x = document.getElementById(id);
+        if (x.className.indexOf("w3-show") === -1) {
+            x.className += " w3-show";
+        } else {
+            x.className = x.className.replace(" w3-show", "");
+        }
+    }
     
     render() {
         if(window.matchMedia("(max-width: 767px)").matches){
@@ -91,7 +122,7 @@ export default class Dashboard extends Component{
                                 <input type='text'className='w3-input w3-border' placeholder='Search' />
                             </div>
                             <div className='w3-rest w3-padding'>
-                                <select className='w3-input w3-border w3-round' defaultValue='Filter' style={{width: '200px'}}>
+                                <select className='w3-input w3-border w3-round' onChange={this.filter} defaultValue='Filter' style={{width: '200px'}}>
                                     <option value='Filter' disabled>Filter</option>
                                     {
                                         this.state.filter.map(arr=>{
@@ -114,10 +145,24 @@ export default class Dashboard extends Component{
                                 {
                                 this.state.details.map((arr,ind)=>{
                                         return(
-                                            <div className='w3-row w3-card sw-margin-top' key={ind}>
-                                                <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
-                                                <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
-                                                <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
+                                            <div>
+                                                <div className='w3-row w3-cardw3-margin-top w3-button w3-block' key={ind} onClick={()=>{this.accorodion(ind)}}>
+                                                    <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
+                                                    <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
+                                                    <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
+                                                </div>
+                                                <div className='w3-container w3-padding w3-hide' id={ind}>
+                                                    <div className='w3-row w3-padding'>
+                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Gender: </b>{arr.gender}</div>
+                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>DOB</b>: {arr.dob}</div>
+                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Industry: </b>{arr.industry}</div>
+                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Register Date: </b>{arr.date}</div>
+                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>State: </b>{arr.state}</div>
+                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Experience: </b>{arr.exp}</div>
+                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Communication: </b>{arr.com}</div>
+                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Price: </b>{arr.price}</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         )
                                 }) 
@@ -149,7 +194,7 @@ export default class Dashboard extends Component{
                     <div className='w3-row section' style={{marginTop: '50px'}}>
                         <form>
                             <div className='w3-col m8 l8 w3-padding'>
-                                <input type='text'className='w3-input w3-border' placeholder='Search' />
+                                <input type='text'className='w3-input w3-border' placeholder='Search' onChange={this.search} />
                                 <div className='w3-container'>
                                     <div className='w3-row'>
                                         <div className='w3-col m3 l3 w3-padding'><h4 className='w3-bold'>Name</h4></div>
@@ -157,15 +202,30 @@ export default class Dashboard extends Component{
                                         <div className='w3-col m3 l3 w3-padding'><h4 className='w3-bold'>Email</h4></div>
                                         <div className='w3-col m3 l3 w3-padding'><h4 className='w3-bold'>Paid</h4></div>
                                     </div>
-                                    <div className='w3-paddng details'>
+                                    <div className='w3-paddng'>
                                         {
                                         this.state.details.map((arr,ind)=>{
                                                 return(
-                                                    <div className='w3-row w3-card w3-margin-top' key={ind}>
-                                                        <div className='w3-col m5 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
-                                                        <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
-                                                        <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
-                                                        <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.paid}</h6></div>
+                                                    <div className=''>
+                                                        <div className='w3-row w3-card w3-margin-top w3-button w3-block' key={ind} onClick={()=>{this.accorodion(ind)}}>
+                                                            <div className='w3-col m5 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
+                                                            <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
+                                                            <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
+                                                            <div className='w3-col m3 l3 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.paid}</h6></div>
+                                                        </div>
+                                                        <div className='w3-container w3-padding w3-hide' id={ind}>
+                                                            <div className='w3-row w3-padding'>
+                                                                <div className='w3-col s6 m6 l6 w3-padding'><b>Gender: </b>{arr.gender}</div>
+                                                                <div className='w3-col s6 m6 l6 w3-padding'><b>DOB</b>: {arr.dob}</div>
+                                                                <div className='w3-col s6 m6 l6 w3-padding'><b>Industry: </b>{arr.industry}</div>
+                                                                <div className='w3-col s6 m6 l6 w3-padding'><b>Register Date: </b>{arr.date}</div>
+                                                                <div className='w3-col s6 m6 l6 w3-padding'><b>State: </b>{arr.state}</div>
+                                                                <div className='w3-col s6 m6 l6 w3-padding'><b>Experience: </b>{arr.exp}</div>
+                                                                <div className='w3-col s6 m6 l6 w3-padding'><b>Communication: </b>{arr.com}</div>
+                                                                <div className='w3-col s6 m6 l6 w3-padding'><b>Price: </b>{arr.price}</div>
+                                                                
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 )
                                         }) 
@@ -174,7 +234,7 @@ export default class Dashboard extends Component{
                                 </div>
                             </div>
                             <div className='w3-rest w3-padding'>
-                                <select className='w3-input w3-border w3-round' defaultValue='Filter' style={{width: '200px'}}>
+                                <select className='w3-input w3-border w3-round' onChange={this.filter} defaultValue='Filter' style={{width: '200px'}}>
                                     <option value='Filter' disabled>Filter</option>
                                     {
                                         this.state.filter.map(arr=>{
