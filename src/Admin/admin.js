@@ -3,13 +3,14 @@ import './admin.css'
 import { Cookies } from 'react-cookie'
 import Nav from '../nav/nav';
 import Dashboard from '../Dasboard/dashboard';
+import { db } from '../database'
 
 
 export default class Admin extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: 'Login'
+            user: this.cookies.get('user'),
         }
 
         this.log = this.log.bind(this)
@@ -18,29 +19,27 @@ export default class Admin extends Component {
     cookies = new Cookies()
 
     componentDidMount(){
-        if(this.cookies.get('email') && this.cookies.get('email') !== undefined){
-            this.setState({email: this.cookies.get('email')})
-        }
+        
     }
 
     log(){
-        this.setState({email: 'Dashboard'})
+        this.setState({user: this.cookies.get('user')})
     }
 
 
     render() {
-        if(this.state.email === 'Login'){
+        if(this.state.user){
             return (
                 <div>
-                    <Nav />
-                    <Login log={this.log} />
+                    <Dashboard />
                 </div>
             )
+            
         }else{
             return (
                 <div>
                     <Nav />
-                    <Dashboard />
+                    <Login log={this.log} />
                 </div>
             )
         }
@@ -58,8 +57,20 @@ class Login extends Component{
 
     login(e){
         e.preventDefault()
-        this.cookies.set('email')
-        this.props.log()
+        let data = {
+            user: document.getElementById('user').value,
+            password: document.getElementById('password').value
+        }
+        //console.log(data);
+        db.collection('Users').doc(data.user).get()
+        .then(e=>{
+            let user = e.data().User
+            let password = e.data().Password
+            if(data.user === user && data.password === password){
+                this.cookies.set('user', user)
+                this.props.log()
+            }
+        })
     }
     
     render() {
@@ -69,7 +80,7 @@ class Login extends Component{
                     <div className='w3-container w3-card w3-padding'>
                         <h3 className='w3-text-blue'>Admin Login</h3>
                         <form>
-                            <input type='email' className='w3-input w3-round w3-border' name='email' placeholder="Email" id='email' />
+                            <input type='text' className='w3-input w3-round w3-border' name='user' placeholder="Username" id='user' />
                             <input type='password' className='w3-input w3-round w3-border w3-margin-top' name='password' placeholder="Password" id='password' />
                             <button className='w3-btn w3-blue w3-padding w3-round w3-margin-top' onClick={this.login}>Login</button>
                         </form>
@@ -82,7 +93,7 @@ class Login extends Component{
                     <div className='w3-container w3-card w3-padding' style={{display: 'inline-block', width: '400px'}}>
                         <h3 className='w3-text-blue'>Admin Login</h3>
                         <form>
-                            <input type='email' className='w3-input w3-round w3-border' name='email' placeholder="Email" id='email' />
+                            <input type='text' className='w3-input w3-round w3-border' name='user' placeholder="Username" id='user' />
                             <input type='password' className='w3-input w3-round w3-border w3-margin-top' name='password' placeholder="Password" id='password' />
                             <button className='w3-btn w3-blue w3-padding w3-round w3-margin-top' onClick={this.login}>Login</button>
                         </form>

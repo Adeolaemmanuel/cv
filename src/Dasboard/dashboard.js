@@ -44,7 +44,7 @@ export default class Dashboard extends Component{
                                 this.setState({pending: this.state.paid + 1})
                             }                          
                         }
-                        console.log(this.custormers);
+                        //console.log(this.custormers);
                     }).then(()=>{this.setState({details: this.custormers})})
                 }
             }
@@ -176,6 +176,7 @@ export default class Dashboard extends Component{
         }else{
             return (
                 <div>
+                    <Nav />
                     <Sidebar />
                     <div className='w3-row section'>
                         <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
@@ -257,7 +258,7 @@ class Add extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            option: [{value: 'Mail', label: 'Mail'}, {value: 'Dashboard', label: 'Dashboard'}, {value: 'Settings', label: 'Settings'}],
+            option: [ {value: 'Dashboard', label: 'Dashboard'}, {value: 'Mail', label: 'Mail'},  {value: 'Add', label: 'Add'}, {value: 'Settings', label: 'Settings'}],
             selectedOption: null,
             users: []
         }
@@ -280,9 +281,9 @@ class Add extends Component{
         db.collection('Admin').doc('Users').get()
         .then(e=>{
             if(e.exists){
-                let emails = [...e.data().email]
-                for(let x=0; x<emails.length; x++){
-                    db.collection('Users').doc(emails[x]).get()
+                let users = [...e.data().users]
+                for(let x=0; x<users.length; x++){
+                    db.collection('Users').doc(users[x]).get()
                     .then(u=>{
                         this.users.push(u.data())
                         this.setState({users: this.users})
@@ -296,41 +297,42 @@ class Add extends Component{
         e.preventDefault()
         let formData = [
             {name: 'Name', value: e.target.elements.name.value},
-            {name: 'Email', value: e.target.elements.email.value},
+            {name: 'User', value: e.target.elements.user.value},
             {name: 'Password', value: e.target.elements.password.value},
             {name: 'Permission', value: this.state.selectedOption},
         ]
-        console.log(formData);
+        //console.log(formData);
         if(formData[0].value !== "" && formData[1].value !== "" && formData[2].value !== "" && formData[3].value !== ""){
             db.collection('Users').doc(formData[1].value).get()
             .then(u=>{
                 if(u.exists){
                     db.collection('Users').doc(formData[1].value).update({
                         Name: formData[0].value,
-                        Email: formData[1].value,
+                        User: formData[1].value,
                         Password:  formData[2].value,
                         Permission:  formData[3].value,
                     }).then(()=>{db.collection('Admin').doc('Users').update({emails: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
                 }else{
                     db.collection('Admin').doc('Users').get()
-                    .then(email=>{
-                        if(email.exists){
-                            let emails = email.data().email
-                            if(emails.indexOf(formData[1].value) === -1){
+                    .then(user=>{
+                        if(user.exists){
+                            let users = user.data().users
+                            //console.log(users);
+                            if(users.indexOf(formData[1].value) === -1){
                                 db.collection('Users').doc(formData[1].value).set({
                                     Name: formData[0].value,
-                                    Email: formData[1].value,
+                                    User: formData[1].value,
                                     Password:  formData[2].value,
                                     Permission:  formData[3].value,
-                                }).then(()=>{db.collection('Admin').doc('Users').set({emails: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
+                                }).then(()=>{db.collection('Admin').doc('Users').set({users: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
                             }
                         }else{
                             db.collection('Users').doc(formData[1].value).set({
                                 Name: formData[0].value,
-                                Email: formData[1].value,
+                                User: formData[1].value,
                                 Password:  formData[2].value,
                                 Permission:  formData[3].value,
-                            }).then(()=>{db.collection('Admin').doc('Users').set({emails: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
+                            }).then(()=>{db.collection('Admin').doc('Users').set({user: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
                         }
                     })
                 }
@@ -348,7 +350,7 @@ class Add extends Component{
     }
 
     render() {
-        console.log(this.state.users);
+        //console.log(this.state.users);
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <>
@@ -396,7 +398,7 @@ class Add extends Component{
                             <div className='w3-container w3-card w3-padding'>
                                 <h3 className='w3-text-blue'>Add User</h3>
                                 <form onSubmit={this.add}>
-                                    <input type='email' className='w3-input w3-round w3-border' name='email' placeholder="Email" id='email' required />
+                                    <input type='text' className='w3-input w3-round w3-border' name='user' placeholder="Username" id='user' required />
                                     <input type='text' className='w3-input w3-round w3-border w3-margin-top' name='name' placeholder="Fullname" id='name' required />
                                     <input type='password' className='w3-input w3-round w3-border w3-margin-top' name='password' required placeholder="Password" id='password' />
                                     <h5>Set Permission</h5>
