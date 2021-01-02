@@ -56,7 +56,7 @@ export default class Index extends Component {
                 })
             }
         }
-        console.log(sides);
+        //console.log(sides);
         this.setState({permissionCheck: sides})
         }
     })
@@ -78,9 +78,9 @@ export default class Index extends Component {
             <Admin />
           </Route>
           {
-            this.state.permissionCheck.map(arr=>{
+            this.state.permissionCheck.map((arr,ind)=>{
               return(
-                <Route path={'/'+arr.value}>
+                <Route path={'/'+arr.value} key={ind}>
                   <arr.component />
                 </Route>
               )

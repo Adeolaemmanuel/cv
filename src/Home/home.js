@@ -89,7 +89,7 @@ class Kigenni extends Component{
                     this.products.push(products[x])
                 }
                 this.setState({type: type})
-                console.log(this.products);
+                //console.log(this.products);
             }
         })
     }
@@ -223,7 +223,7 @@ class Kigenni extends Component{
                 }else if(this.products[x].type === this.formData[0].value){
                     this.props.rout(this.formData)
                     axios.post('/', this.formData).then(res => {
-                        console.log(res.data);
+                        //console.log(res.data);
                     })
                 }
             }

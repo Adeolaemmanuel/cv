@@ -10,7 +10,7 @@ export default class Cart extends Component {
             pend: []
         }
         this.continue = this.continue.bind(this)
-        console.log(this.state);
+        //console.log(this.state);
     }
     
 
@@ -35,7 +35,7 @@ export default class Cart extends Component {
             paid: 'Pending',
             date: `${this.date.getMonth()}/${this.date.getDate()}/${this.date.getFullYear()}`
         };
-        console.log(result);
+        //console.log(result);
         db.collection('Admin').doc('Emails').get().then(e=>{
             if(e.exists){               
                 db.collection('Admin').doc('Emails').update({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2].value)})
@@ -64,7 +64,7 @@ export default class Cart extends Component {
                     })
                 }).then(()=>{
                     axios.post('/', this.state.formData).then(res => {
-                        console.log(res.data);
+                       //console.log(res.data);
                         
                     })
                 })
@@ -92,7 +92,7 @@ export default class Cart extends Component {
             .then(pend=>{
                 const P = pend.data().details
                 let pen = []
-                console.log(P);
+                //console.log(P);
                 for(let y=0; y<P.length; y++){
                     if(P[y].paid === 'Pending'){
                         pen.push(P)
@@ -101,7 +101,7 @@ export default class Cart extends Component {
                             {value: P[y].name},
                             {value: P[y].email},
                         ]
-                        console.log(data);
+                        //console.log(data);
                         this.setState({formData: data})
                         modal.style.display = 'none'
                     }
@@ -112,7 +112,7 @@ export default class Cart extends Component {
             .then(pend=>{
                 const P = pend.data().details
                 let pen = []
-                console.log(P);
+                //console.log(P);
                 for(let y=0; y<P.length; y++){
                     if(P[y].paid === 'Pending'){
                         pen.push(P)

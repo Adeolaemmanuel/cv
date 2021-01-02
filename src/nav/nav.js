@@ -21,16 +21,6 @@ export default class Nav extends Component {
     }
 
 
-    async nav() {
-        if(this.state.nav === 'none'){
-            this.setState({nav: 'block'})
-            return(this.state.nav)
-        }else {
-            console.log(this.state);
-            this.setState({nav: 'block'})
-            
-        }
-    }
 
     render() {
         if(window.matchMedia("(max-width: 767px)").matches){
@@ -107,14 +97,13 @@ class Sidebar extends Component{
                     })
                 }
             }
-            console.log(sides);
+            //console.log(sides);
             this.setState({permissionCheck: sides})
             }
         })
     }
     
     render() {
-        console.log(this.state.permissionCheck)
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <div className='w3-bar w3-card w3-bottom w3-container w3-white w3-margin-right w3-padding'>
@@ -127,7 +116,7 @@ class Sidebar extends Component{
                             )
                         })
                     }
-                    <img src={exit} alt={exit} className='svg w3-bar-item exit' />
+                    <img src={exit} alt={exit} onClick={this.logout} className='svgm w3-bar-item exit' />
                 </div>
             )
         }else{
