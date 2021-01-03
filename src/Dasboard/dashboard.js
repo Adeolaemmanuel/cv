@@ -661,17 +661,20 @@ class Settings extends Component{
             }
         }
     }
-
+    current = 0
+    previous
     switch = (pram) => {
-        let current = 0;
-        let previous
         let mobile = document.getElementsByClassName('mob')
-        if(pram === 'next' && current <= mobile.length){
-            current = current + 1
-            previous = current - 1
-            mobile[current].style.display = 'block'
-            mobile[previous].style.display = 'none'
-            console.log(current);
+        if(pram === 'next' && this.current < mobile.length -1){
+            this.current = this.current + 1
+            mobile[this.current].style.display = 'block'
+            this.previous = this.current - 1
+            mobile[this.previous].style.display = 'none'
+        }else if(pram === 'previous' && this.current !== 0){
+            this.current = this.current - 1
+            mobile[this.current].style.display = 'block'
+            this.previous = this.current + 1
+            mobile[this.previous].style.display = 'none'
         }
     }
 
@@ -925,7 +928,7 @@ class Settings extends Component{
                     </div>
 
                     <div className='w3-bar w3-margin-top'>
-                        <div className='w3-bar-item w3-black'>Previous</div>
+                        <div className='w3-bar-item w3-black' onClick={e=>{this.switch('previous')}}>Previous</div>
                         <div className='w3-bar-item w3-black w3-right' onClick={e=>{this.switch('next')}}>Next</div>
                     </div>
                 </div>
