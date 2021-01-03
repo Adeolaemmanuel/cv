@@ -553,7 +553,7 @@ class Mail extends Component{
                     <Nav />
                     <Sidebar />
                     <div className='w3-row'>
-                        <div className='w3-col s6'>
+                        <div className='w3-col s12'>
                             <div className='w3-padding'>
                                <input className='w3-border w3-input w3-round' placeholder='To'  />
                                <select className='w3-border w3-input w3-round w3-margin-top' defaultValue='Email'>
@@ -581,6 +581,7 @@ class Mail extends Component{
                         <div className='w3-col s6 m5 l5'>
                             <div className='w3-padding'>
                                <form>
+                               <h5 className='w3-text-blue w3-padding'>Delievery Tool</h5>
                                     <input className='w3-border w3-input w3-round' placeholder='To'  />
                                     <select className='w3-border w3-input w3-round w3-margin-top' defaultValue='Email'>
                                         <option value='Email' disabled>Select Email</option>
@@ -705,7 +706,7 @@ class Settings extends Component{
         .then(p=>{
             let prod = [...p.data()['products']]
             prod.splice(id)
-            db.collection('Admin').doc('Settings').collection('Products').doc('Type').set({products: prod})
+            db.collection('Admin').doc('Settings').collection('Products').doc('Type').set({products: prod}).then(e=>{alert('Done')})
         })
     }
 
@@ -780,7 +781,27 @@ class Settings extends Component{
 
     testimonials = (e) => {
         e.preventDefault()
-        console.log(e.target);
+        var data = {
+            name: e.target.elements.cName.value,
+            testimonials: e.target.elements.testim.value,
+            star1: e.target.elements.star1.checked,
+            star2: e.target.elements.star2.checked,
+            star3: e.target.elements.star3.checked,
+            star4: e.target.elements.star4.checked,
+            star5: e.target.elements.star5.checked,
+        }
+        db.collection('Admin').doc('Settings').collection('Testimonials').doc('all').get()
+        .then(t=>{
+            if(t.exists){
+                let testimonials = [...t.data().testimonials]
+                testimonials.push(data)
+                db.collection('Admin').doc('Settings').collection('Testimonials').doc('all')
+                .update({testimonials: testimonials}).then(e=>{alert('Done')})
+            }else{
+                db.collection('Admin').doc('Settings').collection('Testimonials').doc('all')
+                .set({testimonials: [data]}).then(e=>{alert('Done')})
+            }
+        })
     }
 
     accorodion = (e, pram) =>{
@@ -906,21 +927,21 @@ class Settings extends Component{
                                         className="w3-button w3-display-topright">&times;</span>
                                     </div>
                                     <div className='w3-container w3-white w3-padding' style={{marginTop: '40px'}}>
-                                       <form id='testimonialsForm' onSubmit={this.testimonials}>
-                                            <input className='w3-input w3-border w3-margin-top' placeholder='Customers name' id='cName' />
-                                            <textarea className='w3-input w3-border w3-margin-top'></textarea>
+                                        <form id='testimonialsForm' onSubmit={this.testimonials}>
+                                            <input className='w3-input w3-border w3-margin-top' placeholder='Customers name' name='name' id='cName' />
+                                            <textarea className='w3-input w3-border w3-margin-top' id='testim'></textarea>
                                             <h5 className='w3-center w3-text-yellow'>Rate</h5>
                                             <div className='w3-row w3-center w3-margin-top'>
-                                                <input type='checkbox' className='w3-padding' value='star-1' />
-                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-2' />
-                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-3' />
-                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-4' />
-                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-5' />
+                                                <input type='checkbox' className='w3-padding' id='star1' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' id='star2' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' id='star3' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' id='star4' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' id='star5' />
                                             </div>
                                             <div className='w3-center w3-margin-top'>
                                                 <button className='w3-round w3-btn w3-padding w3-margin-top w3-blue'>Submit</button>
                                             </div>
-                                       </form>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -1046,15 +1067,15 @@ class Settings extends Component{
                                     </div>
                                     <div className='w3-container w3-white w3-padding' style={{marginTop: '40px'}}>
                                        <form id='testimonialsForm' onSubmit={this.testimonials}>
-                                            <input className='w3-input w3-border w3-margin-top' placeholder='Customers name' id='cName' />
-                                            <textarea className='w3-input w3-border w3-margin-top'></textarea>
+                                            <input className='w3-input w3-border w3-margin-top' placeholder='Customers name' name='name' id='cName' />
+                                            <textarea className='w3-input w3-border w3-margin-top' id='testim'></textarea>
                                             <h5 className='w3-center w3-text-yellow'>Rate</h5>
                                             <div className='w3-row w3-center w3-margin-top'>
-                                                <input type='checkbox' className='w3-padding' value='star-1' />
-                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-2' />
-                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-3' />
-                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-4' />
-                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-5' />
+                                                <input type='checkbox' className='w3-padding' id='star1' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' id='star2' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' id='star3' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' id='star4' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' id='star5' />
                                             </div>
                                             <div className='w3-center w3-margin-top'>
                                                 <button className='w3-round w3-btn w3-padding w3-margin-top w3-blue'>Submit</button>

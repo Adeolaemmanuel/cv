@@ -66,7 +66,8 @@ class Kigenni extends Component{
             industry: ['Oil & Gas'],
             cvName: 'Upload CV',
             cvlName: 'Upload Cover Letter',
-            slide: [cv1,cv2,cv3]
+            slide: [cv1,cv2,cv3],
+            testimonials: [],
         }
 
         //formSelect = formSelect.bind(this)
@@ -74,6 +75,31 @@ class Kigenni extends Component{
     
     componentDidMount(){
         this.getProducts()
+        this.getTestimonials()
+    }
+
+    getTestimonials = () =>{
+        db.collection('Admin').doc('Settings').collection('Testimonials').doc('all').get()
+        .then(t=>{
+            if(t.exists){
+                let testimonials = t.data().testimonials
+                for(let x=0; x<testimonials.length; x++){
+                    if(testimonials[x].star1 === false){
+                        delete testimonials[x].star1
+                    }else if(testimonials[x].star2 === false){
+                        delete testimonials[x].star2
+                    }else if(testimonials[x].star3 === false){
+                        delete testimonials[x].star3
+                    }else if(testimonials[x].star4 === false){
+                        delete testimonials[x].star4
+                    }else if(testimonials[x].star5 === false){
+                        delete testimonials[x].star5
+                    } 
+                }
+                console.log(testimonials);
+                this.setState({testimonials: testimonials})
+            }
+        })
     }
 
     formData = []
@@ -313,20 +339,20 @@ class Kigenni extends Component{
                         <div className='w3-rest w3-padding'>
                             <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
                             <div className='w3-container w3-center'>
-                            <Splide
-                                options={ {
-                                    type         : 'loop',
-                                    gap          : '1rem',
-                                    autoplay     : true,
-                                } }
-                                id="me"
-                            >
-                                { this.state.slide.map( slide => (
-                                    <SplideSlide key={ slide }>
-                                        <img src={ slide } alt={ slide } style={{width: '300px', height:'300px'}} />
-                                    </SplideSlide>
-                                ) ) }
-                            </Splide>
+                                <Splide
+                                    options={ {
+                                        type         : 'loop',
+                                        gap          : '1rem',
+                                        autoplay     : true,
+                                    } }
+                                    id="me"
+                                >
+                                    { this.state.slide.map( slide => (
+                                        <SplideSlide key={ slide }>
+                                            <img src={ slide } alt={ slide } style={{width: '300px', height:'300px'}} />
+                                        </SplideSlide>
+                                    ) ) }
+                                </Splide>
                             </div>
                             <div className='w3-center w3-margin-bottom' id='btnCon' style={{marginTop: '70px'}}>
                                 <button className='w3-btn w3-border w3-text-white w3-blue w3-round w3-mobile btnSec1' onClick={(e)=>{this.formSelect(e,'new')}}>WRITE A NEW ONE</button>
@@ -519,63 +545,34 @@ class Kigenni extends Component{
                             <h1 className='test'>Testimonials</h1>
                         </div>
                         <div className='w3-col m4 l4 w3-padding' style={{marginTop: '70px'}}>
-                            <div className='w3-container card w3-center' style={{height: '450px'}}>
-                                <p className='w3-padding' style={{display:'inline-block'}}>
-                                    Your process flow from the day you took up my request, to the first draft, to the
-                                    final job is top notch. I trusted you, paid for the service upfront without any physical meeting, no
-                                    telephone call just WhatsApp & email and you delivered with such a high level of professionalism. It
-                                    amazes me. I must confess you surpoassed my expectation. My CV & Cover Letter are brand new. Thank you
-                                    Kigenni Team!
-                                </p>
-                                <div className='w3-row'>
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <p className='w3-bold'>Ifeanyi, Triple Combo</p>
-                                </div>
-                                
+                            <div className='w3-container w3-center' >
+                                <Splide
+                                    options={ {
+                                        type         : 'loop',
+                                        gap          : '1rem',
+                                        autoplay     : true,
+                                    } }
+                                >
+                                    
+                                    { this.state.testimonials.map( slide => (
+                                        <SplideSlide key={ slide }>
+                                            <div>
+                                                <div className='w3-container card w3-center'  style={{height: '450px'}}>
+                                                    <p className='w3-padding' style={{display:'inline-block'}}>{slide.testimonials}</p>
+                                                    <div className='w3-row'>
+                                                        <img src={star} alt={star} id={slide.star1} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        <img src={star} alt={star} id={slide.star2} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        <img src={star} alt={star} id={slide.star3} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        <img src={star} alt={star} id={slide.star4} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        <img src={star} alt={star} id={slide.star5} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        <p className='w3-bold'>{slide.name}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </SplideSlide>
+                                    ) ) }
+                                </Splide>
                             </div>
-                        </div>
-                        <div className='w3-col m4 l4 w3-padding' style={{marginTop: '70px'}}>
-                            <div className='w3-container card w3-center' style={{height: '450px'}}>
-                                <p className='w3-padding' style={{display:'inline-block'}}>
-                                I really appreciate the work so far. I am stunned at the touches already effected on
-                                the CV and CL. If this is still under review, then i can only imagine what the final output will look
-                                like.
-                                </p>
-                                <div className='w3-row'>
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <p className='w3-bold'>Idongesit, CV Rewrite</p>
-                                </div>
-                                
-                            </div>
-                        </div>
-                        <div className='w3-col m4 l4 w3-padding' style={{marginTop: '70px'}}>
-                            <div className='w3-container card w3-center' style={{height: '450px'}}>
-                                <p className='w3-padding' style={{display:'inline-block'}}>
-                                Although I have been in the workforce for years, this is the first time I have had a
-                                professional looking CV. They also talked through my experience with me and helped me bring out
-                                important points in my career. 
-                                </p>
-                                <div className='w3-row'>
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <p className='w3-bold'>Kelechi, Triple Combo</p>
-                                </div>
-                                
-                            </div>
-                        </div>
-                        <div className='w3-display-container' style={{marginTop: '300px'}}>
-                            <div className='w3-display-right'>me</div>
                         </div>
                     </div>
                 </>
@@ -618,20 +615,19 @@ class Kigenni extends Component{
                         <div className='w3-rest w3-padding'>
                             <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
                             <div className='w3-container w3-center'>
-                            <Splide
-                                options={ {
-                                    type         : 'loop',
-                                    gap          : '1rem',
-                                    autoplay     : true,
-                                } }
-                                id="me"
-                            >
-                                { this.state.slide.map( slide => (
-                                    <SplideSlide key={ slide }>
-                                        <img src={ slide } alt={ slide } style={{width: '300px', height:'300px'}} />
-                                    </SplideSlide>
-                                ) ) }
-                            </Splide>
+                                <Splide
+                                    options={ {
+                                        type         : 'loop',
+                                        gap          : '1rem',
+                                        autoplay     : true,
+                                    } }
+                                >
+                                    { this.state.slide.map( slide => (
+                                        <SplideSlide key={ slide }>
+                                            <img src={ slide } alt={ slide } style={{width: '300px', height:'300px'}} />
+                                        </SplideSlide>
+                                    ) ) }
+                                </Splide>
                             </div>
                             <div className='w3-center w3-margin-bottom' id='btnCon' style={{marginTop: '70px'}}>
                                 <button className='w3-btn w3-border w3-text-blue w3-hover-blue w3-border-blue w3-round btnSec1' onClick={(e)=>{this.formSelect(e,'new')}} style={{display: 'inline-block', width: '350px'}}>WRITE A NEW ONE</button>
@@ -821,63 +817,34 @@ class Kigenni extends Component{
                             <h1 className='test'>Testimonials</h1>
                         </div>
                         <div className='w3-col m4 l4 w3-padding' style={{marginTop: '70px'}}>
-                            <div className='w3-container card w3-center' style={{height: '450px'}}>
-                                <p className='w3-padding' style={{display:'inline-block'}}>
-                                    Your process flow from the day you took up my request, to the first draft, to the
-                                    final job is top notch. I trusted you, paid for the service upfront without any physical meeting, no
-                                    telephone call just WhatsApp & email and you delivered with such a high level of professionalism. It
-                                    amazes me. I must confess you surpoassed my expectation. My CV & Cover Letter are brand new. Thank you
-                                    Kigenni Team!
-                                </p>
-                                <div className='w3-row'>
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <p className='w3-bold'>Ifeanyi, Triple Combo</p>
-                                </div>
-                                
+                            <div className='w3-container w3-center' >
+                                <Splide
+                                    options={ {
+                                        type         : 'loop',
+                                        gap          : '1rem',
+                                        autoplay     : true,
+                                    } }
+                                >
+                                    
+                                    { this.state.testimonials.map( slide => (
+                                        <SplideSlide key={ slide }>
+                                            <div>
+                                                <div className='w3-container card w3-center'  style={{height: '450px'}}>
+                                                    <p className='w3-padding' style={{display:'inline-block'}}>{slide.testimonials}</p>
+                                                    <div className='w3-row'>
+                                                        <img src={star} alt={star} id={slide.star1} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        <img src={star} alt={star} id={slide.star2} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        <img src={star} alt={star} id={slide.star3} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        <img src={star} alt={star} id={slide.star4} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        <img src={star} alt={star} id={slide.star5} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        <p className='w3-bold'>{slide.name}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </SplideSlide>
+                                    ) ) }
+                                </Splide>
                             </div>
-                        </div>
-                        <div className='w3-col m4 l4 w3-padding' style={{marginTop: '70px'}}>
-                            <div className='w3-container card w3-center' style={{height: '450px'}}>
-                                <p className='w3-padding' style={{display:'inline-block'}}>
-                                I really appreciate the work so far. I am stunned at the touches already effected on
-                                the CV and CL. If this is still under review, then i can only imagine what the final output will look
-                                like.
-                                </p>
-                                <div className='w3-row'>
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <p className='w3-bold'>Idongesit, CV Rewrite</p>
-                                </div>
-                                
-                            </div>
-                        </div>
-                        <div className='w3-col m4 l4 w3-padding' style={{marginTop: '70px'}}>
-                            <div className='w3-container card w3-center' style={{height: '450px'}}>
-                                <p className='w3-padding' style={{display:'inline-block'}}>
-                                Although I have been in the workforce for years, this is the first time I have had a
-                                professional looking CV. They also talked through my experience with me and helped me bring out
-                                important points in my career. 
-                                </p>
-                                <div className='w3-row'>
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <img src={star} alt={star} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                    <p className='w3-bold'>Kelechi, Triple Combo</p>
-                                </div>
-                                
-                            </div>
-                        </div>
-                        <div className='w3-display-container' style={{marginTop: '300px'}}>
-                            <div className='w3-display-right'>me</div>
                         </div>
                     </div>
                 </>

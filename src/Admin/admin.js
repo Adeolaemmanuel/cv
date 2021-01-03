@@ -64,11 +64,15 @@ class Login extends Component{
         //console.log(data);
         db.collection('Users').doc(data.user).get()
         .then(e=>{
-            let user = e.data().User
-            let password = e.data().Password
-            if(data.user === user && data.password === password){
-                this.cookies.set('user', user)
-                this.props.log()
+            if(e.exists){
+                let user = e.data().User
+                let password = e.data().Password
+                if(data.user === user && data.password === password){
+                    this.cookies.set('user', user)
+                    this.props.log()
+                }else{
+                    alert('Wrong username and password')
+                }
             }
         })
     }
