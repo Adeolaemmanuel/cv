@@ -69,6 +69,7 @@ class Kigenni extends Component{
             cvlName: 'Upload Cover Letter',
             slide: [cv1,cv2,cv3],
             testimonials: [],
+            exp: []
         }
 
         //formSelect = formSelect.bind(this)

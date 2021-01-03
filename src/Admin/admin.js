@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import './admin.css'
 import { Cookies } from 'react-cookie'
 import Nav from '../nav/nav';
-import Dashboard from '../Dasboard/dashboard';
 import { db } from '../database'
+import Main from '../Dasboard/dashboard';
 
 
 export default class Admin extends Component {
@@ -31,7 +31,7 @@ export default class Admin extends Component {
         if(this.state.user){
             return (
                 <div>
-                    <Dashboard />
+                    <Main />
                 </div>
             )
             

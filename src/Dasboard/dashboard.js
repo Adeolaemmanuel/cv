@@ -8,8 +8,84 @@ import { db, firebase } from '../database'
 import delet from '../assets/img/delete.svg';
 import cv from '../assets/img/cv.svg'
 import cvl from '../assets/img/cvl.svg'
+import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 
-export default class Dashboard extends Component{
+export default class Main extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+          permissionCheck: [],
+          redirect: '',
+        }
+      }
+    
+      cookies = new Cookies();
+      
+      componentDidMount(){
+        this.permissionCheck()
+      }
+    
+      permissionCheck = () =>{
+        if(this.cookies.get('user')){
+          db.collection('Users').doc(this.cookies.get('user')).get()
+        .then(e=>{
+            if(e.exists){
+                let check = e.data().Permission
+            let sides = []
+            for(let x =0; x< check.length; x++){
+                if(check[x].value === 'Dashboard'){
+                    sides.push({
+                        value: 'Dashboard',
+                        component: Dashboard
+                    })
+                }else if(check[x].value === 'Mail'){
+                    sides.push({
+                        value: 'Mail',
+                        component: Mail,
+                    })
+                }else if(check[x].value === 'Add'){
+                    sides.push({
+                        value: 'Add',
+                        component: Add
+                    })
+                }if(check[x].value === 'Settings'){
+                    sides.push({
+                        value: 'Settings',
+                        component: Settings
+                    })
+                }
+            }
+            console.log(sides);
+            this.setState({permissionCheck: sides})
+            this.setState({redirect: sides[0].value})
+            }
+        })
+        }
+      }
+
+
+    render() {
+        return (
+            <div>
+                <Router>
+                <Nav />
+                <Sidebar />
+                {
+                    this.state.permissionCheck.map((arr,ind)=>{
+                    return(
+                        <Route path={'/'+arr.value} key={ind}>
+                            <arr.component />
+                        </Route>
+                    )
+                    })
+                }
+                <Redirect to={'/'+this.state.redirect}></Redirect>
+                </Router>
+            </div>
+        )
+    }
+}
+class Dashboard extends Component{
     constructor(props) {
         const cookies = new Cookies()
         super(props);
@@ -46,17 +122,19 @@ export default class Dashboard extends Component{
         db.collection('Admin').doc('Emails').onSnapshot(e=>{
             if(e.exists){
                 let emails = [...e.data()['emails']]
-                //console.log(emails);
+                console.log(emails);
                 for(let x=0; x<emails.length; x++){
                     db.collection('Custormers').doc(emails[x]).get()
                     .then(c=>{
-                        for(let p=0; p< c.data().details.length; p++){
-                            this.customers.push(c.data().details[p])  
-                            if(c.data().details[p].paid === 'Pending'){
-                                this.setState({pending: this.state.pending + 1})
-                            }else if(c.data().details[p].paid === 'Paid'){
-                                this.setState({paid: this.state.paid + 1})
-                            }                          
+                        if(c.exists){
+                            for(let p=0; p< c.data().details.length; p++){
+                                this.customers.push(c.data().details[p])  
+                                if(c.data().details[p].paid === 'Pending'){
+                                    this.setState({pending: this.state.pending + 1})
+                                }else if(c.data().details[p].paid === 'Paid'){
+                                    this.setState({paid: this.state.paid + 1})
+                                }                          
+                            }
                         }
                         //console.log(this.customers);
                     }).then(()=>{this.setState({details: this.customers})})
@@ -215,14 +293,11 @@ export default class Dashboard extends Component{
                             </div>
                         </div>
                     </div>
-                    <Sidebar />
                 </div>
             )
         }else{
             return (
                 <div>
-                    <Nav />
-                    <Sidebar />
                     <div className='w3-row section'>
                         <div className='w3-col m3 l3 w3-card w3-round w3-margin-left'>
                             <div className='w3-col m7 l7 w3-padding'><h6>Registered Users</h6></div>
@@ -416,8 +491,6 @@ class Add extends Component{
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <>
-                    <Nav />
-                    <Sidebar />
                     <div className='w3-row' style={{marginTop: '50px'}}>
                         <div className='w3-col m4 l4 w3-center'>
                             <div className='w3-container w3-card w3-padding'>
@@ -453,8 +526,6 @@ class Add extends Component{
         }else{
             return (
                 <>
-                    <Nav />
-                    <Sidebar />
                     <div className='w3-row section'>
                         <div className='w3-col m4 l4 w3-center'>
                             <div className='w3-container w3-card w3-padding'>
@@ -561,8 +632,6 @@ class Mail extends Component{
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <div>
-                    <Nav />
-                    <Sidebar />
                     <div className='w3-row'>
                         <div className='w3-col s12'>
                             <div className='w3-padding'>
@@ -619,8 +688,6 @@ class Mail extends Component{
         }else{
             return (
                 <div>
-                    <Nav />
-                    <Sidebar />
                     <div className='w3-row section'>
                         <div className='w3-col s6 m5 l5'>
                             <div className='w3-padding'>
@@ -865,8 +932,6 @@ class Settings extends Component{
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <div>
-                    <Nav />
-                    <Sidebar />
                     <div className='w3-row'>
                         
                         <div className='w3-bar w3-margin-top'>
@@ -1006,8 +1071,6 @@ class Settings extends Component{
         }else{
             return (
                 <div>
-                    <Nav />
-                    <Sidebar />
                     <div className='w3-row section'>
                         <div className='w3-center'>
                             <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
@@ -1145,4 +1208,4 @@ class Settings extends Component{
 
 
 
-export { Add,Mail,Settings }
+export { Add,Mail,Settings, Dashboard }

@@ -91,8 +91,8 @@ export default class Cart extends Component {
                                 info.classList.remove('w3-hide')
                                 document.getElementById('payBtn').classList.remove('w3-hide')
                                 document.getElementById('conBtn').classList.add('w3-hide')
-                                this.Form.append(result)
                                 if(this.state.formData[9].value){
+                                    this.Form.append('cv', result.cv)
                                     axios({
                                         method: "POST",
                                         url: "/cv",
@@ -124,6 +124,8 @@ export default class Cart extends Component {
                             }
                         }else{
                             info.classList.remove('w3-hide')
+                            document.getElementById('payBtn').classList.remove('w3-hide')
+                            document.getElementById('conBtn').classList.add('w3-hide')
                             db.collection('Custormers').doc(this.state.formData[2].value).set({details: firebase.firestore.FieldValue.arrayUnion(result)})
                             if(result.cv !=="" && result.cvl === ""){
                                     axios.post('/cv', result).then(res => {
@@ -145,6 +147,8 @@ export default class Cart extends Component {
                     })
                 })
             }else{
+                document.getElementById('payBtn').classList.remove('w3-hide')
+                document.getElementById('conBtn').classList.add('w3-hide')
                 db.collection('Admin').doc('Emails').set({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2].value)})
                 .then(()=>{
                     db.collection('Custormers').doc(this.state.formData[2].value).get()

@@ -75,7 +75,7 @@ class Sidebar extends Component{
                 if(check[x].value === 'Dashboard'){
                     sides.push({
                         image: Dash,
-                        value: 'Admin'
+                        value: 'Dashboard'
                     })
                 }else if(check[x].value === 'Mail'){
                     sides.push({
