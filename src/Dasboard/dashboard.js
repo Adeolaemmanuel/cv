@@ -969,6 +969,7 @@ class Settings extends Component{
                                     </div>
                                     <div className='w3-container w3-white w3-padding' style={{marginTop: '40px'}}>
                                         <form id='testimonialsForm' onSubmit={this.testimonials}>
+                                            <h5 className='w3-text-blue w3-center'>Update Testimonials</h5>
                                             <input className='w3-input w3-border w3-margin-top' placeholder='Customers name' name='name' id='cName' />
                                             <textarea className='w3-input w3-border w3-margin-top' id='testim'></textarea>
                                             <h5 className='w3-center w3-text-yellow'>Rate</h5>
@@ -1104,6 +1105,7 @@ class Settings extends Component{
                                     </div>
                                     <div className='w3-container w3-white w3-padding' style={{marginTop: '40px'}}>
                                        <form id='testimonialsForm' onSubmit={this.testimonials}>
+                                        <h5 className='w3-text-blue'>Update Testimonials</h5>
                                             <input className='w3-input w3-border w3-margin-top' placeholder='Customers name' name='name' id='cName' />
                                             <textarea className='w3-input w3-border w3-margin-top' id='testim'></textarea>
                                             <h5 className='w3-center w3-text-yellow'>Rate</h5>
