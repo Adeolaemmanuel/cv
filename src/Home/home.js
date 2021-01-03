@@ -86,15 +86,29 @@ class Kigenni extends Component{
                 for(let x=0; x<testimonials.length; x++){
                     if(testimonials[x].star1 === false){
                         delete testimonials[x].star1
-                    }else if(testimonials[x].star2 === false){
+                    }else{
+                        testimonials[x].star = [testimonials[x].star1]
+                    }
+                    if(testimonials[x].star2 === false){
                         delete testimonials[x].star2
-                    }else if(testimonials[x].star3 === false){
+                    }else{
+                        testimonials[x].star.push(testimonials[x].star2)
+                    }
+                    if(testimonials[x].star3 === false){
                         delete testimonials[x].star3
-                    }else if(testimonials[x].star4 === false){
+                    }else{
+                        testimonials[x].star.push(testimonials[x].star3)
+                    }
+                    if(testimonials[x].star4 === false){
                         delete testimonials[x].star4
-                    }else if(testimonials[x].star5 === false){
+                    }else{
+                        testimonials[x].star.push(testimonials[x].star4)
+                    }
+                    if(testimonials[x].star5 === false){
                         delete testimonials[x].star5
-                    } 
+                    } else{
+                        testimonials[x].star.push(testimonials[x].star5)
+                    }
                 }
                 console.log(testimonials);
                 this.setState({testimonials: testimonials})
@@ -560,11 +574,11 @@ class Kigenni extends Component{
                                                 <div className='w3-container card w3-center'  style={{height: '450px'}}>
                                                     <p className='w3-padding' style={{display:'inline-block'}}>{slide.testimonials}</p>
                                                     <div className='w3-row'>
-                                                        <img src={star} alt={star} id={slide.star1} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                                        <img src={star} alt={star} id={slide.star2} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                                        <img src={star} alt={star} id={slide.star3} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                                        <img src={star} alt={star} id={slide.star4} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                                        <img src={star} alt={star} id={slide.star5} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                            {
+                                                                slide.star.map(arr=>{
+                                                                    return(<img src={star} alt={star} id={arr} className='w3-padding' style={{width:'50px',height:'50px'}} />)
+                                                                })
+                                                            }
                                                         <p className='w3-bold'>{slide.name}</p>
                                                     </div>
                                                 </div>
@@ -832,11 +846,11 @@ class Kigenni extends Component{
                                                 <div className='w3-container card w3-center'  style={{height: '450px'}}>
                                                     <p className='w3-padding' style={{display:'inline-block'}}>{slide.testimonials}</p>
                                                     <div className='w3-row'>
-                                                        <img src={star} alt={star} id={slide.star1} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                                        <img src={star} alt={star} id={slide.star2} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                                        <img src={star} alt={star} id={slide.star3} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                                        <img src={star} alt={star} id={slide.star4} className='w3-padding' style={{width:'50px',height:'50px'}} />
-                                                        <img src={star} alt={star} id={slide.star5} className='w3-padding' style={{width:'50px',height:'50px'}} />
+                                                        {
+                                                            slide.star.map(arr=>{
+                                                                return(<img src={star} alt={star} id={arr} className='w3-padding' style={{width:'50px',height:'50px'}} />)
+                                                            })
+                                                        }
                                                         <p className='w3-bold'>{slide.name}</p>
                                                     </div>
                                                 </div>
