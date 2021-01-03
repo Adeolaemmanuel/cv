@@ -852,7 +852,7 @@ class Settings extends Component{
         })
     }
 
-    deliveryEmails = (e,pram) =>{
+    deliveryEmails = (e,pram,id='') =>{
         e.preventDefault()
         if(pram === 'submit'){
             let data = {email: e.target.elements.email.value, password: e.target.elements.password.value}
@@ -873,10 +873,12 @@ class Settings extends Component{
             db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').get()
             .then(d=>{
                     if(d.exists){
-                        let emails = d.data().emails
-                        let update = [...emails]
-                        update.splice(e.target.id)
-                        db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').update({emails: update})
+                        let emails = [...d.data().emails]
+                        console.log(emails);
+                        console.log(e.target.id);
+                        emails.splice(id)
+                        console.log(emails);
+                        db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').update({emails: emails})
                     }
             })
         }
@@ -986,8 +988,7 @@ class Settings extends Component{
                                         this.state.delievryEmails.map((arr, ind)=>{
                                             return(
                                                 <div className='w3-row w3-card w3-margin-top w3-round'>
-                                                    <div className='w3-padding w3-col s4 m4 l4'>{arr.email} <img src={delet} alt={delet} key={arr.email} id={ind} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={e=>{this.deliveryEmails(e,'delete')}} /></div>
-                                                    
+                                                    <div className='w3-padding w3-col s4 m4 l4'>{arr.email} <img src={delet} alt={delet} key={arr.email} id={ind} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={e=>{this.deliveryEmails(e,'delete', ind)}} /></div> 
                                                 </div>
                                             )
                                         })
