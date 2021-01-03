@@ -555,18 +555,51 @@ class Mail extends Component{
                     <div className='w3-row'>
                         <div className='w3-col s12'>
                             <div className='w3-padding'>
-                               <input className='w3-border w3-input w3-round' placeholder='To'  />
-                               <select className='w3-border w3-input w3-round w3-margin-top' defaultValue='Email'>
-                                   <option value='Email' disabled>Select Email</option>
-                                   {
-                                       this.state.delievryEmails.map(arr=>{
-                                           return(
-                                            <option value={arr.email} key={arr.email}>{arr.email}</option>
-                                           )
-                                       })
-                                   }
-                               </select>
-
+                               <form>
+                                    <h5 className='w3-text-blue w3-center w3-padding'>Delievery Tool</h5>
+                                    <input className='w3-border w3-input w3-round' placeholder='To'  />
+                                    <select className='w3-border w3-input w3-round w3-margin-top' defaultValue='Email'>
+                                        <option value='Email' disabled>Select Email</option>
+                                        {
+                                            this.state.delievryEmails.map(arr=>{
+                                                return(
+                                                    <option value={arr.email} key={arr.email}>{arr.email}</option>
+                                                )
+                                            })
+                                        }
+                                    </select>
+                                    <div>
+                                        {
+                                            this.state.attachmentCount.map((arr,ind)=>{
+                                                return(
+                                                    <div className='w3-row' id={arr}>
+                                                        <div className='w3-col s6 w3-center' id='cC'>
+                                                            <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
+                                                                <label htmlFor ={ind}><img src={cv} alt='' style={{width: '100px', height: '100px'}} /></label>
+                                                                <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{arr.cvName}</p>
+                                                                <input id={ind} onChange={(e)=>{this.name('cv',e)}} name='cv' type='file' className='w3-hide' />
+                                                            </div>
+                                                        </div>
+                                                        <div className='w3-col s6 w3-center' id='clC'>
+                                                            <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
+                                                                <label htmlFor ={ind}><img src={cvl} alt='' style={{width: '100px', height: '100px'}} /></label>
+                                                                <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{arr.cvlName}</p>
+                                                                <input id={ind} name='cover letter' onChange={(e)=>{this.name('cvl', e)}} type='file' className='w3-hide' />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                        <div className='w3-center'>
+                                            <span className='w3-padding w3-btn w3-green' onClick={e=>{this.attachmentCount(e,'add')}}>Add</span>
+                                        </div>
+                                        <textarea placeholder='Enter Message...' name='message' className='w3-input w3-margin-top w3-border w3-round'></textarea>
+                                        <div className='w3-center w3-margin-top'>
+                                            <span className='w3-padding w3-btn w3-round w3-block w3-green' onClick={e=>{this.attachmentCount(e,'submit')}}>Submit</span>
+                                        </div>
+                                    </div>
+                               </form>
                             </div>
                         </div>
                     </div>
@@ -581,7 +614,7 @@ class Mail extends Component{
                         <div className='w3-col s6 m5 l5'>
                             <div className='w3-padding'>
                                <form>
-                               <h5 className='w3-text-blue w3-padding'>Delievery Tool</h5>
+                               <h5 className='w3-text-blue w3-center w3-padding'>Delievery Tool</h5>
                                     <input className='w3-border w3-input w3-round' placeholder='To'  />
                                     <select className='w3-border w3-input w3-round w3-margin-top' defaultValue='Email'>
                                         <option value='Email' disabled>Select Email</option>
