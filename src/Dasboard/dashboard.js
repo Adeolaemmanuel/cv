@@ -660,6 +660,9 @@ class Mail extends Component{
                                </form>
                             </div>
                         </div>
+                        <div className = 'w3-col s6 m6 l6'>
+                            
+                        </div>
                     </div>
                 </div>
             )

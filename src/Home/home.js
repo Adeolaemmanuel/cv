@@ -830,8 +830,9 @@ class Kigenni extends Component{
                         <div className='w3-center'  style={{marginTop: '70px'}}>
                             <h1 className='test'>Testimonials</h1>
                         </div>
+                        <div className='w3-col m4 l4 w3-padding'><br/></div>
                         <div className='w3-col m4 l4 w3-padding' style={{marginTop: '70px'}}>
-                            <div className='w3-container w3-center' >
+                            <div className='w3-container w3-center ' >
                                 <Splide
                                     options={ {
                                         type         : 'loop',
@@ -844,7 +845,7 @@ class Kigenni extends Component{
                                         <SplideSlide key={ slide }>
                                             <div>
                                                 <div className='w3-container card w3-center'  style={{height: '450px'}}>
-                                                    <p className='w3-padding' style={{display:'inline-block'}}>{slide.testimonials}</p>
+                                                    <p className='w3-padding'>{slide.testimonials}</p>
                                                     <div className='w3-row'>
                                                         {
                                                             slide.star.map(arr=>{
