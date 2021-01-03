@@ -44,7 +44,7 @@ export default class Dashboard extends Component{
                             if(c.data().details[p].paid === 'Pending'){
                                 this.setState({pending: this.state.pending + 1})
                             }else if(c.data().details[p].paid === 'Paid'){
-                                this.setState({pending: this.state.paid + 1})
+                                this.setState({paid: this.state.paid + 1})
                             }                          
                         }
                         //console.log(this.customers);
