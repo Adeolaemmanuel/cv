@@ -22,26 +22,23 @@ export default class Cart extends Component {
         e.preventDefault()
         let info = document.getElementById('info')
         let modal = document.getElementById('id01')
-        let result
-        if(pram){
-            result = {
-                type: this.state.formData[0].value,
-                name: this.state.formData[1].value,
-                email: this.state.formData[2].value,
-                com: this.state.formData[3].value,
-                gender: this.state.formData[4].value,
-                dob: this.state.formData[5].value,
-                state: this.state.formData[6].value,
-                industry: this.state.formData[7].value,
-                exp: this.state.formData[8].value,
-                cv: this.state.formData[9].value,
-                cvl: this.state.formData[10].value,
-                price: this.state.formData[0].price,
-                paid: 'Pending',
-                date: `${this.date.getMonth()}/${this.date.getDate()}/${this.date.getFullYear()}`
-            };
-            console.log(result);
-        }
+        let result  = {
+            type: this.state.formData[0].value,
+            name: this.state.formData[1].value,
+            email: this.state.formData[2].value,
+            com: this.state.formData[3].value,
+            gender: this.state.formData[4].value,
+            dob: this.state.formData[5].value,
+            state: this.state.formData[6].value,
+            industry: this.state.formData[7].value,
+            exp: this.state.formData[8].value,
+            cv: this.state.formData[9].value,
+            cvl: this.state.formData[10].value,
+            price: this.state.formData[0].price,
+            paid: 'Pending',
+            date: `${this.date.getMonth()}/${this.date.getDate()}/${this.date.getFullYear()}`
+        };
+        
         db.collection('Admin').doc('Emails').get().then(e=>{
             if(e.exists){               
                 db.collection('Admin').doc('Emails').update({emails: firebase.firestore.FieldValue.arrayUnion(this.state.formData[2].value)})
@@ -71,17 +68,17 @@ export default class Cart extends Component {
                                     info.classList.remove('w3-hide')
                                     
                                     db.collection('Custormers').doc(this.state.formData[2].value).update({details: firebase.firestore.FieldValue.arrayUnion(result)})
-                                    if(result.cv !=="" && result.cvl === ""){
+                                    if(result.cv){
                                         axios.post('/cv', result).then(res => {
                                             //console.log(res.data);
                                              
                                         })
-                                    }else if(result.cvl !=="" && result.cv === ""){
-                                        axios.post('/cv', result).then(res => {
+                                    }else if(result.cv){
+                                        axios.post('/cvL', result).then(res => {
                                             //console.log(res.data);
                                              
                                         })
-                                    }else if(result.cvl !=="" && result.cv !==""){
+                                    }else if(result.cvl && result.cv){
                                         axios.post('/both', result).then(res => {
                                             //console.log(res.data);
                                              
@@ -89,9 +86,26 @@ export default class Cart extends Component {
                                     }
                                 }
                             }else{
+                                console.log(result);
                                 info.classList.remove('w3-hide')
                                 document.getElementById('payBtn').classList.remove('w3-hide')
                                 document.getElementById('conBtn').classList.add('w3-hide')
+                                if(this.state.formData[9].value){
+                                    axios.post('/cv', result).then(res => {
+                                        //console.log(res.data);
+                                         
+                                    })
+                                }else if(this.state.formData[10].value){
+                                    axios.post('/cvL', result).then(res => {
+                                        //console.log(res.data);
+                                         
+                                    })
+                                }else if(result.cvl && result.cv){
+                                    axios.post('/both', result).then(res => {
+                                        //console.log(res.data);
+                                         
+                                    })
+                                }
                                 this.config  = {
                                     reference: (new Date()).getTime(),
                                     email: document.getElementById('payEmail').innerHTML,
@@ -143,8 +157,8 @@ export default class Cart extends Component {
         if(pram === 'con'){
             let original = [...this.state.formData]
             const P = [...this.state.pend]
-            console.log(original);
-            console.log(P);
+            //console.log(original);
+            //console.log(P);
             original[0].value = P[0].type
             original[0].price = P[0].price
             original[1].value = P[0].name
@@ -153,10 +167,11 @@ export default class Cart extends Component {
             original[4].value = P[0].gender
             original[5].value = P[0].dob
             original[6].value = P[0].state
-            original[7].value = P[0].ind
+            original[7].value = P[0].industry
             original[8].value = P[0].exp
             this.setState({formData: original})
             modal.classList.add('w3-hide')
+            this.check = false
                 
         }else if(pram === 'del'){
             db.collection('Custormers').doc(this.state.formData[2].value).get()

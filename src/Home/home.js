@@ -111,7 +111,6 @@ class Kigenni extends Component{
                         testimonials[x].star.push(testimonials[x].star5)
                     }
                 }
-                console.log(testimonials);
                 this.setState({testimonials: testimonials})
             }
         })
