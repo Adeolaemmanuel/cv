@@ -232,7 +232,7 @@ class Kigenni extends Component{
                     cvC.classList.remove('w3-hide')
                     cvC.classList.remove('w3-half')
                 }else if(this.formData[0].value === 'Cover Letter'){
-                    cvC.classList.remove('w3-hide')
+                    cvlC.classList.remove('w3-hide')
                     cvlC.classList.remove('w3-half')
                 }else if(this.formData[0].value === 'CV + Cover Letter'){
                     cvC.classList.remove('w3-hide')
