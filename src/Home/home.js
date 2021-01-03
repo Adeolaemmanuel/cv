@@ -614,6 +614,23 @@ class Kigenni extends Component{
                             </div>
                         </div>
                     </div>
+                    <div className ='w3-container contact'>
+                        <img src={gmail} alt='mail' className='' id='mailBtn' style={{width: '40px', height: '40px'}} onClick={()=>{document.getElementById('mail').classList.remove('w3-hide'); document.getElementById('mailBtn').classList.add('w3-hide')}} />
+
+                        <div id='mail' className='w3-padding w3-white w3-container w3-hide'>
+                            <form>
+                                <h5 className='w3-text-blue w3-center'>Send us a message</h5>
+                                <span className='w3-right w3-padding w3-button w3-bold' onClick={()=>{document.getElementById('mail').classList.add('w3-hide'); document.getElementById('mailBtn').classList.remove('w3-hide')}}>X</span>
+                                <input className='w3-input w3-border w3-round' placeholder='Name' name='name' />
+                                <input className='w3-input w3-border w3-round w3-margin-top' placeholder='Email' name='email' />
+                                <input className='w3-input w3-border w3-round w3-margin-top' placeholder='Subject' name='subject' />
+                                <textarea className='w3-input w3-border w3-round w3-margin-top' placeholder='Message...' name='message'></textarea>
+                                <div className='w3-center w3-margin-top'>
+                                    <button className='w3-btn w3-round w3-blue'>Send</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </>
             )
         }else{
