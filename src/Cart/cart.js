@@ -17,6 +17,7 @@ export default class Cart extends Component {
 
     date =  new Date()
     check = true
+    Form = new FormData();
     config
     continue =(e, pram=this.check) => {
         e.preventDefault()
@@ -90,8 +91,16 @@ export default class Cart extends Component {
                                 info.classList.remove('w3-hide')
                                 document.getElementById('payBtn').classList.remove('w3-hide')
                                 document.getElementById('conBtn').classList.add('w3-hide')
+                                this.Form.append(result)
                                 if(this.state.formData[9].value){
-                                    axios.post('/cv', result).then(res => {
+                                    axios({
+                                        method: "POST",
+                                        url: "/cv",
+                                        data: result,
+                                        headers: {
+                                            "Content-Type": "multipart/form-data"
+                                        }
+                                    }).then(res => {
                                         //console.log(res.data);
                                          
                                     })
