@@ -854,6 +854,11 @@ class Settings extends Component{
                     <Nav />
                     <Sidebar />
                     <div className='w3-row'>
+                        
+                        <div className='w3-bar w3-margin-top'>
+                            <div className='w3-bar-item w3-black' onClick={e=>{this.switch('previous')}}>Previous</div>
+                            <div className='w3-bar-item w3-black w3-right' onClick={e=>{this.switch('next')}}>Next</div>
+                        </div>
                         <div className='w3-center'>
                             <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
                         </div>
@@ -981,10 +986,6 @@ class Settings extends Component{
                         </div>
                     </div>
 
-                    <div className='w3-bar w3-margin-top'>
-                        <div className='w3-bar-item w3-black' onClick={e=>{this.switch('previous')}}>Previous</div>
-                        <div className='w3-bar-item w3-black w3-right' onClick={e=>{this.switch('next')}}>Next</div>
-                    </div>
                 </div>
             )
         }else{
