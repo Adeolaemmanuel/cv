@@ -6,6 +6,8 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import { db, firebase } from '../database'
 import delet from '../assets/img/delete.svg';
+import cv from '../assets/img/cv.svg'
+import cvl from '../assets/img/cvl.svg'
 
 export default class Dashboard extends Component{
     constructor(props) {
@@ -27,7 +29,7 @@ export default class Dashboard extends Component{
         this.getCustomers()
     }
 
-    custormers = []
+    customers = []
 
     getCustomers = () => {
         db.collection('Admin').doc('Emails').onSnapshot(e=>{
@@ -38,15 +40,15 @@ export default class Dashboard extends Component{
                     db.collection('Custormers').doc(emails[x]).get()
                     .then(c=>{
                         for(let p=0; p< c.data().details.length; p++){
-                            this.custormers.push(c.data().details[p])  
+                            this.customers.push(c.data().details[p])  
                             if(c.data().details[p].paid === 'Pending'){
                                 this.setState({pending: this.state.pending + 1})
                             }else if(c.data().details[p].paid === 'Paid'){
                                 this.setState({pending: this.state.paid + 1})
                             }                          
                         }
-                        //console.log(this.custormers);
-                    }).then(()=>{this.setState({details: this.custormers})})
+                        //console.log(this.customers);
+                    }).then(()=>{this.setState({details: this.customers})})
                 }
             }
         })
@@ -64,7 +66,7 @@ export default class Dashboard extends Component{
             if(arr[this.state.filterM] === e.target.value || arr[this.state.filterM].toLowerCase() === e.target.value.toLowerCase()){
                 this.setState(state=>({details: [arr]}))
             }else if(e.target.value === ''){
-                this.custormers = []
+                this.customers = []
                 this.setState({details: []})
                 db.collection('Admin').doc('Emails').onSnapshot(e=>{
                     if(e.exists){
@@ -74,9 +76,9 @@ export default class Dashboard extends Component{
                             db.collection('Custormers').doc(emails[x]).get()
                             .then(c=>{
                                 for(let p=0; p< c.data().details.length; p++){
-                                    this.custormers.push(c.data().details[p])                          
+                                    this.customers.push(c.data().details[p])                          
                                 }
-                            }).then(()=>{this.setState({details: this.custormers})})
+                            }).then(()=>{this.setState({details: this.customers})})
                         }
                     }
                 })
@@ -85,7 +87,7 @@ export default class Dashboard extends Component{
         })
     }
 
-    custormersOption = (e,pram) => {
+    customersOption = (e,pram) => {
         e.preventDefault()
         console.log(e.target.id);
         if(pram === 'delete'){
@@ -191,8 +193,8 @@ export default class Dashboard extends Component{
                                                         <div className='w3-col s6 m6 l6 w3-padding'><b>Price: </b>{arr.price}</div>
                                                     </div>
                                                     <div className='w3-row'>
-                                                        <button className='w3-col s6 w3-btn w3-red w3-padding' id={arr.email} onClick={(e)=>{this.custormersOption(e, 'delete')}} >Delete</button>
-                                                        <button className='w3-col s6 w3-btn w3-green w3-padding' id={arr.email} onClick={(e)=>{this.custormersOption(e, 'send')}}>Send Reminder</button>
+                                                        <button className='w3-col s6 w3-btn w3-red w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'delete')}} >Delete</button>
+                                                        <button className='w3-col s6 w3-btn w3-green w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'send')}}>Send Reminder</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -258,9 +260,9 @@ export default class Dashboard extends Component{
                                                                 <div className='w3-col s6 m6 l6 w3-padding'><b>Price: </b>{arr.price}</div>
                                                             </div>
                                                             <div className='w3-row'>
-                                                                <button className='w3-col m4 l4 w3-btn w3-red w3-padding' id={arr.email} onClick={(e)=>{this.custormersOption(e, 'delete')}} >Delete</button>
-                                                                <button className='w3-col m4 l4 w3-btn w3-green w3-padding' id={arr.email} onClick={(e)=>{this.custormersOption(e, 'send')}}>Send Reminder</button>
-                                                                <button className='w3-col m4 l4 w3-btn w3-blue w3-padding' id={arr.email} onClick={(e)=>{this.custormersOption(e, 'add')}}>Add Reminder</button>
+                                                                <button className='w3-col m4 l4 w3-btn w3-red w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'delete')}} >Delete</button>
+                                                                <button className='w3-col m4 l4 w3-btn w3-green w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'send')}}>Send Reminder</button>
+                                                                <button className='w3-col m4 l4 w3-btn w3-blue w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'add')}}>Add Reminder</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -502,7 +504,8 @@ class Mail extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            delievryEmails: []
+            delievryEmails: [],
+            attachmentCount: [{ cvName: 'Upload CV', cvlName: 'Upload Cover Letter'}],
         }
     }
 
@@ -517,6 +520,30 @@ class Mail extends Component{
                 this.setState({delievryEmails: emails})
             }
         })
+    }
+
+    attachmentCount = (e, pram) => {
+        if(pram ==='add'){
+            let currentCount = [...this.state.attachmentCount]
+            currentCount.push({ cvName: 'Upload CV', cvlName: 'Upload Cover Letter'})
+            this.setState({attachmentCount: currentCount})
+            console.log(currentCount);
+        }else if(pram === 'sunmit'){}
+    }
+
+    name = (pram, id) => {
+        let cv = document.getElementById(id.target.id).value
+        let cvl = document.getElementById(id.target.id).value
+        let att = [...this.state.attachmentCount]
+        if (pram === 'cv') {
+            att[id.target.id].cvName = cv.substr(12)
+            this.setState({attachmentCount: att})
+            
+        }else if (pram === 'cvl') {
+            att[id.target.id].cvlame =  cvl.substr(12)
+            this.setState({cvlName: att})
+            
+        }
     }
 
     render() {
@@ -539,6 +566,7 @@ class Mail extends Component{
                                        })
                                    }
                                </select>
+
                             </div>
                         </div>
                     </div>
@@ -552,17 +580,50 @@ class Mail extends Component{
                     <div className='w3-row section'>
                         <div className='w3-col s6 m5 l5'>
                             <div className='w3-padding'>
-                               <input className='w3-border w3-input w3-round' placeholder='To'  />
-                               <select className='w3-border w3-input w3-round w3-margin-top' defaultValue='Email'>
-                                   <option value='Email' disabled>Select Email</option>
-                                   {
-                                       this.state.delievryEmails.map(arr=>{
-                                           return(
-                                            <option value={arr.email} key={arr.email}>{arr.email}</option>
-                                           )
-                                       })
-                                   }
-                               </select>
+                               <form>
+                                    <input className='w3-border w3-input w3-round' placeholder='To'  />
+                                    <select className='w3-border w3-input w3-round w3-margin-top' defaultValue='Email'>
+                                        <option value='Email' disabled>Select Email</option>
+                                        {
+                                            this.state.delievryEmails.map(arr=>{
+                                                return(
+                                                    <option value={arr.email} key={arr.email}>{arr.email}</option>
+                                                )
+                                            })
+                                        }
+                                    </select>
+                                    <div>
+                                        {
+                                            this.state.attachmentCount.map((arr,ind)=>{
+                                                return(
+                                                    <div className='w3-row' id={arr}>
+                                                        <div className='w3-half w3-center' id='cC'>
+                                                            <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
+                                                                <label htmlFor ={ind}><img src={cv} alt='' style={{width: '100px', height: '100px'}} /></label>
+                                                                <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{arr.cvName}</p>
+                                                                <input id={ind} onChange={(e)=>{this.name('cv',e)}} name='cv' type='file' className='w3-hide' />
+                                                            </div>
+                                                        </div>
+                                                        <div className='w3-half w3-center' id='clC'>
+                                                            <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
+                                                                <label htmlFor ={ind}><img src={cvl} alt='' style={{width: '100px', height: '100px'}} /></label>
+                                                                <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{arr.cvlName}</p>
+                                                                <input id={ind} name='cover letter' onChange={(e)=>{this.name('cvl', e)}} type='file' className='w3-hide' />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                        <div className='w3-center'>
+                                            <span className='w3-padding w3-btn w3-green' onClick={e=>{this.attachmentCount(e,'add')}}>Add</span>
+                                        </div>
+                                        <textarea placeholder='Enter Message...' name='message' className='w3-input w3-margin-top w3-border w3-round'></textarea>
+                                        <div className='w3-center w3-margin-top'>
+                                            <span className='w3-padding w3-btn w3-round w3-block w3-green' onClick={e=>{this.attachmentCount(e,'submit')}}>Submit</span>
+                                        </div>
+                                    </div>
+                               </form>
                             </div>
                         </div>
                     </div>
@@ -587,6 +648,31 @@ class Settings extends Component{
     componentDidMount(){
         this.getProducts()
         this.getDelievryEmails()
+        this.mobileInit()
+    }
+
+    mobileInit = () => {
+        let mobile = document.getElementsByClassName('mob')
+        for(let x=0; x<mobile.length; x++){
+            if(x === 0){
+                mobile[x].style.display = 'block'
+            }else{
+                mobile[x].style.display = 'none'
+            }
+        }
+    }
+
+    switch = (pram) => {
+        let current = 0;
+        let previous
+        let mobile = document.getElementsByClassName('mob')
+        if(pram === 'next' && current <= mobile.length){
+            current = current + 1
+            previous = current - 1
+            mobile[current].style.display = 'block'
+            mobile[previous].style.display = 'none'
+            console.log(current);
+        }
     }
 
     getDelievryEmails = () =>{
@@ -678,14 +764,30 @@ class Settings extends Component{
         }
     }
 
-    searchCustumers(e){
-        db.collection('Custormers').doc(e.target.search.value).get()
+    searchCustumers = (e) => {
+        e.preventDefault()
+        db.collection('Custormers').doc(e.target.elements.search.value).get()
         .then(c=>{
             if(c.exists){
                 let customers = [...c.data().details]
-                console.log(customers);
+                this.setState({searchCustumers: customers})
             }
         })
+    }
+
+    testimonials = (e) => {
+        e.preventDefault()
+        console.log(e.target);
+    }
+
+    accorodion = (e, pram) =>{
+        e.preventDefault()
+        let show = document.getElementById(pram)
+        if(show.classList.contains('w3-hide')){
+            show.classList.remove('w3-hide')
+        }else{
+            show.classList.add('w3-hide')
+        }
     }
 
     render() {
@@ -695,10 +797,11 @@ class Settings extends Component{
                     <Nav />
                     <Sidebar />
                     <div className='w3-row'>
-                    <div className='w3-center'>
-                        <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
-                    </div>
-                        <div className='w3-col 12 m4 l4 w3-border w3-round'>
+                        <div className='w3-center'>
+                            <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
+                        </div>
+                        <div className='mob w3-border w3-round'>
+                            <h5 className='w3-center w3-text-blue'>Add Products</h5>
                             <form className='w3-padding'>
                                 <input className='w3-input w3-border' type='text' placeholder='Input product name' id='type' required />
                                 <input className='w3-input w3-border w3-margin-top' type='number' placeholder='Input Price' id='price' required />
@@ -727,6 +830,103 @@ class Settings extends Component{
                                 </div>
                             </div>
                         </div>
+                        <div className='mob w3-border w3-round'>
+                            <h5 className='w3-center w3-text-blue'>Add Emails For Delievry</h5>
+                            <div className='w3-padding'>
+                                <form onSubmit={e=>{this.deliveryEmails(e, 'submit')}}>
+                                    <input className='w3-input w3-border w3-round' ty='email' placeholder='Email' id='email' />
+                                    <input className='w3-input w3-border w3-round w3-margin-top' type='password' placeholder='Password' id='password' />
+                                    <div className='w3-center w3-margin-top'>
+                                        <button className='w3-btn w3-blue w3-round'>Submit</button>
+                                    </div>
+                                </form>
+                                <div >
+                                    {
+                                        this.state.delievryEmails.map((arr, ind)=>{
+                                            return(
+                                                <div className='w3-row w3-card w3-margin-top w3-round'>
+                                                    <div className='w3-padding w3-col s4 m4 l4'>{arr.email} <img src={delet} alt={delet} key={arr.email} id={ind} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={e=>{this.deliveryEmails(e,'delete')}} /></div>
+                                                    
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div className='mob w3-border w3-round' id='customerSettings'>
+                            <div className='w3-padding w3-container'>
+                                <button className='w3-button w3-padding w3-grey w3-text-white w3-block w3-padding w3-margin-top' onClick={()=>{document.getElementById('1').style.display='block'}}>Customers Settings</button>
+                                <div className='w3-modal' id='1'>
+                                    <div className='w3-modal-content'>
+                                    <span onClick={()=>{document.getElementById('1').style.display='none'}}
+                                        className="w3-button w3-display-topright">&times;</span>
+                                    </div>
+                                    <div className='w3-container w3-padding' style={{marginTop: '40px'}}>
+                                        <form onSubmit={this.searchCustumers}>
+                                            <input className='w3-input w3-border w3-round' placeholder='Custormers Record' id='search' />
+                                            <div className='w3-center w3-margin-top'>
+                                                <button className='w3-btn w3-blue'>Search</button>
+                                            </div>
+                                        </form>
+                                        <div className='w3-container w3-row w3-white w3-round w3-margin-top w3-padding'>
+                                            <form>
+                                                {
+                                                    this.state.searchCustumers.map((arr,ind)=>{
+                                                        return(
+                                                            <div>
+                                                                <div className='w3-padding w3-block w3-margin-top w3-button' onClick={e=>{this.accorodion(e, `${arr.email}${ind}`)}}>{arr.name}</div>
+                                                                <div className='w3-row w3-hide' key={ind} id={`${arr.email}${ind}`}>
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-col s6 m6 l6 w3-margin-top' placeholder={arr.name} id='name' name='name' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.email} id='email' name='email' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.type} id='type' name='type' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.gender} id='gender' name='gender' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.dob} id='dob' name='dob' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.state} id='state' name='state' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.industry} id='ind' name='ind' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.exp} id='exp' name='exp' />
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='w3-padding w3-container'>
+                                <button className='w3-button w3-padding w3-grey w3-text-white w3-block w3-padding w3-margin-top' onClick={()=>{document.getElementById('2').style.display='block'}}>Testimonials Settings</button>
+                                <div className='w3-modal' id='2'>
+                                    <div className='w3-modal-content'>
+                                    <span onClick={()=>{document.getElementById('2').style.display='none'}}
+                                        className="w3-button w3-display-topright">&times;</span>
+                                    </div>
+                                    <div className='w3-container w3-white w3-padding' style={{marginTop: '40px'}}>
+                                       <form id='testimonialsForm' onSubmit={this.testimonials}>
+                                            <input className='w3-input w3-border w3-margin-top' placeholder='Customers name' id='cName' />
+                                            <textarea className='w3-input w3-border w3-margin-top'></textarea>
+                                            <h5 className='w3-center w3-text-yellow'>Rate</h5>
+                                            <div className='w3-row w3-center w3-margin-top'>
+                                                <input type='checkbox' className='w3-padding' value='star-1' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-2' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-3' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-4' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-5' />
+                                            </div>
+                                            <div className='w3-center w3-margin-top'>
+                                                <button className='w3-round w3-btn w3-padding w3-margin-top w3-blue'>Submit</button>
+                                            </div>
+                                       </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className='w3-bar w3-margin-top'>
+                        <div className='w3-bar-item w3-black'>Previous</div>
+                        <div className='w3-bar-item w3-black w3-right' onClick={e=>{this.switch('next')}}>Next</div>
                     </div>
                 </div>
             )
@@ -793,16 +993,70 @@ class Settings extends Component{
                                 </div>
                             </div>
                         </div>
-                        <div className='w3-col m3 l3 w3-border w3-round w3-margin-left'>
-                            <div className='w3-padding w3-container' id='customerSettings'>
-                                <button className='w3-button w3-padding w3-block w3-padding w3-margin-top' onClick={()=>{document.getElementById('1').style.display='block'}}>Customers Settings</button>
+                        <div className='w3-col m3 l3 w3-border w3-round w3-margin-left' id='customerSettings'>
+                            <div className='w3-padding w3-container'>
+                                <button className='w3-button w3-padding w3-grey w3-text-white w3-block w3-padding w3-margin-top' onClick={()=>{document.getElementById('1').style.display='block'}}>Customers Settings</button>
                                 <div className='w3-modal' id='1'>
                                     <div className='w3-modal-content'>
                                     <span onClick={()=>{document.getElementById('1').style.display='none'}}
                                         className="w3-button w3-display-topright">&times;</span>
                                     </div>
                                     <div className='w3-container w3-padding' style={{marginTop: '40px'}}>
-                                        <input className='w3-input w3-border w3-round' placeholder='Custormers Record' id='search' />
+                                        <form onSubmit={this.searchCustumers}>
+                                            <input className='w3-input w3-border w3-round' placeholder='Custormers Record' id='search' />
+                                            <div className='w3-center w3-margin-top'>
+                                                <button className='w3-btn w3-blue'>Search</button>
+                                            </div>
+                                        </form>
+                                        <div className='w3-container w3-row w3-white w3-round w3-margin-top w3-padding'>
+                                            <form>
+                                                {
+                                                    this.state.searchCustumers.map((arr,ind)=>{
+                                                        return(
+                                                            <div>
+                                                                <div className='w3-padding w3-block w3-margin-top w3-button' onClick={e=>{this.accorodion(e, `${arr.email}${ind}`)}}>{arr.name}</div>
+                                                                <div className='w3-row w3-hide' key={ind} id={`${arr.email}${ind}`}>
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-col s6 m6 l6 w3-margin-top' placeholder={arr.name} id='name' name='name' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.email} id='email' name='email' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.type} id='type' name='type' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.gender} id='gender' name='gender' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.dob} id='dob' name='dob' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.state} id='state' name='state' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.industry} id='ind' name='ind' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.exp} id='exp' name='exp' />
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='w3-padding w3-container'>
+                                <button className='w3-button w3-padding w3-grey w3-text-white w3-block w3-padding w3-margin-top' onClick={()=>{document.getElementById('2').style.display='block'}}>Testimonials Settings</button>
+                                <div className='w3-modal' id='2'>
+                                    <div className='w3-modal-content'>
+                                    <span onClick={()=>{document.getElementById('2').style.display='none'}}
+                                        className="w3-button w3-display-topright">&times;</span>
+                                    </div>
+                                    <div className='w3-container w3-white w3-padding' style={{marginTop: '40px'}}>
+                                       <form id='testimonialsForm' onSubmit={this.testimonials}>
+                                            <input className='w3-input w3-border w3-margin-top' placeholder='Customers name' id='cName' />
+                                            <textarea className='w3-input w3-border w3-margin-top'></textarea>
+                                            <h5 className='w3-center w3-text-yellow'>Rate</h5>
+                                            <div className='w3-row w3-center w3-margin-top'>
+                                                <input type='checkbox' className='w3-padding' value='star-1' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-2' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-3' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-4' />
+                                                <input type='checkbox' className='w3-padding w3-margin-left' value='star-5' />
+                                            </div>
+                                            <div className='w3-center w3-margin-top'>
+                                                <button className='w3-round w3-btn w3-padding w3-margin-top w3-blue'>Submit</button>
+                                            </div>
+                                       </form>
                                     </div>
                                 </div>
                             </div>
