@@ -30,6 +30,14 @@ app.get('/*', function (req, res) {
   res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
 });
 
+
+let name,email,phone_number,gender,role,sector,state,writeType,experience,data,achievements,file,dob;
+
+app.post('/cv', upload.single('attachment'), (req, res, next)=>{ 
+  console.log(req.body)
+  console.log(req.files);
+})
+
 let url = "mongodb+srv://Orisha:Neutron360@cluster0.lih3q.mongodb.net/Test?retryWrites=true&w=majority"
 const DB = ['Customers']
 MongoClient.connect(url, function(err, client) {

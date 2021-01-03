@@ -9,6 +9,7 @@ import star from '../assets/img/star.svg'
 import reg from '../assets/img/id.svg'
 import card from '../assets/img/card.svg'
 import mail from '../assets/img/mail.svg'
+import gmail from '../assets/img/gmail.svg'
 import Nav from '../nav/nav';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/splide/dist/css/themes/splide-default.min.css';
@@ -61,9 +62,9 @@ class Kigenni extends Component{
             type: [],
             commun: ['Email', 'Phone', 'Skype (Text)', 'Skype (Call)'],
             gender: ['Male', 'Female'],
-            state: ['Abuja'],
+            state: ['Abuja','Abia','Adamawa','Akwa Ibom','Anambra','Bauchi'],
             not: 'yes',
-            industry: ['Oil & Gas'],
+            industry: ['Finance','Technology','Oil & Gas','Education','Health Care','Telecommunication','Real Estate','Fashion','Manufacturing','Media','Entertainment','Consulting','Human Resources','Others'],
             cvName: 'Upload CV',
             cvlName: 'Upload Cover Letter',
             slide: [cv1,cv2,cv3],
@@ -145,7 +146,7 @@ class Kigenni extends Component{
         let section2 = document.getElementById('section2')
         let SubmitBtn = document.getElementById('SubmitBtn')
         let not = document.getElementById('nott')
-        let slide = document.getElementById('me')
+        let slide = document.getElementById('templateSlide')
         let cvC = document.getElementById('cC')
         let cvlC = document.getElementById('clC')
         
@@ -159,8 +160,8 @@ class Kigenni extends Component{
             {value: document.getElementById('state').value, name: 'State'},
             {value: document.getElementById('ind').value, name: 'Industry'},
             {value: document.getElementById('exp').value, name: 'Experience'},
-            {value: document.getElementById('cv').value, name: 'CV'},
-            {value: document.getElementById('cvl').value, name: 'Cover Letter'},
+            {value: document.getElementById('cv').files[0], name: 'CV'},
+            {value: document.getElementById('cvl').files[0], name: 'Cover Letter'},
         ]
 
         if(pram === 'new'){
@@ -249,17 +250,24 @@ class Kigenni extends Component{
             
         }if(pram === 'submit'){
             let modal = document.getElementById('id01')
+            let modal2 = document.getElementById('id02')
             for(let x in this.products){
-                if(this.products[x].type === this.formData[0].value){
-                    if(this.formData[9].value === ""){
+                if(this.products[x].type === this.formData[0].value && this.formData[0].value !== 'Cover Letter'){
+                    if(document.getElementById('cv').value === ""){
                         this.formData[0].price = this.products[x].price
                         modal.style.display = 'block'
                     }else{
                         this.formData[0].price = this.products[x].price
                         this.props.rout(this.formData)
                     }
-                }else if(this.products[x].type === this.formData[0].value){
-                    this.props.rout(this.formData)
+                }else if(this.products[x].type === this.formData[0].value && this.formData[0].value !== 'CV'){
+                    if(document.getElementById('cvl').value === ""){
+                        this.formData[0].price = this.products[x].price
+                        modal2.style.display = 'block'
+                    }else{
+                        this.formData[0].price = this.products[x].price
+                        this.props.rout(this.formData)
+                    }
                 }else if(this.products[x].type === this.formData[0].value){
                     this.props.rout(this.formData)
                     axios.post('/', this.formData).then(res => {
@@ -359,7 +367,7 @@ class Kigenni extends Component{
                                         gap          : '1rem',
                                         autoplay     : true,
                                     } }
-                                    id="me"
+                                    id="templateSlide"
                                 >
                                     { this.state.slide.map( slide => (
                                         <SplideSlide key={ slide }>
@@ -482,23 +490,41 @@ class Kigenni extends Component{
                                         <div id="id01" className="w3-modal">
                                             <div className="w3-modal-content">
                                                 <div className="w3-container">
-                                                    <span onClick={()=>{document.getElementById('id01').style.display='none'}}
-                                                    className="w3-button w3-display-topright">&times;</span>
                                                     <div className='w3-center'>
                                                         <h5 className='w3-red w3-padding w3-round'>We strongly advise that you add your CV above as it will help us work faster to develop one for you.</h5>
                                                         <div className='w3-center'>
                                                             <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
                                                                 <label htmlFor ='cv'><img src={cv} alt='' style={{width: '150px', height: '150px'}} /></label>
                                                                 <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvName}</p>
-                                                                <input id='cv' onChange={()=>{this.name('cv')}} name='cv' type='file' className='w3-hide' />
                                                             </div>
                                                             <div className='w3-center w3-margin-bottom w3-round'>
-                                                                <button className='w3-btn w3-blue w3-round' onClick={e=>{this.props.rout(this.formData)}}>I don't have</button>
+                                                                <button className='w3-btn w3-red w3- w3-round' onClick={e=>{this.props.rout(this.formData)}}>I don't have</button>
+                                                            </div>
+                                                            <div className='w3-center w3-margin-bottom w3-round'>
+                                                                <button className='w3-btn w3-blue w3-round ' id='SubmitBtn' onClick={e=>{this.formSelect(e, 'submit')}}>Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className='w3-center w3-margin-bottom w3-round'>
-                                                        <button className='w3-btn w3-blue w3-round w3-hide' id='SubmitBtn' onClick={e=>{this.props.rout(this.formData)}}>Submit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="id02" className="w3-modal">
+                                            <div className="w3-modal-content">
+                                                <div className="w3-container">
+                                                    <div className='w3-center'>
+                                                        <h5 className='w3-red w3-padding w3-round'>We strongly advise that you add your CV above as it will help us work faster to develop one for you.</h5>
+                                                        <div className='w3-center'>
+                                                            <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
+                                                                <label htmlFor ='cvl'><img src={cvl} alt='' style={{width: '150px', height: '150px'}} /></label>
+                                                                <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvlName}</p>
+                                                            </div>
+                                                            <div className='w3-center w3-margin-bottom w3-round'>
+                                                                <button className='w3-btn w3-red w3-round' onClick={e=>{this.props.rout(this.formData)}}>I don't have</button>
+                                                            </div>
+                                                            <div className='w3-center w3-margin-bottom w3-round'>
+                                                                <button className='w3-btn w3-blue w3-round ' id='SubmitBtn' onClick={e=>{this.formSelect(e, 'submit')}}>Submit</button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -568,15 +594,15 @@ class Kigenni extends Component{
                                     } }
                                 >
                                     
-                                    { this.state.testimonials.map( slide => (
-                                        <SplideSlide key={ slide }>
+                                    { this.state.testimonials.map( (slide,ind) => (
+                                        <SplideSlide key={ ind }>
                                             <div>
                                                 <div className='w3-container card w3-center'  style={{height: '450px'}}>
                                                     <p className='w3-padding' style={{display:'inline-block'}}>{slide.testimonials}</p>
                                                     <div className='w3-row'>
                                                             {
                                                                 slide.star.map(arr=>{
-                                                                    return(<img src={star} alt={star} id={arr} className='w3-padding' style={{width:'50px',height:'50px'}} />)
+                                                                    return(<img src={star} alt={star} id={arr.toString()} className='w3-padding' style={{width:'50px',height:'50px'}} />)
                                                                 })
                                                             }
                                                         <p className='w3-bold'>{slide.name}</p>
@@ -635,6 +661,7 @@ class Kigenni extends Component{
                                         gap          : '1rem',
                                         autoplay     : true,
                                     } }
+                                    id='templateSlide'
                                 >
                                     { this.state.slide.map( slide => (
                                         <SplideSlide key={ slide }>
@@ -757,23 +784,41 @@ class Kigenni extends Component{
                                         <div id="id01" className="w3-modal">
                                             <div className="w3-modal-content">
                                                 <div className="w3-container">
-                                                    <span onClick={()=>{document.getElementById('id01').style.display='none'}}
-                                                    className="w3-button w3-display-topright">&times;</span>
                                                     <div className='w3-center'>
                                                         <h5 className='w3-red w3-padding w3-round'>We strongly advise that you add your CV above as it will help us work faster to develop one for you.</h5>
                                                         <div className='w3-center'>
                                                             <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
                                                                 <label htmlFor ='cv'><img src={cv} alt='' style={{width: '150px', height: '150px'}} /></label>
                                                                 <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvName}</p>
-                                                                <input id='cv' onChange={()=>{this.name('cv')}} name='cv' type='file' className='w3-hide' />
                                                             </div>
                                                             <div className='w3-center w3-margin-bottom w3-round'>
-                                                                <button className='w3-btn w3-blue w3-round' onClick={e=>{this.props.rout(this.formData)}}>I don't have</button>
+                                                                <button className='w3-btn w3-red w3- w3-round' onClick={e=>{this.props.rout(this.formData)}}>I don't have</button>
+                                                            </div>
+                                                            <div className='w3-center w3-margin-bottom w3-round'>
+                                                                <button className='w3-btn w3-blue w3-round ' id='SubmitBtn' onClick={e=>{this.formSelect(e, 'submit')}}>Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className='w3-center w3-margin-bottom w3-round'>
-                                                        <button className='w3-btn w3-blue w3-round w3-hide' id='SubmitBtn' onClick={e=>{this.props.rout(this.formData)}}>Submit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="id02" className="w3-modal">
+                                            <div className="w3-modal-content">
+                                                <div className="w3-container">
+                                                    <div className='w3-center'>
+                                                        <h5 className='w3-red w3-padding w3-round'>We strongly advise that you add your CV above as it will help us work faster to develop one for you.</h5>
+                                                        <div className='w3-center'>
+                                                            <div className='w3-padding w3-card w3-margin-top w3-margin-bottom w3-round' style={{display: 'inline-block'}}>
+                                                                <label htmlFor ='cvl'><img src={cvl} alt='' style={{width: '150px', height: '150px'}} /></label>
+                                                                <p className='w3-center w3-padding w3-bold' style={{overflowWrap: 'break-word'}}>{this.state.cvlName}</p>
+                                                            </div>
+                                                            <div className='w3-center w3-margin-bottom w3-round'>
+                                                                <button className='w3-btn w3-red w3-round' onClick={e=>{this.props.rout(this.formData)}}>I don't have</button>
+                                                            </div>
+                                                            <div className='w3-center w3-margin-bottom w3-round'>
+                                                                <button className='w3-btn w3-blue w3-round ' id='SubmitBtn' onClick={e=>{this.formSelect(e, 'submit')}}>Submit</button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -841,15 +886,15 @@ class Kigenni extends Component{
                                     } }
                                 >
                                     
-                                    { this.state.testimonials.map( slide => (
-                                        <SplideSlide key={ slide }>
+                                    { this.state.testimonials.map( (slide, ind) => (
+                                        <SplideSlide key={ ind }>
                                             <div>
                                                 <div className='w3-container card w3-center'  style={{height: '450px'}}>
                                                     <p className='w3-padding'>{slide.testimonials}</p>
                                                     <div className='w3-row'>
                                                         {
                                                             slide.star.map(arr=>{
-                                                                return(<img src={star} alt={star} id={arr} className='w3-padding' style={{width:'50px',height:'50px'}} />)
+                                                                return(<img src={star} alt={star} id={arr.toString()} className='w3-padding' style={{width:'50px',height:'50px'}} />)
                                                             })
                                                         }
                                                         <p className='w3-bold'>{slide.name}</p>
@@ -860,6 +905,23 @@ class Kigenni extends Component{
                                     ) ) }
                                 </Splide>
                             </div>
+                        </div>
+                    </div>
+                    <div className ='w3-container contact'>
+                        <img src={gmail} alt='mail' className='' id='mailBtn' style={{width: '40px', height: '40px'}} onClick={()=>{document.getElementById('mail').classList.remove('w3-hide'); document.getElementById('mailBtn').classList.add('w3-hide')}} />
+
+                        <div id='mail' className='w3-padding w3-white w3-container w3-hide'>
+                            <form>
+                                <h5 className='w3-text-blue w3-center'>Send us a message</h5>
+                                <span className='w3-right w3-padding w3-button w3-bold' onClick={()=>{document.getElementById('mail').classList.add('w3-hide'); document.getElementById('mailBtn').classList.remove('w3-hide')}}>X</span>
+                                <input className='w3-input w3-border w3-round' placeholder='Name' name='name' />
+                                <input className='w3-input w3-border w3-round w3-margin-top' placeholder='Email' name='email' />
+                                <input className='w3-input w3-border w3-round w3-margin-top' placeholder='Subject' name='subject' />
+                                <textarea className='w3-input w3-border w3-round w3-margin-top' placeholder='Message...' name='message'></textarea>
+                                <div className='w3-center w3-margin-top'>
+                                    <button className='w3-btn w3-round w3-blue'>Send</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </>

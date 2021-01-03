@@ -27,6 +27,17 @@ export default class Dashboard extends Component{
 
     componentDidMount(){
         this.getCustomers()
+        this.getUsers()
+    }
+
+    getUsers = () => {
+        db.collection('Admin').doc('Users').get()
+        .then(e=>{
+            if(e.exists){
+                let users = [...e.data().users]
+                this.setState({users: users.length})
+            }
+        })
     }
 
     customers = []
@@ -1057,10 +1068,10 @@ class Settings extends Component{
                         </div>
                         <div className='w3-col m3 l3 w3-border w3-round w3-margin-left' id='customerSettings'>
                             <div className='w3-padding w3-container'>
-                                <button className='w3-button w3-padding w3-grey w3-text-white w3-block w3-padding w3-margin-top' onClick={()=>{document.getElementById('1').style.display='block'}}>Customers Settings</button>
-                                <div className='w3-modal' id='1'>
+                                <button className='w3-button w3-padding w3-grey w3-text-white w3-block w3-padding w3-margin-top' onClick={()=>{document.getElementById('Cus').style.display='block'}}>Customers Settings</button>
+                                <div className='w3-modal' id='Cus'>
                                     <div className='w3-modal-content'>
-                                    <span onClick={()=>{document.getElementById('1').style.display='none'}}
+                                    <span onClick={()=>{document.getElementById('Cus').style.display='none'}}
                                         className="w3-button w3-display-topright">&times;</span>
                                     </div>
                                     <div className='w3-container w3-padding' style={{marginTop: '40px'}}>
