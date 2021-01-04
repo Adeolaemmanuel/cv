@@ -7,7 +7,7 @@ import { db, firebase } from '../database'
 import delet from '../assets/img/delete.svg';
 import cv from '../assets/img/cv.svg'
 import cvl from '../assets/img/cvl.svg'
-import Nav, { Sidebar } from '../nav/nav';
+
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 export default class Main extends Component{
@@ -68,8 +68,6 @@ export default class Main extends Component{
         return (
             <div>
                 <Router>
-                    <Nav />
-                    <Sidebar />
                     {
                         this.state.permissionCheck.map((arr,ind)=>{
                         return(

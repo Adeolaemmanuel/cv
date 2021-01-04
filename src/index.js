@@ -15,7 +15,7 @@ export default class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      permissionCheck: [{value:'', component:''}],
+      permissionCheck: [],
       redirect: '',
       user: this.cookies.get('user')
     }
@@ -72,6 +72,15 @@ export default class Index extends Component {
       return (
         <div>
           <Router>
+            <Route path='/' exact>
+              <Home />
+            </Route>
+            <Route path='/Cart' exact>
+              <Cart />
+            </Route>
+            <Route path='/Admin' exact>
+              <Admin />
+            </Route>
             <Route path='/Main' exact>
               <Main />
             </Route>
