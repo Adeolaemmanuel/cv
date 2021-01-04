@@ -3,7 +3,7 @@ import './admin.css'
 import { Cookies } from 'react-cookie'
 import Nav from '../nav/nav';
 import { db } from '../database'
-import Main from '../Dasboard/dashboard';
+import { Redirect } from 'react-router-dom';
 
 
 export default class Admin extends Component {
@@ -31,7 +31,7 @@ export default class Admin extends Component {
         if(this.state.user){
             return (
                 <div>
-                    <Main />
+                    <Redirect to='/Main' />
                 </div>
             )
             

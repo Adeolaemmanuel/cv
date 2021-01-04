@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { Cookies } from 'react-cookie'
-import '../Dasboard/dashboard.css';
-import Nav, { Sidebar } from '../nav/nav';
+import './main.css';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import { db, firebase } from '../database'
 import delet from '../assets/img/delete.svg';
 import cv from '../assets/img/cv.svg'
 import cvl from '../assets/img/cvl.svg'
-import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
+import Nav, { Sidebar } from '../nav/nav';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 export default class Main extends Component{
     constructor(props) {
@@ -57,7 +57,7 @@ export default class Main extends Component{
             }
             console.log(sides);
             this.setState({permissionCheck: sides})
-            this.setState({redirect: sides[0].value})
+            //this.setState({redirect: sides[0].value})
             }
         })
         }
@@ -68,18 +68,17 @@ export default class Main extends Component{
         return (
             <div>
                 <Router>
-                <Nav />
-                <Sidebar />
-                {
-                    this.state.permissionCheck.map((arr,ind)=>{
-                    return(
-                        <Route path={'/'+arr.value} key={ind}>
-                            <arr.component />
-                        </Route>
-                    )
-                    })
-                }
-                <Redirect to={'/'+this.state.redirect}></Redirect>
+                    <Nav />
+                    <Sidebar />
+                    {
+                        this.state.permissionCheck.map((arr,ind)=>{
+                        return(
+                            <Route path={'/'+arr.value} exact key={ind}>
+                                <arr.component />
+                            </Route>
+                        )
+                        })
+                    }
                 </Router>
             </div>
         )
@@ -780,16 +779,18 @@ class Settings extends Component{
     previous
     switch = (pram) => {
         let mobile = document.getElementsByClassName('mob')
-        if(pram === 'next' && this.current < mobile.length -1){
-            this.current = this.current + 1
-            mobile[this.current].style.display = 'block'
-            this.previous = this.current - 1
-            mobile[this.previous].style.display = 'none'
-        }else if(pram === 'previous' && this.current !== 0){
-            this.current = this.current - 1
-            mobile[this.current].style.display = 'block'
-            this.previous = this.current + 1
-            mobile[this.previous].style.display = 'none'
+        if(pram === 'prod'){
+            mobile[0].style.display = 'block'
+            mobile[1].style.display = 'none'
+            mobile[1].style.display = 'none'
+        }else if(pram === 'mail'){
+            mobile[0].style.display = 'none'
+            mobile[1].style.display = 'block'
+            mobile[1].style.display = 'none'
+        } if(pram === 'mail'){
+            mobile[0].style.display = 'none'
+            mobile[1].style.display = 'none'
+            mobile[1].style.display = 'block'
         }
     }
 
@@ -937,8 +938,9 @@ class Settings extends Component{
                     <div className='w3-row'>
                         
                         <div className='w3-bar w3-margin-top'>
-                            <div className='w3-bar-item w3-black' onClick={e=>{this.switch('previous')}}>Previous</div>
-                            <div className='w3-bar-item w3-black w3-right' onClick={e=>{this.switch('next')}}>Next</div>
+                            <div className='w3-bar-item w3-black' onClick={e=>{this.switch('prod')}}>Products</div>
+                            <div className='w3-bar-item w3-black ' onClick={e=>{this.switch('mail')}}>Emails</div>
+                            <div className='w3-bar-item w3-black ' onClick={e=>{this.switch('cus')}}>Custom</div>
                         </div>
                         <div className='w3-center'>
                             <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.not}</div>
