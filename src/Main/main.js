@@ -245,7 +245,7 @@ class Dashboard extends Component{
                     <div className='w3-row' style={{marginTop: '50px'}}>
                         <form>
                             <div className='w3-col s12 m8 l8 w3-padding'>
-                                <input type='text'className='w3-input w3-border' placeholder='Search' />
+                                <input type='text'className='w3-input w3-border' placeholder='Search'  onChange={this.search} />
                             </div>
                             <div className='w3-rest w3-padding'>
                                 <select className='w3-input w3-border w3-round' onChange={this.filter} defaultValue='Filter' style={{width: '200px'}}>
@@ -269,33 +269,33 @@ class Dashboard extends Component{
                             </div>
                             <div className='w3-paddng details'>
                                 {
-                                this.state.details.map((arr,ind)=>{
-                                        return(
-                                            <div>
-                                                <div className='w3-row w3-card w3-margin-top w3-button w3-block' key={ind} onClick={()=>{this.accorodion(ind)}}>
-                                                    <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
-                                                    <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
-                                                    <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
-                                                </div>
-                                                <div className='w3-container w3-padding w3-hide' id={ind}>
-                                                    <div className='w3-row w3-padding'>
-                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Gender: </b>{arr.gender}</div>
-                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>DOB</b>: {arr.dob}</div>
-                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Industry: </b>{arr.industry}</div>
-                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Register Date: </b>{arr.date}</div>
-                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>State: </b>{arr.state}</div>
-                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Experience: </b>{arr.exp}</div>
-                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Communication: </b>{arr.com}</div>
-                                                        <div className='w3-col s6 m6 l6 w3-padding'><b>Price: </b>{arr.price}</div>
+                                    this.state.details.map((arr,ind)=>{
+                                            return(
+                                                <div>
+                                                    <div className='w3-row w3-card w3-margin-top w3-button w3-block' key={ind} onClick={()=>{this.accorodion(ind)}}>
+                                                        <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
+                                                        <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
+                                                        <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
                                                     </div>
-                                                    <div className='w3-row'>
-                                                        <button className='w3-col s6 w3-btn w3-red w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'delete')}} >Delete</button>
-                                                        <button className='w3-col s6 w3-btn w3-green w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'send')}}>Send Reminder</button>
+                                                    <div className='w3-container w3-padding w3-hide' id={ind}>
+                                                        <div className='w3-row w3-padding'>
+                                                            <div className='w3-col s6 m6 l6 w3-padding'><b>Gender: </b>{arr.gender}</div>
+                                                            <div className='w3-col s6 m6 l6 w3-padding'><b>DOB</b>: {arr.dob}</div>
+                                                            <div className='w3-col s6 m6 l6 w3-padding'><b>Industry: </b>{arr.industry}</div>
+                                                            <div className='w3-col s6 m6 l6 w3-padding'><b>Register Date: </b>{arr.date}</div>
+                                                            <div className='w3-col s6 m6 l6 w3-padding'><b>State: </b>{arr.state}</div>
+                                                            <div className='w3-col s6 m6 l6 w3-padding'><b>Experience: </b>{arr.exp}</div>
+                                                            <div className='w3-col s6 m6 l6 w3-padding'><b>Communication: </b>{arr.com}</div>
+                                                            <div className='w3-col s6 m6 l6 w3-padding'><b>Price: </b>{arr.price}</div>
+                                                        </div>
+                                                        <div className='w3-row'>
+                                                            <button className='w3-col s6 w3-btn w3-red w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'delete')}} >Delete</button>
+                                                            <button className='w3-col s6 w3-btn w3-green w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'send')}}>Send Reminder</button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )
-                                }) 
+                                            )
+                                    }) 
                                 }
                             </div>
                         </div>
