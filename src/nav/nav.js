@@ -27,7 +27,7 @@ export default class Nav extends Component {
             return (
                 <div>
                     <nav className='w3-bar'>
-                        <p className='w3-bar-item w3-text-blue w3-bold'>KIGENNI</p>
+                        <Link to='/'><p className='w3-bar-item w3-text-blue w3-bold'>KIGENNI</p></Link>
                     </nav>
                 </div>
                 
@@ -36,7 +36,7 @@ export default class Nav extends Component {
             return (
                 <div>
                     <nav className='w3-bar'>
-                        <p className='w3-bar-item w3-text-blue w3-bold'>KIGENNI</p>
+                    <Link to='/'><p className='w3-bar-item w3-text-blue w3-bold'>KIGENNI</p></Link>
                     </nav>
                 </div>
                 

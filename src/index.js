@@ -59,7 +59,7 @@ export default class Index extends Component {
         }
         console.log(sides);
         this.setState({permissionCheck: sides})
-        //this.setState({redirect: sides[0].value})
+        this.setState({redirect: sides[0].value})
         }
     })
     }
@@ -72,29 +72,17 @@ export default class Index extends Component {
       return (
         <div>
           <Router>
-            <Route path='/' exact>
-              <Home />
-            </Route>
-            <Route path='/Cart' exact>
-              <Cart />
-            </Route>
-            <Route path='/Admin' exact>
-              <Admin />
-            </Route>
-            <Route path='/Main' exact>
-              <Main />
-            </Route>
             <Nav />
             <Sidebar />
-            {
+              {
                 this.state.permissionCheck.map((arr,ind)=>{
-                return(
-                    <Route path={'/'+arr.value} exact key={ind}>
-                        <arr.component />
-                    </Route>
-                )
+                  return(
+                      <Route path={'/'+arr.value} exact key={ind}>
+                          <arr.component />
+                      </Route>
+                  )
                 })
-            }
+              }            
           </Router>
         </div>
       )

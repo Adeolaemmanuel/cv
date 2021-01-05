@@ -28,6 +28,7 @@ export default class Cart extends Component {
             name: this.state.formData[1].value,
             email: this.state.formData[2].value,
             com: this.state.formData[3].value,
+            phone: this.state.formData[11].value,
             gender: this.state.formData[4].value,
             dob: this.state.formData[5].value,
             state: this.state.formData[6].value,
@@ -91,12 +92,13 @@ export default class Cart extends Component {
                                 info.classList.remove('w3-hide')
                                 document.getElementById('payBtn').classList.remove('w3-hide')
                                 document.getElementById('conBtn').classList.add('w3-hide')
+                                axios.post('/data', result)
                                 if(this.state.formData[9].value){
-                                    this.Form.append('cv', result.cv)
+                                    this.Form.append('file', result.cv)
                                     axios({
                                         method: "POST",
                                         url: "/cv",
-                                        data: result,
+                                        data: this.Form,
                                         headers: {
                                             "Content-Type": "multipart/form-data"
                                         }
@@ -117,8 +119,8 @@ export default class Cart extends Component {
                                 }
                                 this.config  = {
                                     reference: (new Date()).getTime(),
-                                    email: document.getElementById('payEmail').innerHTML,
-                                    amount: document.getElementById('payPrice').innerHTML,
+                                    email: result.email,
+                                    amount: result.price,
                                     publicKey: 'sk_live_b0b9f25b25234b9e553b0cef835cfd5c477af3a8',
                                   };
                             }
@@ -126,6 +128,10 @@ export default class Cart extends Component {
                             info.classList.remove('w3-hide')
                             document.getElementById('payBtn').classList.remove('w3-hide')
                             document.getElementById('conBtn').classList.add('w3-hide')
+                            if(result.cv && result.cvl){}else{
+                                delete result.cv
+                                delete result.cvl
+                            }
                             db.collection('Custormers').doc(this.state.formData[2].value).set({details: firebase.firestore.FieldValue.arrayUnion(result)})
                             if(result.cv !=="" && result.cvl === ""){
                                     axios.post('/cv', result).then(res => {

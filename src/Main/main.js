@@ -7,9 +7,8 @@ import { db, firebase } from '../database'
 import delet from '../assets/img/delete.svg';
 import cv from '../assets/img/cv.svg'
 import cvl from '../assets/img/cvl.svg'
-
 import { BrowserRouter as Router, Route } from "react-router-dom";
-
+import axios from 'axios'
 export default class Main extends Component{
     constructor(props) {
         super(props);
@@ -88,13 +87,12 @@ class Dashboard extends Component{
         super(props);
         this.state = {
             email: cookies.get('email'),
-            filter: ['Name','Email','Paid','Type'],
+            filter: ['Name','Email','Paid','Type', 'Date'],
             details: [],
             pending: 0,
             paid: 0,
             users: 0,
             filterM: 'name',
-            reminders: []
         }
     }
 
@@ -119,7 +117,7 @@ class Dashboard extends Component{
         db.collection('Admin').doc('Emails').onSnapshot(e=>{
             if(e.exists){
                 let emails = [...e.data()['emails']]
-                console.log(emails);
+                //console.log(emails);
                 for(let x=0; x<emails.length; x++){
                     db.collection('Custormers').doc(emails[x]).get()
                     .then(c=>{
@@ -148,13 +146,15 @@ class Dashboard extends Component{
 
     search = (e) => {
         e.preventDefault()
+        let search = []
         this.state.details.filter(arr=>{
             if(arr[this.state.filterM] === e.target.value || arr[this.state.filterM].toLowerCase() === e.target.value.toLowerCase()){
-                this.setState(state=>({details: [arr]}))
+                search.push(arr)
+                this.setState(state=>({details: search}))
             }else if(e.target.value === ''){
-                this.customers = []
+                let customer = []
                 this.setState({details: []})
-                db.collection('Admin').doc('Emails').onSnapshot(e=>{
+                db.collection('Admin').doc('Emails').get().then(e=>{
                     if(e.exists){
                         let emails = [...e.data()['emails']]
                         //console.log(emails);
@@ -162,9 +162,10 @@ class Dashboard extends Component{
                             db.collection('Custormers').doc(emails[x]).get()
                             .then(c=>{
                                 for(let p=0; p< c.data().details.length; p++){
-                                    this.customers.push(c.data().details[p])                          
+                                    customer.push(c.data().details[p])                          
                                 }
-                            }).then(()=>{this.setState({details: this.customers})})
+                                this.setState({details: customer})
+                            })
                         }
                     }
                 })
@@ -192,7 +193,16 @@ class Dashboard extends Component{
                 }
             })
         }else if(pram === 'send'){
-
+            db.collection('Custormers').doc(e.target.id).get()
+            .then(e=>{
+                let users = e.data().details
+                for(let r=0; r<users.length; r++){
+                    if(users[r].paid === 'Pending'){
+                        let data = {name: users[r].name, type: users[r].type, email: users[r].email, price: users[r].price}
+                        axios.post('/remind', data)
+                    }
+                }
+            })
         }else if(pram === 'add'){
             let reminders = [...this.state.reminders];
             reminders.push(e.target.id)
@@ -262,7 +272,7 @@ class Dashboard extends Component{
                                 this.state.details.map((arr,ind)=>{
                                         return(
                                             <div>
-                                                <div className='w3-row w3-cardw3-margin-top w3-button w3-block' key={ind} onClick={()=>{this.accorodion(ind)}}>
+                                                <div className='w3-row w3-card w3-margin-top w3-button w3-block' key={ind} onClick={()=>{this.accorodion(ind)}}>
                                                     <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.name}</h6></div>
                                                     <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.type}</h6></div>
                                                     <div className='w3-col s4 w3-padding' style={{overflowWrap: 'break-word'}}><h6 className='w3-small'>{arr.email}</h6></div>
@@ -343,9 +353,8 @@ class Dashboard extends Component{
                                                                 <div className='w3-col s6 m6 l6 w3-padding'><b>Price: </b>{arr.price}</div>
                                                             </div>
                                                             <div className='w3-row'>
-                                                                <button className='w3-col m4 l4 w3-btn w3-red w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'delete')}} >Delete</button>
-                                                                <button className='w3-col m4 l4 w3-btn w3-green w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'send')}}>Send Reminder</button>
-                                                                <button className='w3-col m4 l4 w3-btn w3-blue w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'add')}}>Add Reminder</button>
+                                                                <button className='w3-col m6 l6 w3-btn w3-red w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'delete')}} >Delete</button>
+                                                                <button className='w3-col m6 l6 w3-btn w3-green w3-padding' id={arr.email} onClick={(e)=>{this.customersOption(e, 'send')}}>Send Reminder</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -364,19 +373,7 @@ class Dashboard extends Component{
                                         })
                                     }
                                 </select>
-                                <div className='w3-padding'>
-                                    <h4 className='w3-padding w3-blue w3-bold'>Set Reminder</h4>
-                                    <div className='w3-padding'>
-                                        {
-                                            this.state.reminders.map(arr=>{
-                                                return(
-                                                    <div className='w3-round w3-card w3-padding w3-margin-top' id={arr}>{arr}</div>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                    <button className='w3-green w3-btn w3-round w3-margin-top'>Send</button>
-                                </div>
+                                
                             </div>
                         </form>
                     </div>
@@ -445,7 +442,7 @@ class Add extends Component{
                         User: formData[1].value,
                         Password:  formData[2].value,
                         Permission:  formData[3].value,
-                    }).then(()=>{db.collection('Admin').doc('Users').update({emails: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
+                    }).then(()=>{db.collection('Admin').doc('Users').update({users: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
                 }else{
                     db.collection('Admin').doc('Users').get()
                     .then(user=>{
@@ -466,7 +463,7 @@ class Add extends Component{
                                 User: formData[1].value,
                                 Password:  formData[2].value,
                                 Permission:  formData[3].value,
-                            }).then(()=>{db.collection('Admin').doc('Users').set({user: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
+                            }).then(()=>{db.collection('Admin').doc('Users').set({users: firebase.firestore.FieldValue.arrayUnion(formData[1].value)})})
                         }
                     })
                 }
@@ -481,6 +478,21 @@ class Add extends Component{
         } else {
             x.className = x.className.replace(" w3-show", "");
         }
+    }
+
+    deleteUser = (id) => {
+        db.collection('Admin').doc('Users').get()
+        .then(u=>{
+            if(u.exists){
+                let users = u.data().users 
+                let name = users.splice(id)
+                db.collection('Admin').doc('Users').update({users: users})
+                .then(()=>{
+                    db.collection('Users').doc(name[0]).delete()
+                    this.setState({users: users})
+                })
+            }
+        })
     }
 
     render() {
@@ -515,7 +527,26 @@ class Add extends Component{
                             </div>
                         </div>
                         <div className='w3-rest w3-padding'>
-    
+                            {
+                                this.state.users.map((arr,ind)=>{
+                                    return(
+                                        <div>
+                                            <div className='w3-row w3-card w3-padding'>
+                                                <div className='w3-col s4 m4 l4 w3-padding'>{arr.Name}</div>
+                                                <div className='w3-col s4 m4 l4 w3-padding'>{arr.Email}</div>
+                                                <div className='w3-col s1 m1 l1 w3-margin-left w3-center w3-padding'><img src={delet} alt={delet} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={()=>{this.deleteUser(ind)}} /></div>
+                                            </div>
+                                            <div className='w3-container w3-padding w3-hide' id={ind}>
+                                                <div className='w3-row w3-padding'>
+                                                    <div className='w3-col s6 m6 l6 w3-padding'><b>: </b>{arr.gender}</div>
+                                                    
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
                         </div>
                     </div>
                 </>
@@ -557,7 +588,7 @@ class Add extends Component{
                                             <div className='w3-row w3-card w3-padding'>
                                                 <div className='w3-col s4 m4 l4 w3-padding'>{arr.Name}</div>
                                                 <div className='w3-col s4 m4 l4 w3-padding'>{arr.Email}</div>
-                                                <div className='w3-col s1 m1 l1 w3-margin-left w3-center w3-padding'><img src={delet} alt={delet} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={()=>{this.delProduct(ind)}} /></div>
+                                                <div className='w3-col s1 m1 l1 w3-margin-left w3-center w3-padding'><img src={delet} alt={delet} style={{width:'30px', height:'30px', cursor: 'pointer'}} onClick={()=>{this.deleteUser(ind)}} /></div>
                                             </div>
                                             <div className='w3-container w3-padding w3-hide' id={ind}>
                                                 <div className='w3-row w3-padding'>
@@ -753,7 +784,8 @@ class Settings extends Component{
             not: '',
             type: [],
             delievryEmails: [],
-            searchCustumers: []
+            searchCustumers: [],
+            templates: []
         }
     }
 
@@ -780,15 +812,15 @@ class Settings extends Component{
         if(pram === 'prod'){
             mobile[0].style.display = 'block'
             mobile[1].style.display = 'none'
-            mobile[1].style.display = 'none'
+            mobile[2].style.display = 'none'
         }else if(pram === 'mail'){
             mobile[0].style.display = 'none'
             mobile[1].style.display = 'block'
-            mobile[1].style.display = 'none'
-        } if(pram === 'mail'){
+            mobile[2].style.display = 'none'
+        } if(pram === 'cus'){
             mobile[0].style.display = 'none'
             mobile[1].style.display = 'none'
-            mobile[1].style.display = 'block'
+            mobile[2].style.display = 'block'
         }
     }
 
@@ -890,8 +922,14 @@ class Settings extends Component{
             if(c.exists){
                 let customers = [...c.data().details]
                 this.setState({searchCustumers: customers})
+                console.log(customers);
             }
         })
+    }
+
+    updateCustumers = (e) =>{
+        e.preventDefault()
+        let previous = [...this.state.searchCustumers]
     }
 
     testimonials = (e) => {
@@ -1012,27 +1050,31 @@ class Settings extends Component{
                                             </div>
                                         </form>
                                         <div className='w3-container w3-row w3-white w3-round w3-margin-top w3-padding'>
-                                            <form>
-                                                {
-                                                    this.state.searchCustumers.map((arr,ind)=>{
-                                                        return(
-                                                            <div>
-                                                                <div className='w3-padding w3-block w3-margin-top w3-button' onClick={e=>{this.accorodion(e, `${arr.email}${ind}`)}}>{arr.name}</div>
-                                                                <div className='w3-row w3-hide' key={ind} id={`${arr.email}${ind}`}>
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-col s6 m6 l6 w3-margin-top' placeholder={arr.name} id='name' name='name' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.email} id='email' name='email' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.type} id='type' name='type' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.gender} id='gender' name='gender' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.dob} id='dob' name='dob' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.state} id='state' name='state' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.industry} id='ind' name='ind' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.exp} id='exp' name='exp' />
+                                            <form  id='update' onSubmit={e=>{this.updateCustumers(e)}}>
+                                                    {
+                                                        this.state.searchCustumers.map((arr,ind)=>{
+                                                            return(
+                                                                <div>
+                                                                    <div className='w3-padding w3-block w3-margin-top w3-button' onClick={e=>{this.accorodion(e, `${arr.email}${ind}`)}}>{arr.name}</div>
+                                                                    <div className='w3-row w3-hide' key={ind} id={`${arr.email}${ind}`}>
+                                                                        <input className='w3-input w3-border w3-round w3-padding w3-col s6 m6 l6 w3-margin-top' value={arr.name} id='name' name='name' />
+                                                                        <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' value={arr.email} id='email' name='email' />
+                                                                        <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' value={arr.type} id='type' name='type' />
+                                                                        <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' value={arr.gender} id='gender' name='gender' />
+                                                                        <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' value={arr.dob} id='dob' name='dob' />
+                                                                        <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' value={arr.state} id='state' name='state' />
+                                                                        <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' value={arr.industry} id='ind' name='ind' />
+                                                                        <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' value={arr.exp} id='exp' name='exp' />
+                                                                        <div className='w3-center w3-margin-top'>
+                                                                            <button className='w3-btn w3-blue'>Update</button>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-                                            </form>
+                                                            )
+                                                        })
+                                                    }
+                                                    
+                                                </form>
                                         </div>
                                     </div>
                                 </div>
@@ -1146,7 +1188,7 @@ class Settings extends Component{
                                             </div>
                                         </form>
                                         <div className='w3-container w3-row w3-white w3-round w3-margin-top w3-padding'>
-                                            <form>
+                                            <form  id='update' onSubmit={e=>{this.updateCustumers(e)}}>
                                                 {
                                                     this.state.searchCustumers.map((arr,ind)=>{
                                                         return(
@@ -1161,26 +1203,30 @@ class Settings extends Component{
                                                                     <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.state} id='state' name='state' />
                                                                     <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.industry} id='ind' name='ind' />
                                                                     <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.exp} id='exp' name='exp' />
+                                                                    <div className='w3-center w3-margin-top'>
+                                                                        <button className='w3-btn w3-blue'>Update</button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         )
                                                     })
                                                 }
+                                                
                                             </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className='w3-padding w3-container'>
-                                <button className='w3-button w3-padding w3-grey w3-text-white w3-block w3-padding w3-margin-top' onClick={()=>{document.getElementById('2').style.display='block'}}>Testimonials Settings</button>
-                                <div className='w3-modal' id='2'>
+                                <button className='w3-button w3-padding w3-grey w3-text-white w3-block w3-padding w3-margin-top' onClick={()=>{document.getElementById('testim').style.display='block'}}>Testimonials Settings</button>
+                                <div className='w3-modal' id='testim'>
                                     <div className='w3-modal-content'>
-                                    <span onClick={()=>{document.getElementById('2').style.display='none'}}
+                                    <span onClick={()=>{document.getElementById('testim').style.display='none'}}
                                         className="w3-button w3-display-topright">&times;</span>
                                     </div>
                                     <div className='w3-container w3-white w3-padding' style={{marginTop: '40px'}}>
                                        <form id='testimonialsForm' onSubmit={this.testimonials}>
-                                        <h5 className='w3-text-blue'>Update Testimonials</h5>
+                                        <h5 className='w3-text-blue w3-center'>Update Testimonials</h5>
                                             <input className='w3-input w3-border w3-margin-top' placeholder='Customers name' name='name' id='cName' />
                                             <textarea className='w3-input w3-border w3-margin-top' id='testim'></textarea>
                                             <h5 className='w3-center w3-text-yellow'>Rate</h5>

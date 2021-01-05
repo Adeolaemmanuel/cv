@@ -162,6 +162,7 @@ class Kigenni extends Component{
             {value: document.getElementById('exp').value, name: 'Experience'},
             {value: document.getElementById('cv').files[0], name: 'CV'},
             {value: document.getElementById('cvl').files[0], name: 'Cover Letter'},
+            {value: document.getElementById('phone').value, name: 'Number'},
         ]
 
         if(pram === 'new'){
@@ -189,6 +190,12 @@ class Kigenni extends Component{
             }else if(this.formData[2].value === "" || this.formData[2].value === "default"){
                 not.classList.remove('w3-hide')
                 this.setState({not: `Missing Details ${this.formData[2].name}`})
+                setTimeout(()=>{
+                    not.classList.add('w3-hide') 
+                },8000)
+            }else if(this.formData[11].value === "" || this.formData[11].value === "default"){
+                not.classList.remove('w3-hide')
+                this.setState({not: `Missing Details ${this.formData[11].name}`})
                 setTimeout(()=>{
                     not.classList.add('w3-hide') 
                 },8000)
