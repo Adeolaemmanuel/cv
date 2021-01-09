@@ -282,7 +282,7 @@ class Dashboard extends Component{
     }
 
     setCalendar = (e) => {
-        let data = {}
+        //let data = {}
     }
 
     animatedComponents = makeAnimated();
