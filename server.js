@@ -48,7 +48,7 @@ var upload = multer({ storage: storage,limits: { fileSize: maxSize }});
     secure: true, // true for 465, false for other ports
     auth: {
       user: 'emmanuelcox39@gmail.com', // generated ethereal user
-      pass: 'neutron@360', // generated ethereal password
+      pass: '', // generated ethereal password
     },
   });
 
