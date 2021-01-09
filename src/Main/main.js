@@ -927,11 +927,6 @@ class Settings extends Component{
         })
     }
 
-    updateCustumers = (e) =>{
-        e.preventDefault()
-        let previous = [...this.state.searchCustumers]
-    }
-
     testimonials = (e) => {
         e.preventDefault()
         var data = {
@@ -957,14 +952,57 @@ class Settings extends Component{
         })
     }
 
-    accorodion = (e, pram) =>{
+    index 
+    accorodion = (e, pram, ind) =>{
         e.preventDefault()
+        this.index = ind
         let show = document.getElementById(pram)
         if(show.classList.contains('w3-hide')){
             show.classList.remove('w3-hide')
         }else{
             show.classList.add('w3-hide')
         }
+    }
+
+    updateCustumers = (e) =>{
+        e.preventDefault()
+        let formData = {
+            id: this.index,
+            name: document.getElementById('name').value,
+            email: document.getElementById('emailU').value,
+            type: document.getElementById('type').value,
+            gender: document.getElementById('gender').value,
+            dob: document.getElementById('dob').value,
+            state: document.getElementById('state').value,
+            industry: document.getElementById('ind').value,
+            exp: document.getElementById('exp').value,
+            paid: document.getElementById('paid').value,
+            price: document.getElementById('name').value
+        }
+        let previous = this.state.searchCustumers
+        if(formData.name !== ""){
+            previous[formData.id].name = formData.name
+        }else if(formData.email !== ""){
+             previous[formData.id].email = formData.email 
+        }else if(formData.type !== ""){
+            previous[formData.id].type = formData.type  
+        }else if(formData.gender !== ""){
+            previous[formData.id].gender = formData.gender  
+        }else if(formData.dob !== ""){
+            previous[formData.id].dob = formData.dob
+        }else if(formData.state !== ""){
+            previous[formData.id].state = formData.state  
+        }else if(formData.industry !== ""){
+            previous[formData.id].industry = formData.industry 
+        }else if(formData.exp !== ""){
+            previous[formData.id].exp = formData.exp 
+        }else if(formData.paid !== ""){
+            previous[formData.id].paid = formData.paid 
+        }else if(formData.price !== ""){
+            previous[formData.id].price = formData.price 
+        }
+
+        db.collection('Custormers').doc(previous[formData.id].email).update({details: previous})
     }
 
     render() {
@@ -1152,7 +1190,7 @@ class Settings extends Component{
                             <h5 className='w3-center w3-text-blue'>Add Emails For Delievry</h5>
                             <div className='w3-padding'>
                                 <form onSubmit={e=>{this.deliveryEmails(e, 'submit')}}>
-                                    <input className='w3-input w3-border w3-round' ty='email' placeholder='Email' id='email' />
+                                    <input className='w3-input w3-border w3-round' type='email' placeholder='Email' id='email' />
                                     <input className='w3-input w3-border w3-round w3-margin-top' type='password' placeholder='Password' id='password' />
                                     <div className='w3-center w3-margin-top'>
                                         <button className='w3-btn w3-blue w3-round'>Submit</button>
@@ -1193,18 +1231,21 @@ class Settings extends Component{
                                                     this.state.searchCustumers.map((arr,ind)=>{
                                                         return(
                                                             <div>
-                                                                <div className='w3-padding w3-block w3-margin-top w3-button' onClick={e=>{this.accorodion(e, `${arr.email}${ind}`)}}>{arr.name}</div>
+                                                                <div className='w3-padding w3-block w3-margin-top w3-button' onClick={e=>{this.accorodion(e, `${arr.email}${ind}`, ind)}}>{arr.name}</div>
                                                                 <div className='w3-row w3-hide' key={ind} id={`${arr.email}${ind}`}>
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-col s6 m6 l6 w3-margin-top' placeholder={arr.name} id='name' name='name' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.email} id='email' name='email' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.type} id='type' name='type' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.gender} id='gender' name='gender' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.dob} id='dob' name='dob' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.state} id='state' name='state' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.industry} id='ind' name='ind' />
-                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' placeholder={arr.exp} id='exp' name='exp' />
+                                                                    <input type='hidden' value={ind} id={ind} />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-col s6 m6 l6 w3-margin-top' type='text' placeholder={arr.name} id='name' name='name' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' type='text' placeholder={arr.email} id='emailU' name='email' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' type='text' placeholder={arr.type} id='type' name='type' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' type='text' placeholder={arr.gender} id='gender' name='gender' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' type='text' placeholder={arr.dob} id='dob' name='dob' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' type='text' placeholder={arr.state} id='state' name='state' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' type='text' placeholder={arr.industry} id='ind' name='ind' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' type='text' placeholder={arr.exp} id='exp' name='exp' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' type='text' placeholder={arr.paid} id='paid' name='paid' />
+                                                                    <input className='w3-input w3-border w3-round w3-padding w3-margin-top w3-col s6 m6 l6' type='text' placeholder={arr.price} id='price' name='price' />
                                                                     <div className='w3-center w3-margin-top'>
-                                                                        <button className='w3-btn w3-blue'>Update</button>
+                                                                        <button className='w3-btn w3-round w3-margin-top w3-blue'>Update</button>
                                                                     </div>
                                                                 </div>
                                                             </div>

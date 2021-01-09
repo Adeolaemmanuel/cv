@@ -26,23 +26,29 @@ var storage = multer.diskStorage({
   }
 });
 var upload = multer({ storage: storage,limits: { fileSize: maxSize }});
-let url = "mongodb+srv://Orisha:Neutron360@cluster0.lih3q.mongodb.net/Test?retryWrites=true&w=majority"
-const DB = ['Customers']
-MongoClient.connect(url, function(err, client) {
-  assert.equal(null, err);
-  client.db(DB[0])
-  console.log("Connected");
-});
-  let testAccount = nodemailer.createTestAccount();
+
+/**
+
+  let url = "mongodb+srv://Orisha:Neutron360@cluster0.lih3q.mongodb.net/Test?retryWrites=true&w=majority"
+  const DB = ['Customers']
+  MongoClient.connect(url, function(err, client) {
+    assert.equal(null, err);
+    client.db(DB[0])
+    console.log("Connected");
+  });
+
+ */
+
 
 // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false, // true for 465, false for other ports
+    service: 'gmail',
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // true for 465, false for other ports
     auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
+      user: 'emmanuelcox39@gmail.com', // generated ethereal user
+      pass: 'neutron@360', // generated ethereal password
     },
   });
 
@@ -67,25 +73,27 @@ app.post('/data', upload.single('file'), (req, res, next)=>{
   experience = req.body.exp
   price =  req.body.price
   transporter.sendMail({
-    from: '"Fred Foo 👻" <foo@example.com>', // sender address
+    from: `emmanuelcox39@gmail.com`, // sender address
     to: `${email}`, // list of receivers
-    subject: "Hello ✔", // Subject line
+    subject: "Confirmation for the "+ type +" package just for you, "+ name+".", // Subject line
     html: `
-            <h3 style='text-align: center'>Hello ${name} </h3>
-            <table width="100%" cellpadding="0" cellspacing="0" style="min-width:100%;">
-            <tbody>
-              <tr>
-                <td valign="top" style="padding:5px; font-family: Arial,sans-serif; font-size: 16px; line-height:20px;"><b>Name<b></td>
-                <td valign="top" style="padding:5px; font-family: Arial,sans-serif; font-size: 16px; line-height:20px;"><b>Product<b></td>
-                <td valign="top" style="padding:5px; font-family: Arial,sans-serif; font-size: 16px; line-height:20px;"><b>Price<b></td>
-              </tr>
-              <tr>
-                <td valign="top" style="padding:5px; font-family: Arial,sans-serif; font-size: 16px; line-height:20px;"><b>${name}<b></td>
-                <td valign="top" style="padding:5px; font-family: Arial,sans-serif; font-size: 16px; line-height:20px;"><b>${type}<b></td>
-                <td valign="top" style="padding:5px; font-family: Arial,sans-serif; font-size: 16px; line-height:20px;"><b>${price}<b></td>
-              </tr>
-            </tbody>
-          </table>`,
+          <p style="padding:20px; background-color:#2196F3; color: white; font-size:30px; border-radius:20px; text-align:center">KIGENNI</p>
+          <div style="margin-top: 50px">
+            <h2 style="text-align: center"><b>Hello ${name}<b></h2>
+            <p>Thank you for applying our ${type} package</p>
+            <p>We would get back to you as soon as possible once payment has been made.</p>
+            <p>If you have not already made your payment on the website, go ahead and make it <a href=''>here</a></p>
+            <p>or make a direct transfer to the account details below</p>
+            <h3><b>Bank Details</b></h3>
+            <div>
+              <p>Account Number: 1014119229</p>
+              <p>Bank Name: Zenith Bank</p>
+              <p>Account Name: Rigutsmile</p>
+              <p>Amount: ₦${price}</p>
+              <p>Your Lifelong Partner To Career Fulfillment,</p><p>The Kigenni Team.</p>
+            </div>
+          </div>
+          `,
   });
 })
 
