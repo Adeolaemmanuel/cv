@@ -23,3 +23,9 @@
     position: relative;
     top: 120px;
 }
+
+.contact{
+    position: fixed;
+    top: 250px;
+    right: 0;
+}

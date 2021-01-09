@@ -17,11 +17,6 @@
     box-shadow: 0,2, rgba(62, 148, 228, 0.15);
 }
 
-.contact{
-    position: fixed;
-    bottom: 40px;
-    right: 0;
-}
 
 @keyframes form {
     0%{

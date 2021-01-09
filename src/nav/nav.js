@@ -7,6 +7,9 @@ import Add from '../assets/img/add.svg';
 import Settings from '../assets/img/settings.svg';
 import exit from '../assets/img/exit.svg';
 import './nav.css'
+import gmail from '../assets/img/gmail.svg'
+import whats from '../assets/img/whatsapp.svg'
+import up from '../assets/img/up-arrow.svg'
 import { db } from '../database'
 import { Cookies } from 'react-cookie'
 
@@ -139,5 +142,55 @@ class Sidebar extends Component{
 }
 
 
+class Contactbar extends Component {
 
-export { Sidebar }
+
+    contact = (pram) => {
+        let mails = document.getElementById('mail');
+        let mailBtn =  document.getElementById('mailBtn');
+        //let whatsapp = document.getElementById('whatsapp');
+        let whatsBtn = document.getElementById('whatsBtn');
+        let up = document.getElementById('upBtn');
+        if(pram === 'mails'){
+            mails.classList.remove('w3-hide');
+            mailBtn.classList.add('w3-hide');
+            whatsBtn.classList.add('w3-hide');
+            up.classList.add('w3-hide');
+        }else if (pram === 'can') {
+            mails.classList.add('w3-hide');
+            mailBtn.classList.remove('w3-hide');
+            whatsBtn.classList.remove('w3-hide');
+            up.classList.remove('w3-hide');
+        }
+    }
+
+    render() {
+        return (
+            <div className='contact w3-padding w3-round w3-white'>
+                <div className =''>
+                    <img src={gmail} alt='mail' className='w3-margin-top' id='mailBtn' style={{width: '40px', height: '40px', display: 'block'}} onClick={()=>{this.contact('mails')}} />
+                    <a href="https://wa.me/2348186013412?text=Hi%20I'm%20contacting%20you%20from%20Kigenni"><img src={whats} alt='whtasapp' className='w3-margin-top' id='whatsBtn' style={{width: '40px', height: '40px', display: 'block'}} /></a>
+                    <a href='#Home'><img src={up} alt='up' className='w3-margin-top' id='upBtn' style={{width: '40px', height: '40px', display: 'block'}}  /></a>
+
+                    <div id='mail' className='w3-padding w3-white w3-container w3-hide'>
+                        <form>
+                            <h5 className='w3-text-blue w3-center'>Send us a message</h5>
+                            <span className='w3-right w3-padding w3-button w3-bold' onClick={()=>{this.contact('can')}}>X</span>
+                            <input className='w3-input w3-border w3-round' placeholder='Name' name='name' />
+                            <input className='w3-input w3-border w3-round w3-margin-top' placeholder='Email' name='email' />
+                            <input className='w3-input w3-border w3-round w3-margin-top' placeholder='Subject' name='subject' />
+                            <textarea className='w3-input w3-border w3-round w3-margin-top' placeholder='Message...' name='message'></textarea>
+                            <div className='w3-center w3-margin-top'>
+                                <button className='w3-btn w3-round w3-blue'>Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+
+
+export { Sidebar, Contactbar }
