@@ -7,7 +7,7 @@ import { db, firebase } from '../database'
 import delet from '../assets/img/delete.svg';
 import cv from '../assets/img/cv.svg'
 import cvl from '../assets/img/cvl.svg'
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 import axios from 'axios'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
@@ -20,7 +20,13 @@ export default class Main extends Component{
         this.state = {
           permissionCheck: [],
           redirect: '',
-          eventsList: []
+          eventsList: [{
+            id: 0,
+            title: 'Adeola Emmanuel Cv',
+            allDay: false,
+            start: new Date(2021, 0, 9),
+            end: new Date(2021, 0, 12)
+          }]
         }
       }
     
@@ -60,7 +66,7 @@ export default class Main extends Component{
                     })
                 }
             }
-            console.log(sides);
+            //console.log(sides);
             this.setState({permissionCheck: sides})
             //this.setState({redirect: sides[0].value})
             }
@@ -72,6 +78,7 @@ export default class Main extends Component{
 
 
     render() {
+       if(window.matchMedia("(max-width: 767px)").matches){
         return (
             <div>
                 <Router>
@@ -84,19 +91,48 @@ export default class Main extends Component{
                         )
                         })
                     }
+                    <Redirect to='/Main' />
                 </Router>
 
-                <div className='section'>
+                <div className='w3-center'>
                     <Calendar
                     localizer={this.localizer}
                     events={this.state.eventsList}
                     startAccessor="start"
                     endAccessor="end"
-                    style={{ height: 500 }}
+                    style={{ height: 500, width: '100%', display: 'inline-block' }}
                     />
                 </div>
             </div>
         )
+       }else{
+        return (
+            <div>
+                
+                <Router>
+                    {
+                        this.state.permissionCheck.map((arr,ind)=>{
+                        return(
+                            <Route path={'/'+arr.value} exact key={ind}>
+                                <arr.component />
+                            </Route>
+                        )
+                        })
+                    }
+                </Router>
+
+                <div className='w3-center'>
+                    <Calendar
+                    localizer={this.localizer}
+                    events={this.state.eventsList}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: 500, width: 950, display: 'inline-block' }}
+                    />
+                </div>
+            </div>
+        )
+       }
     }
 }
 class Dashboard extends Component{
@@ -194,7 +230,7 @@ class Dashboard extends Component{
 
     customersOption = (e,pram) => {
         e.preventDefault()
-        console.log(e.target.id);
+        //console.log(e.target.id);
         if(pram === 'delete'){
             db.collection('Custormers').doc(e.target.id).get()
             .then(pend=>{
@@ -655,7 +691,7 @@ class Mail extends Component{
             let currentCount = [...this.state.attachmentCount]
             currentCount.push({ cvName: 'Upload CV', cvlName: 'Upload Cover Letter'})
             this.setState({attachmentCount: currentCount})
-            console.log(currentCount);
+           // console.log(currentCount);
         }else if(pram === 'sunmit'){}
     }
 
@@ -923,10 +959,10 @@ class Settings extends Component{
             .then(d=>{
                     if(d.exists){
                         let emails = [...d.data().emails]
-                        console.log(emails);
-                        console.log(e.target.id);
+                        //console.log(emails);
+                       // console.log(e.target.id);
                         emails.splice(id)
-                        console.log(emails);
+                        //console.log(emails);
                         db.collection('Admin').doc('Settings').collection('Delivery').doc('Emails').update({emails: emails})
                     }
             })
@@ -940,7 +976,7 @@ class Settings extends Component{
             if(c.exists){
                 let customers = [...c.data().details]
                 this.setState({searchCustumers: customers})
-                console.log(customers);
+                //console.log(customers);
             }
         })
     }

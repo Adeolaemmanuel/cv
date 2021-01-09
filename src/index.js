@@ -107,9 +107,6 @@ export default class Index extends Component {
             <Route path='/Admin' exact>
               <Admin />
             </Route>
-            <Route path='/Main' exact>
-              <Main />
-            </Route>
           </Router>
         </div>
       )
