@@ -147,6 +147,8 @@ class Dashboard extends Component{
             paid: 0,
             users: 0,
             filterM: 'name',
+            selectedOption: null,
+            option: [],
         }
     }
 
@@ -160,7 +162,12 @@ class Dashboard extends Component{
         .then(e=>{
             if(e.exists){
                 let users = [...e.data().users]
+                let set = []
+                for(let u=0; u< users.length; u++){
+                    set.push({value: users[u], label: users[u]})
+                }
                 this.setState({users: users.length})
+                this.setState({option: set})
             }
         })
     }
@@ -273,6 +280,17 @@ class Dashboard extends Component{
             x.className = x.className.replace(" w3-show", "");
         }
     }
+
+    setCalendar = (e) => {
+        let data = {}
+    }
+
+    animatedComponents = makeAnimated();
+    handlePermision = selectedOption => {
+        this.setState(
+            { selectedOption }
+        );
+    };
     
     render() {
         if(window.matchMedia("(max-width: 767px)").matches){
@@ -374,8 +392,8 @@ class Dashboard extends Component{
                         </div>
                     </div>
                     <div className='w3-row section' style={{marginTop: '50px'}}>
-                        <form>
-                            <div className='w3-col m8 l8 w3-padding'>
+                        <div>
+                            <form className='w3-col m8 l8 w3-padding'>
                                 <input type='text'className='w3-input w3-border' placeholder='Search' onChange={this.search} />
                                 <div className='w3-container'>
                                     <div className='w3-row'>
@@ -417,7 +435,7 @@ class Dashboard extends Component{
                                         }
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                             <div className='w3-rest w3-padding'>
                                 <select className='w3-input w3-border w3-round' onChange={this.filter} defaultValue='Filter' style={{width: '200px'}}>
                                     <option value='Filter' disabled>Filter</option>
@@ -427,9 +445,68 @@ class Dashboard extends Component{
                                         })
                                     }
                                 </select>
-                                
+
+                                <div className='w3-padding w3-margin-top' style={{width: '250px'}}>
+                                    <h3 className='w3-padding w3-text-blue w3-center'>TOOLS</h3>
+                                    <button className='w3-btn w3-grey w3-round w3-text-white w3-block' onClick={()=>{document.getElementById('todo').style.display = 'block'}}>SET TODO</button>
+                                </div>
                             </div>
-                        </form>
+                        </div>
+                    </div>
+                    <div id='modals'>
+                        <div className='w3-modal' id='todo'>
+                            <div className='w3-modal-content'>
+                                <span className='w3-right w3-button w3-bold' onClick={()=>{document.getElementById('todo').style.display = 'none'}}>X</span>
+                                    <div className='w3-padding'>
+                                        <form>
+                                            <input type='text' className='w3-input w3-border' placeholder='Title' />
+                                            <div className='w3-row'>
+                                                <h6 className='w3-center w3-text-blue'>Set start date</h6>
+                                                <div className='w3-col m4 l4 w3-padding'>
+                                                    <input type='text' className='w3-input w3-border' placeholder='year' />
+                                                </div>
+                                                <div className='w3-col m4 l4 w3-padding'>
+                                                    <input type='text' className='w3-input w3-border' placeholder='Month' />
+                                                </div>
+                                                <div className='w3-col m4 l4 w3-padding'>
+                                                    <input type='text' className='w3-input w3-border' placeholder='Day' />
+                                                </div>
+                                            </div>
+
+                                            <div className='w3-row'>
+                                                <h6 className='w3-center w3-text-blue'>Set end date</h6>
+                                                <div className='w3-col m4 l4 w3-padding'>
+                                                    <input type='text' className='w3-input w3-border' placeholder='year' />
+                                                </div>
+                                                <div className='w3-col m4 l4 w3-padding'>
+                                                    <input type='text' className='w3-input w3-border' placeholder='Month' />
+                                                </div>
+                                                <div className='w3-col m4 l4 w3-padding'>
+                                                    <input type='text' className='w3-input w3-border' placeholder='Day' />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <h6 className='w3-center w3-text-blue'>Select user</h6>
+                                                <Select
+                                                    required
+                                                    className='w3-margin-top'
+                                                    closeMenuOnSelect={false}
+                                                    value={this.state.selectedOption}
+                                                    onChange={this.handlePermision}
+                                                    components={this.animatedComponents}
+                                                    
+                                                    isMulti
+                                                    options={this.state.option}
+                                                />
+                                            </div>
+
+                                            <div className='w3-center'>
+                                                <button className='w3-btn w3-block w3-round w3-margin-top w3-green'>Set</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )
