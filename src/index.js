@@ -10,6 +10,11 @@ import Main, { Add, Settings, Mail, Dashboard } from './Main/main'
 import { db } from './database'
 import { Cookies } from 'react-cookie'
 import Nav, { Sidebar } from './nav/nav';
+
+
+
+
+
 export default class Index extends Component {
 
   constructor(props) {
@@ -74,6 +79,9 @@ export default class Index extends Component {
           <Router>
             <Nav />
             <Sidebar />
+            <Route path='/Main' exact>
+              <Main />
+            </Route>
               {
                 this.state.permissionCheck.map((arr,ind)=>{
                   return(

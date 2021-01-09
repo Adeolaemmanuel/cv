@@ -6,6 +6,7 @@ import Add from '../assets/img/add.svg';
 //import menu from '../assets/img/menu.svg';
 import Settings from '../assets/img/settings.svg';
 import exit from '../assets/img/exit.svg';
+import home from '../assets/img/house.svg'
 import './nav.css'
 import gmail from '../assets/img/gmail.svg'
 import whats from '../assets/img/whatsapp.svg'
@@ -110,6 +111,7 @@ class Sidebar extends Component{
         if(window.matchMedia("(max-width: 767px)").matches){
             return (
                 <div className='w3-bar w3-card w3-bottom w3-container w3-white w3-margin-right w3-padding'>
+                    <Link to='/Main'><img src={home} alt={home} className='svgm w3-bar-item w3-padding' /></Link>
                     {
                         this.state.permissionCheck.map(arr=>{
                             return(
@@ -125,6 +127,7 @@ class Sidebar extends Component{
         }else{
             return (
                 <div className='w3-sidebar' style={{width: '100px'}}>
+                    <Link to='/Main'><img src={home} alt={home} className='svg w3-bar-item w3-padding' /></Link>
                     {
                         this.state.permissionCheck.map(arr=>{
                             return(
@@ -166,7 +169,7 @@ class Contactbar extends Component {
 
     render() {
         return (
-            <div className='contact w3-padding w3-round w3-white'>
+            <div className='contact w3-padding w3-round'>
                 <div className =''>
                     <img src={gmail} alt='mail' className='w3-margin-top' id='mailBtn' style={{width: '40px', height: '40px', display: 'block'}} onClick={()=>{this.contact('mails')}} />
                     <a href="https://wa.me/2348186013412?text=Hi%20I'm%20contacting%20you%20from%20Kigenni"><img src={whats} alt='whtasapp' className='w3-margin-top' id='whatsBtn' style={{width: '40px', height: '40px', display: 'block'}} /></a>

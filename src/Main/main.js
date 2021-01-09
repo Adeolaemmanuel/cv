@@ -9,12 +9,18 @@ import cv from '../assets/img/cv.svg'
 import cvl from '../assets/img/cvl.svg'
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import axios from 'axios'
+import { Calendar, momentLocalizer } from 'react-big-calendar'
+import moment from 'moment'
+require('react-big-calendar/lib/css/react-big-calendar.css');
+
+
 export default class Main extends Component{
     constructor(props) {
         super(props);
         this.state = {
           permissionCheck: [],
           redirect: '',
+          eventsList: []
         }
       }
     
@@ -62,6 +68,8 @@ export default class Main extends Component{
         }
       }
 
+      localizer = momentLocalizer(moment)
+
 
     render() {
         return (
@@ -77,6 +85,16 @@ export default class Main extends Component{
                         })
                     }
                 </Router>
+
+                <div className='section'>
+                    <Calendar
+                    localizer={this.localizer}
+                    events={this.state.eventsList}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: 500 }}
+                    />
+                </div>
             </div>
         )
     }
