@@ -195,5 +195,26 @@ class Contactbar extends Component {
 }
 
 
+class Notification extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            message: this.props.message,
+            color: this.props.color,
 
-export { Sidebar, Contactbar }
+        }
+    }
+    
+
+    render() {
+        return (
+            <div>
+                <div className='w3-padding w3-blue w3-round w3-hide w3-animate-top not' id='nott'>{this.state.message}</div>
+            </div>
+        )
+    }
+    
+}
+
+
+export { Sidebar, Contactbar, Notification }

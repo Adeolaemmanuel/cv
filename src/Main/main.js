@@ -38,7 +38,6 @@ export default class Main extends Component{
         .then(c=>{
             if(c.exists){
                 let all = [...c.data().todo]
-                console.log(all);
                 for(let c=0; c<all.length; c++){
                     this.event.push({
                         id: c,
@@ -50,7 +49,6 @@ export default class Main extends Component{
                 }
             }
             this.setState({eventsList: this.event})
-            console.log(this.state.eventsList);
         })
       }
     
@@ -158,7 +156,7 @@ class Dashboard extends Component{
         const cookies = new Cookies()
         super(props);
         this.state = {
-            email: cookies.get('email'),
+            user: cookies.get('user'),
             filter: ['Name','Email','Paid','Type', 'Date'],
             details: [],
             pending: 0,
@@ -167,12 +165,38 @@ class Dashboard extends Component{
             filterM: 'name',
             selectedOption: null,
             option: '',
+            eventsList: [],
         }
     }
 
     componentDidMount(){
         this.getCustomers()
         this.getUsers()
+        this.getCalendar()
+    }
+
+    event = []
+
+    getCalendar = () => {
+        db.collection('Calendar').doc(this.state.user).get()
+        .then(c=>{
+            if(c.exists){
+                let all = [...c.data().todo]
+                for(let c=0; c<all.length; c++){
+                    this.event.push({
+                        id: c,
+                        title: all[c].title,
+                        startyear: all[c].startyear,
+                        startday:all[c].startday,
+                        startmonth: all[c].startmonth,
+                        stopyear: all[c].stopyear,
+                        stopday:all[c].stopday,
+                        stopmonth: all[c].stopmonth,
+                    })
+                }
+            }
+            this.setState({eventsList: this.event})
+        })
     }
 
     getUsers = () => {
@@ -299,49 +323,57 @@ class Dashboard extends Component{
         }
     }
 
-    setCalendar = (e) => {
+    setCalendar = (e, pram) => {
         e.preventDefault()
         let month = ['January','Feburary','March','April','May','June','July','August','September','October','November', 'December']
         //let day = ['Sunday','Monday','Tuesday', 'Wednesday','Thursday','Friday','Saturday']
-        let data = {
-            title: e.target.elements.title.value,
-            startyear: e.target.elements.year1.value,
-            startmonth: month.indexOf(e.target.elements.month1.value),
-            startday: e.target.elements.day1.value,
-            stopyear: e.target.elements.year2.value,
-            stopmonth: month.indexOf(e.target.elements.month2.value),
-            stopday: e.target.elements.day2.value,
-        }
-
-        let data2 = {
-            title: `${e.target.elements.title.value} given to ${this.state.option[0].value}`,
-            startyear: e.target.elements.year1.value,
-            startmonth: month.indexOf(e.target.elements.month1.value),
-            startday: e.target.elements.day1.value,
-            stopyear: e.target.elements.year2.value,
-            stopmonth: month.indexOf(e.target.elements.month2.value),
-            stopday: e.target.elements.day2.value,
-        }
-        db.collection('Calendar').doc(this.state.option[0].value).get()
-        .then(c=>{
-            if(c.exists){
-                let all = [...c.data().todo]
-                all.push(data)
-                db.collection('Calendar').doc(this.state.option[0].value).update({todo: all})
-            }else{
-                db.collection('Calendar').doc(this.state.option[0].value).set({todo: [data]})
+        if(pram === 'set'){
+            let data = {
+                title: e.target.elements.title.value,
+                startyear: e.target.elements.year1.value,
+                startmonth: month.indexOf(e.target.elements.month1.value),
+                startday: e.target.elements.day1.value,
+                stopyear: e.target.elements.year2.value,
+                stopmonth: month.indexOf(e.target.elements.month2.value),
+                stopday: e.target.elements.day2.value,
             }
-        })
-        db.collection('Calendar').doc('Admin').get()
-        .then(c=>{
-            if(c.exists){
-                let all = [...c.data().todo]
-                all.push(data2)
-                db.collection('Calendar').doc('Admin').update({todo: all})
-            }else{
-                db.collection('Calendar').doc('Admin').set({todo: [data2]})
+    
+            let data2 = {
+                title: `${e.target.elements.title.value} given to ${this.state.option[0].value}`,
+                startyear: e.target.elements.year1.value,
+                startmonth: month.indexOf(e.target.elements.month1.value),
+                startday: e.target.elements.day1.value,
+                stopyear: e.target.elements.year2.value,
+                stopmonth: month.indexOf(e.target.elements.month2.value),
+                stopday: e.target.elements.day2.value,
             }
-        })
+            db.collection('Calendar').doc(this.state.option[0].value).get()
+            .then(c=>{
+                if(c.exists){
+                    let all = [...c.data().todo]
+                    all.push(data)
+                    db.collection('Calendar').doc(this.state.option[0].value).update({todo: all})
+                }else{
+                    db.collection('Calendar').doc(this.state.option[0].value).set({todo: [data]})
+                }
+            })
+            db.collection('Calendar').doc('Admin').get()
+            .then(c=>{
+                if(c.exists){
+                    let all = [...c.data().todo]
+                    all.push(data2)
+                    db.collection('Calendar').doc('Admin').update({todo: all})
+                }else{
+                    db.collection('Calendar').doc('Admin').set({todo: [data2]})
+                }
+            })
+        }else if (pram === 'setT') {
+            document.getElementById('set').classList.remove('w3-hide')
+            document.getElementById('viewSet').classList.add('w3-hide')
+        }else if (pram === 'setV') {
+            document.getElementById('set').classList.add('w3-hide')
+            document.getElementById('viewSet').classList.remove('w3-hide')
+        }
     }
 
     animatedComponents = makeAnimated();
@@ -517,52 +549,115 @@ class Dashboard extends Component{
                         <div className='w3-modal' id='todo'>
                             <div className='w3-modal-content'>
                                 <span className='w3-right w3-padding w3-button w3-bold' onClick={()=>{document.getElementById('todo').style.display = 'none'}}>X</span>
-                                    <div className='w3-padding'>
-                                        <form onSubmit={this.setCalendar}>
-                                            <input type='text' className='w3-input w3-border' placeholder='Title' id='title' />
-                                            <div className='w3-row'>
-                                                <h6 className='w3-center w3-text-blue'>Set start date</h6>
-                                                <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='year in number' id='year1' />
-                                                </div>
-                                                <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='Month in letter' id='month1' />
-                                                </div>
-                                                <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='Day in number' id='day1' />
-                                                </div>
+                                <div className='w3-row w3-padding'>
+                                    <div className='w3-half w3-blue w3-padding w3-center w3-btn w3-padding'  onClick={e=>{this.setCalendar(e,'setT')}}>Set Todo</div>
+                                    <div className='w3-half w3-blue w3-padding w3-center w3-btn w3-padding' onClick={e=>{this.setCalendar(e,'setV')}}>View Todo</div>
+                                </div>
+                                <div className='w3-padding' id='set'>
+                                    <form onSubmit={e=>{this.setCalendar(e,'set')}}>
+                                        <input type='text' className='w3-input w3-border' placeholder='Title' id='title' />
+                                        <div className='w3-row'>
+                                            <h6 className='w3-center w3-text-blue'>Set start date</h6>
+                                            <div className='w3-col m4 l4 w3-padding'>
+                                                <input type='text' className='w3-input w3-border' placeholder='year in number' id='year1' />
                                             </div>
+                                            <div className='w3-col m4 l4 w3-padding'>
+                                                <input type='text' className='w3-input w3-border' placeholder='Month in letter' id='month1' />
+                                            </div>
+                                            <div className='w3-col m4 l4 w3-padding'>
+                                                <input type='text' className='w3-input w3-border' placeholder='Day in number' id='day1' />
+                                            </div>
+                                        </div>
 
-                                            <div className='w3-row'>
-                                                <h6 className='w3-center w3-text-blue'>Set end date</h6>
-                                                <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='year in number' id='year2' />
-                                                </div>
-                                                <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='Month in letter' id='month2' />
-                                                </div>
-                                                <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='Day in number' id='day2' />
-                                                </div>
+                                        <div className='w3-row'>
+                                            <h6 className='w3-center w3-text-blue'>Set end date</h6>
+                                            <div className='w3-col m4 l4 w3-padding'>
+                                                <input type='text' className='w3-input w3-border' placeholder='year in number' id='year2' />
                                             </div>
-                                            <div>
-                                                <h6 className='w3-center w3-text-blue'>Select user</h6>
-                                                <Select
-                                                    required
-                                                    className='w3-margin-top'
-                                                    closeMenuOnSelect={false}
-                                                    value={this.state.selectedOption}
-                                                    onChange={this.handlePermision}
-                                                    components={this.animatedComponents}
-                                                    options={this.state.option}
-                                                />
+                                            <div className='w3-col m4 l4 w3-padding'>
+                                                <input type='text' className='w3-input w3-border' placeholder='Month in letter' id='month2' />
                                             </div>
+                                            <div className='w3-col m4 l4 w3-padding'>
+                                                <input type='text' className='w3-input w3-border' placeholder='Day in number' id='day2' />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h6 className='w3-center w3-text-blue'>Select user</h6>
+                                            <Select
+                                                required
+                                                className='w3-margin-top'
+                                                closeMenuOnSelect={false}
+                                                value={this.state.selectedOption}
+                                                onChange={this.handlePermision}
+                                                components={this.animatedComponents}
+                                                options={this.state.option}
+                                            />
+                                        </div>
 
-                                            <div className='w3-center'>
-                                                <button className='w3-btn w3-block w3-round w3-margin-top w3-green'>Set</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                        <div className='w3-center'>
+                                            <button className='w3-btn w3-block w3-round w3-margin-top w3-green'>Set</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div id='viewSet' className='w3-padding w3-hide'>
+                                    {
+                                        this.state.eventsList.map(arr => {
+                                            return(
+                                                <div>
+                                                    <button className='w3-button w3-block' onClick={e=>{this.accorodion(`${arr.id}C`)}}>{arr.title}</button>
+
+                                                    <div className='w3-padding w3-hide' id={`${arr.id}C`}>
+                                                        <form onSubmit={e=>{this.setCalendar(e,'update')}}>
+                                                            <input type='text' className='w3-input w3-border' placeholder={arr.title} id='title' />
+                                                            <div className='w3-row'>
+                                                                <h6 className='w3-center w3-text-blue'>Set start date</h6>
+                                                                <div className='w3-col m4 l4 w3-padding'>
+                                                                    <input type='text' className='w3-input w3-border' placeholder={arr.startyear} id='Uyear1' />
+                                                                </div>
+                                                                <div className='w3-col m4 l4 w3-padding'>
+                                                                    <input type='text' className='w3-input w3-border' placeholder={arr.startmonth} id='Umonth1' />
+                                                                </div>
+                                                                <div className='w3-col m4 l4 w3-padding'>
+                                                                    <input type='text' className='w3-input w3-border' placeholder={arr.startday} id='Uday1' />
+                                                                </div>
+                                                            </div>
+
+                                                            <div className='w3-row'>
+                                                                <h6 className='w3-center w3-text-blue'>Set end date</h6>
+                                                                <div className='w3-col m4 l4 w3-padding'>
+                                                                    <input type='text' className='w3-input w3-border' placeholder={arr.stopyear} id='Uyear2' />
+                                                                </div>
+                                                                <div className='w3-col m4 l4 w3-padding'>
+                                                                    <input type='text' className='w3-input w3-border' placeholder={arr.stopmonth} id='Umonth2' />
+                                                                </div>
+                                                                <div className='w3-col m4 l4 w3-padding'>
+                                                                    <input type='text' className='w3-input w3-border' placeholder={arr.stopday} id='Uday2' />
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <h6 className='w3-center w3-text-blue'>Select user</h6>
+                                                                <Select
+                                                                    required
+                                                                    className='w3-margin-top'
+                                                                    closeMenuOnSelect={false}
+                                                                    value={this.state.selectedOption}
+                                                                    //defaultValue={arr}
+                                                                    onChange={this.handlePermision}
+                                                                    components={this.animatedComponents}
+                                                                    options={this.state.option}
+                                                                />
+                                                            </div>
+
+                                                            <div className='w3-center'>
+                                                                <button className='w3-btn w3-block w3-round w3-margin-top w3-green'>Set</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
