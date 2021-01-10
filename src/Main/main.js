@@ -20,13 +20,7 @@ export default class Main extends Component{
         this.state = {
           permissionCheck: [],
           redirect: '',
-          eventsList: [{
-            id: 0,
-            title: 'Adeola Emmanuel Cv',
-            allDay: false,
-            start: new Date(2021, 0, 9),
-            end: new Date(2021, 0, 12)
-          }]
+          eventsList: [],
         }
       }
     
@@ -34,6 +28,30 @@ export default class Main extends Component{
       
       componentDidMount(){
         this.permissionCheck()
+        this.getCalendar()
+      }
+
+      event = []
+
+      getCalendar = () => {
+        db.collection('Calendar').doc(this.cookies.get('user')).get()
+        .then(c=>{
+            if(c.exists){
+                let all = [...c.data().todo]
+                console.log(all);
+                for(let c=0; c<all.length; c++){
+                    this.event.push({
+                        id: c,
+                        title: all[c].title,
+                        allDay: false,
+                        start: new Date(parseInt(all[c].startyear), all[c].startmonth, parseInt(all[c].startday)),
+                        end: new Date(parseInt(all[c].stopyear), all[c].stopmonth, parseInt(all[c].stopday)),
+                    })
+                }
+            }
+            this.setState({eventsList: this.event})
+            console.log(this.state.eventsList);
+        })
       }
     
       permissionCheck = () =>{
@@ -148,7 +166,7 @@ class Dashboard extends Component{
             users: 0,
             filterM: 'name',
             selectedOption: null,
-            option: [],
+            option: '',
         }
     }
 
@@ -282,7 +300,48 @@ class Dashboard extends Component{
     }
 
     setCalendar = (e) => {
-        //let data = {}
+        e.preventDefault()
+        let month = ['January','Feburary','March','April','May','June','July','August','September','October','November', 'December']
+        //let day = ['Sunday','Monday','Tuesday', 'Wednesday','Thursday','Friday','Saturday']
+        let data = {
+            title: e.target.elements.title.value,
+            startyear: e.target.elements.year1.value,
+            startmonth: month.indexOf(e.target.elements.month1.value),
+            startday: e.target.elements.day1.value,
+            stopyear: e.target.elements.year2.value,
+            stopmonth: month.indexOf(e.target.elements.month2.value),
+            stopday: e.target.elements.day2.value,
+        }
+
+        let data2 = {
+            title: `${e.target.elements.title.value} given to ${this.state.option[0].value}`,
+            startyear: e.target.elements.year1.value,
+            startmonth: month.indexOf(e.target.elements.month1.value),
+            startday: e.target.elements.day1.value,
+            stopyear: e.target.elements.year2.value,
+            stopmonth: month.indexOf(e.target.elements.month2.value),
+            stopday: e.target.elements.day2.value,
+        }
+        db.collection('Calendar').doc(this.state.option[0].value).get()
+        .then(c=>{
+            if(c.exists){
+                let all = [...c.data().todo]
+                all.push(data)
+                db.collection('Calendar').doc(this.state.option[0].value).update({todo: all})
+            }else{
+                db.collection('Calendar').doc(this.state.option[0].value).set({todo: [data]})
+            }
+        })
+        db.collection('Calendar').doc('Admin').get()
+        .then(c=>{
+            if(c.exists){
+                let all = [...c.data().todo]
+                all.push(data2)
+                db.collection('Calendar').doc('Admin').update({todo: all})
+            }else{
+                db.collection('Calendar').doc('Admin').set({todo: [data2]})
+            }
+        })
     }
 
     animatedComponents = makeAnimated();
@@ -290,6 +349,7 @@ class Dashboard extends Component{
         this.setState(
             { selectedOption }
         );
+        console.log(this.state.option);
     };
     
     render() {
@@ -456,33 +516,33 @@ class Dashboard extends Component{
                     <div id='modals'>
                         <div className='w3-modal' id='todo'>
                             <div className='w3-modal-content'>
-                                <span className='w3-right w3-button w3-bold' onClick={()=>{document.getElementById('todo').style.display = 'none'}}>X</span>
+                                <span className='w3-right w3-padding w3-button w3-bold' onClick={()=>{document.getElementById('todo').style.display = 'none'}}>X</span>
                                     <div className='w3-padding'>
-                                        <form>
-                                            <input type='text' className='w3-input w3-border' placeholder='Title' />
+                                        <form onSubmit={this.setCalendar}>
+                                            <input type='text' className='w3-input w3-border' placeholder='Title' id='title' />
                                             <div className='w3-row'>
                                                 <h6 className='w3-center w3-text-blue'>Set start date</h6>
                                                 <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='year' />
+                                                    <input type='text' className='w3-input w3-border' placeholder='year in number' id='year1' />
                                                 </div>
                                                 <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='Month' />
+                                                    <input type='text' className='w3-input w3-border' placeholder='Month in letter' id='month1' />
                                                 </div>
                                                 <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='Day' />
+                                                    <input type='text' className='w3-input w3-border' placeholder='Day in number' id='day1' />
                                                 </div>
                                             </div>
 
                                             <div className='w3-row'>
                                                 <h6 className='w3-center w3-text-blue'>Set end date</h6>
                                                 <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='year' />
+                                                    <input type='text' className='w3-input w3-border' placeholder='year in number' id='year2' />
                                                 </div>
                                                 <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='Month' />
+                                                    <input type='text' className='w3-input w3-border' placeholder='Month in letter' id='month2' />
                                                 </div>
                                                 <div className='w3-col m4 l4 w3-padding'>
-                                                    <input type='text' className='w3-input w3-border' placeholder='Day' />
+                                                    <input type='text' className='w3-input w3-border' placeholder='Day in number' id='day2' />
                                                 </div>
                                             </div>
                                             <div>
@@ -494,8 +554,6 @@ class Dashboard extends Component{
                                                     value={this.state.selectedOption}
                                                     onChange={this.handlePermision}
                                                     components={this.animatedComponents}
-                                                    
-                                                    isMulti
                                                     options={this.state.option}
                                                 />
                                             </div>

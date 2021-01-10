@@ -116,9 +116,7 @@ export default class Index extends Component {
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Index />
-  </React.StrictMode>,
+    <Index />,
   document.getElementById('root')
 );
 
